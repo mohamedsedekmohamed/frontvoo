@@ -1,0 +1,52 @@
+import React from 'react'
+import { Routes, Route,Navigate} from "react-router-dom";
+import AdminLayout from "../Layouts/AdminLayout";
+import Home from "../pages/admin/Home";
+import City from "../pages/admin/City";
+import Country from "../pages/admin/Country";
+import Events from "../pages/admin/Events";
+import User from "../pages/admin/User";
+import Tasks from "../pages/admin/Tasks";
+import Zone from "../pages/admin/Zone";
+import Organizeation from "../pages/admin/Organizeation";
+import Settings from "../pages/admin/Settings";
+//add
+import AddUser from "../addandedit/AddUser";
+import Addorganizeation from "../addandedit/Addorganizeation";
+import AddEvents from "../addandedit/AddEvents";
+import Addtasks from "../addandedit/Addtasks";
+import Addcountry from "../addandedit/Addcountry";
+import Addcity from "../addandedit/Addcity";
+import Addzone from "../addandedit/Addzone";
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+
+<Route path="/" element={<Navigate to="/admin/Home" />} />
+   <Route path="/admin" element={<AdminLayout />}>
+  <Route path="home" element={<Home />} />
+  <Route path="city" element={<City />} />
+  <Route path="country" element={<Country />} />
+  <Route path="events" element={<Events />} />
+  <Route path="user" element={<User />} />
+  <Route path="tasks" element={<Tasks />} />
+  <Route path="zone" element={<Zone />} />
+  <Route path="organizeation" element={<Organizeation />} />
+  <Route path="settings" element={<Settings />} />
+  {/* add */}
+  <Route path="addUser" element={<AddUser />} />
+  <Route path="addorganizeation" element={<Addorganizeation />} />
+  <Route path="addEvents" element={<AddEvents />} />
+  <Route path="addtasks" element={<Addtasks />} />
+  <Route path="addcountry" element={<Addcountry />} />
+  <Route path="addcity" element={<Addcity />} />
+  <Route path="addzone" element={<Addzone />} />
+
+</Route>
+
+  </Routes>
+  )
+}
+
+export default AppRoutes
