@@ -9,6 +9,7 @@ import IconTasks from '../Icons/IconTasks';
 import IconCity from '../Icons/IconCity';
 import { HiFlag } from "react-icons/hi";
 import { HiOutlineSignal } from "react-icons/hi2";
+
 const links = [
   {
     to: "home",
@@ -68,18 +69,27 @@ const links = [
 const AdminSidebar = () => {
   const [isActive, setIsActive] = useState('/admin/home');
   const location = useLocation();
-
   useEffect(() => {
-    if(location.pathname === '/admin/addUser') {
-      setIsActive('/admin/user');
-    }else{
-      setIsActive(location.pathname);
-    }
+    const customPaths = {
+      '/admin/addUser': '/admin/user',
+      '/admin/addorganizeation': '/admin/organizeation',
+      '/admin/addevents': '/admin/events',
+      '/admin/addtasks': '/admin/tasks',
+      '/admin/addcountry': '/admin/country',
+      '/admin/addcity': '/admin/city',
+      '/admin/addzone': '/admin/zone',
+    };
+  
+    const newPath = customPaths[location.pathname] || location.pathname;
+    setIsActive(newPath);
   }, [location.pathname]);
+  
 
   return (
-    <nav className="space-y-3 pt-6 text-center px-3">
-      <div className="flex gap-4 justify-start items-center">
+    <div className='h-screen '>
+
+      <nav className="space-y-3 pt-6 text-center px-3 h-[calc(100vh-1px)] overflow-y-auto  overflow-x-hidden">
+      <div className="flex gap-4 justify-start items-center  ">
         <i><FaHeart className="w-12 h-12 text-white" /></i>
         <h1 className="text-white font-bold text-[36px]">Voo</h1>
       </div>
@@ -92,7 +102,7 @@ const AdminSidebar = () => {
           <NavLink
             key={link.to}
             to={link.to}
-            className={`flex gap-2 w-[230px] rounded-lg h-[56px] items-center pl-3 transition-all duration-200 ${
+            className={`flex gap-2 w-[220px] rounded-lg h-[56px] items-center pl-3 transition-all duration-200 ${
               isCurrent ? "bg-white" : ""
             }`}
           >
@@ -110,6 +120,7 @@ const AdminSidebar = () => {
         );
       })}
     </nav>
+    </div>
   );
 };
 

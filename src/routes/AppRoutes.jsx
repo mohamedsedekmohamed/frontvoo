@@ -10,6 +10,7 @@ import Tasks from "../pages/admin/Tasks";
 import Zone from "../pages/admin/Zone";
 import Organizeation from "../pages/admin/Organizeation";
 import Settings from "../pages/admin/Settings";
+import Information from "../pages/admin/Information";
 //add
 import AddUser from "../addandedit/AddUser";
 import Addorganizeation from "../addandedit/Addorganizeation";
@@ -18,6 +19,7 @@ import Addtasks from "../addandedit/Addtasks";
 import Addcountry from "../addandedit/Addcountry";
 import Addcity from "../addandedit/Addcity";
 import Addzone from "../addandedit/Addzone";
+import Putprofile from "../addandedit/Putprofile";
 
 const AppRoutes = () => {
   return (
@@ -42,6 +44,8 @@ const AppRoutes = () => {
   <Route path="addcountry" element={<Addcountry />} />
   <Route path="addcity" element={<Addcity />} />
   <Route path="addzone" element={<Addzone />} />
+  <Route path="putprofile" element={<Putprofile />} />
+  <Route path="information" element={<Information />} />
 
 </Route>
 

@@ -4,8 +4,8 @@ import AdminNavbar from "../components/AdminNavbar";
 import { Outlet } from "react-router-dom";
 const AdminLayout = () => {
   return (
-    <div className="flex min-h-screen gap-3 mx-2 mt-2">
-    <aside className="w-64 bg-gradient-to-b from-one to-two ">
+    <div className="flex min-h-screen gap-3 mx-2 mt-2 relative">
+    <aside className="w-64 bg-gradient-to-b from-one to-two  sticky top-0 h-screen 0">
       <AdminSidebar />
     </aside>
 
