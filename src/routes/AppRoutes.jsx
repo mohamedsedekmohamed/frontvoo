@@ -11,6 +11,11 @@ import Zone from "../pages/admin/Zone";
 import Organizeation from "../pages/admin/Organizeation";
 import Settings from "../pages/admin/Settings";
 import Information from "../pages/admin/Information";
+import Userdetails from "../pages/admin/Userdetails";
+import Organizeationdatali from "../pages/admin/Organizeationdatali";
+import TasksDetails from "../pages/admin/TasksDetails";
+import Requests from "../pages/admin/Requests";
+import Requestsdetails from "../pages/admin/Requestsdetails";
 //add
 import AddUser from "../addandedit/AddUser";
 import Addorganizeation from "../addandedit/Addorganizeation";
@@ -36,6 +41,11 @@ const AppRoutes = () => {
   <Route path="zone" element={<Zone />} />
   <Route path="organizeation" element={<Organizeation />} />
   <Route path="settings" element={<Settings />} />
+  <Route path="userdetails" element={<Userdetails />} />
+  <Route path="organizeationdatali" element={<Organizeationdatali />} />
+  <Route path="tasksDetails" element={<TasksDetails />} />
+  <Route path="requests" element={<Requests />} />
+  <Route path="requestsdetails" element={<Requestsdetails />} />
   {/* add */}
   <Route path="addUser" element={<AddUser />} />
   <Route path="addorganizeation" element={<Addorganizeation />} />

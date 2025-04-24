@@ -139,7 +139,7 @@ const Zone = () => {
              </div>
            </div>
    
-                    <div className="mt-10  hidden lg:block">
+                    <div className="mt-10  block">
                        <table className="w-full border-y border-x border-black">
                          <thead className="w-full">
                            <tr className='bg-four w-[1012px] h-[56px]'>

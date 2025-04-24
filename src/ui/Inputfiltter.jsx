@@ -30,12 +30,13 @@ const Inputfiltter = ({ placeholder, value, like, onChange, name, shara }) => {
           }));
         setArrthing(filteredCities);
       } else if (name === "zone") {
-        const filteredZones = response.data.zones
+        const filteredZones = response.data[0].zones
           .filter(zone => zone.city_id == shara)
           .map(zone => ({
             name: zone.name,
             id: zone.id,
           }));
+          console.log(filteredZones)
         setArrthing(filteredZones);
       }
     });
@@ -82,7 +83,7 @@ return (
         }
        else if (control === "zone") {
           return (
-            <option key={index} value={item.name}>
+            <option key={index} value={item.id}>
               {item.name}
             </option>
             );

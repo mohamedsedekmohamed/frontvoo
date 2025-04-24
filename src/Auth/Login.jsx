@@ -16,9 +16,9 @@ function Login({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); 
-  useEffect(() => {
-    navigate('/admin/home', { replace: true, state: location.state });
-  },[location.state, navigate]);
+  // useEffect(() => {
+  //   navigate('/admin/home', { replace: true, state: location.state });
+  // },[location.state, navigate]);
   
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); 

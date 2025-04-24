@@ -142,7 +142,7 @@ const User = () => {
         </div>
       </div>
 
-      <div className="mt-10  hidden lg:block">
+      <div className="mt-10  block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
@@ -152,6 +152,7 @@ const User = () => {
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
             </tr>
@@ -185,6 +186,12 @@ const User = () => {
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
     {item?.city?.name ?? "N/A"}
   </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/admin/Userdetails', { state: { sendData: item.id } })}>
+   Details
+</button>
+
+    </td>
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
     {item?.account_status ?? "N/A"}
   </td>

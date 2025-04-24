@@ -22,8 +22,10 @@ const InputArrow = ({ placeholder, value, like, onChange, name }) => {
     })
       .then(response => {
         if (name === "country") return setArray(response.data.countries);
-        console.log(response.data.countries)
         if (name === "city") return setArray(response.data.cities);
+        if (name === "zone") return setArray(response.data[0].zones);
+        if (name === "organization") return setArray(response.data.orgnization);
+     
       })
       .catch((error) => {
       
@@ -58,6 +60,18 @@ const InputArrow = ({ placeholder, value, like, onChange, name }) => {
             </option>
             );
             }  else if (control === "city") {
+            return (
+              <option  key={item.id} value={item.id}>
+              {item.name}
+            </option>
+            );
+            }  else if (control === "zone") {
+            return (
+              <option  key={item.id} value={item.id}>
+              {item.name}
+            </option>
+            );
+            }  else if (control === "organization") {
             return (
               <option  key={item.id} value={item.id}>
               {item.name}

@@ -86,7 +86,7 @@ const Events = () => {
   const cheose = ["Filter", "name","date","time","location"];
   const labelMap = {
     Filter: "Filter",
-    name: "name",
+    name: "event",
     date:"date",
     start_time:"time",
     location:"location"
@@ -133,12 +133,12 @@ const Events = () => {
              </button>
            </div>
          </div>
-    <div className="mt-10  hidden lg:block">
+    <div className="mt-10  block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">name</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">event</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">location</th>

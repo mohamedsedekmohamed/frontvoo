@@ -131,7 +131,7 @@ const Organizeation = () => {
             </button>
           </div>
         </div>
-   <div className="mt-10  hidden lg:block">
+   <div className="mt-10  block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
@@ -142,6 +142,7 @@ const Organizeation = () => {
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
          </tr>
           </thead>
@@ -170,6 +171,12 @@ const Organizeation = () => {
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
     {item?.city?.name ?? "N/A"}
   </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/admin/organizeationdatali', { state: { sendData: item.id } })}>
+   Details
+</button>
+
+    </td>
                 <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
                   <CiEdit
                     className="w-[24px] h-[24px] text-six cursor-pointer"

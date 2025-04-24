@@ -9,7 +9,7 @@ import IconTasks from '../Icons/IconTasks';
 import IconCity from '../Icons/IconCity';
 import { HiFlag } from "react-icons/hi";
 import { HiOutlineSignal } from "react-icons/hi2";
-
+import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
 const links = [
   {
     to: "home",
@@ -42,6 +42,12 @@ const links = [
     iconActive: <IconTasks variant/>
   },
   {
+    to: "requests",
+    name: "Requests",
+    icon: <VscGitPullRequestGoToChanges  />,
+    iconActive: <VscGitPullRequestGoToChanges variant/>
+  },
+  {
     to: "country",
     name: "Country",
     icon: <HiFlag />,
@@ -72,9 +78,13 @@ const AdminSidebar = () => {
   useEffect(() => {
     const customPaths = {
       '/admin/addUser': '/admin/user',
+      '/admin/Userdetails': '/admin/user',
       '/admin/addorganizeation': '/admin/organizeation',
+      '/admin/organizeationdatali': '/admin/organizeation',
       '/admin/addevents': '/admin/events',
       '/admin/addtasks': '/admin/tasks',
+      '/admin/requestsdetails': '/admin/requests',
+      '/admin/tasksDetails': '/admin/tasks',
       '/admin/addcountry': '/admin/country',
       '/admin/addcity': '/admin/city',
       '/admin/addzone': '/admin/zone',

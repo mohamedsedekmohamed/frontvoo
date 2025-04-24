@@ -38,8 +38,27 @@ const Information = () => {
 
         </button>
         </div>
+       
 
-      
+        <div className=' mt-5 w-full   flex-wrap flex gap-2'> 
+          <div className='bg-seven w-full h-fit flex flex-col p-5'>
+            <div className='flex gap-1 items-center'>
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 0C5.81875 0 0 5.81875 0 13C0 20.1812 5.81875 26 13 26C20.1812 26 26 20.1812 26 13C26 5.81875 20.1812 0 13 0ZM12.7188 6.5C13.4125 6.5 13.9688 7.0625 13.9688 7.75C13.9688 8.4375 13.4062 9 12.7188 9C12.0312 9 11.4688 8.4375 11.4688 7.75C11.4688 7.0625 12.025 6.5 12.7188 6.5ZM15 19H11V18.5H12V11H11V10.5H14V18.5H15V19Z" fill="#730FC9"/>
+</svg>
+            <span className='text-2xl font-medium text-one'>Personal Information</span>
+            </div>
+
+<div className='flex flex-col gap-2 my-2'>
+  <span className='text-[20px] font-normal text-one'>Phone Number: {data.phone}</span>
+  <span className='text-[20px] font-normal text-one'>birth birth: {data.birth}</span>
+  <span className='text-[20px] font-normal text-one'>gender : {data.gender}</span>
+  
+  
+  </div>        
+          </div>
+          
+        </div>
     </div>
   )
 }
