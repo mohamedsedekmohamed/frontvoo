@@ -37,6 +37,7 @@ const [data,setData]=useState('')
 
  <div className='flex flex-col gap-8'>
   <span className='text-nine text-[16px]'>Name: {data?.name ?? "N/A"}</span>
+  <span className='text-nine text-[16px]'>orgnization: {data?.orgnization?.name ?? "N/A"}</span>
   <span className='text-nine text-[16px]'>Phone: {data?.phone ?? "N/A"}</span>
   <span className='text-nine text-[16px]'>Email: {data?.email ?? "N/A"}</span>
   <span className='text-nine text-[16px]'>Country: {data?.country?.name ?? "N/A"}</span>

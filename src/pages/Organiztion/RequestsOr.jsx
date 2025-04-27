@@ -1,10 +1,11 @@
 import React from 'react'
 
-const Settings = () => {
+const RequestsOr = () => {
   return (
     <div>
+      
     </div>
   )
 }
 
-export default Settings
+export default RequestsOr

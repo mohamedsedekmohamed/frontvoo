@@ -1,48 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-const GetLocationLink = ({ onLocationChange ,setnamegoogle,google }) => {
-  const [showMap, setShowMap] = useState(false);
-  const [position, setPosition] = useState(null);
+const GetLocationLink = ({ onLocationChange, setnamegoogle, google, defaultLocation }) => {
+  const [showMap, setShowMap] = useState(true);
+  const [position, setPosition] = useState(defaultLocation || null);
   const [placeName, setPlaceName] = useState("");
   const [googleMapLink, setGoogleMapLink] = useState("");
+
+  useEffect(() => {
+    if (google?.lat && google?.lng) {
+      setPosition({ lat: google.lat, lng: google.lng });
+      const fullLink = `https://maps.google.com/?q=${google.lat},${google.lng}`;
+      setGoogleMapLink(fullLink);
+      fetchPlaceName(google.lat, google.lng, fullLink);
+    } else if (defaultLocation?.lat && defaultLocation?.lng) {
+      setPosition({ lat: defaultLocation.lat, lng: defaultLocation.lng });
+      const fullLink = `https://maps.google.com/?q=${defaultLocation.lat},${defaultLocation.lng}`;
+      setGoogleMapLink(fullLink);
+      fetchPlaceName(defaultLocation.lat, defaultLocation.lng, fullLink);
+    }
+  }, [google, defaultLocation]);
 
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng;
+        const fullLink = `https://maps.google.com/?q=${lat},${lng}`;
         setPosition({ lat, lng });
-        const url = `https://www.google.com/maps?q=${lat},${lng}`;
-        setGoogleMapLink(url);
-        fetchPlaceName(lat, lng, url);
+        setGoogleMapLink(fullLink);
+        fetchPlaceName(lat, lng, fullLink);
       },
     });
     return null;
   };
 
-  const fetchPlaceName = async (lat, lng, url) => {
+  const fetchPlaceName = async (lat, lng, fullLink) => {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
       );
       const data = await res.json();
-      if (data.display_name) {
-        setPlaceName(data.display_name);
-        // بناء رابط جوجل ماب يتضمن اسم المكان
-        const fullGoogleMapLink = `https://www.google.com/maps?q=${lat},${lng})`;
-        setGoogleMapLink(fullGoogleMapLink);
-        onLocationChange?.({
-          lat,
-          lng,
-          name: data.display_name,
-          url: fullGoogleMapLink,
-        });
-        setnamegoogle(googleMapLink)
-      } else {
-        setPlaceName("لم يتم العثور على اسم هذا المكان.");
-      }
+      const name = data.display_name || "اسم غير معروف";
+      console.log("Place Name from API:", name);
+      setPlaceName(name);
+      onLocationChange?.({ lat, lng, name, url: fullLink });
+      setnamegoogle(fullLink);
     } catch (err) {
       console.error("Reverse geocoding error:", err);
       setPlaceName("حدث خطأ أثناء جلب اسم المكان.");
@@ -58,7 +62,7 @@ const GetLocationLink = ({ onLocationChange ,setnamegoogle,google }) => {
   return (
     <div className="p-4 w-full h-fit">
       <button
-        onClick={() => setShowMap(true)}
+        onClick={() => setShowMap(!showMap)}
         className="w-full h-[48px] md:h-[72px] border-1 text-one font-bold border-two rounded-[8px] placeholder-seven"
       >
         Location
@@ -67,13 +71,15 @@ const GetLocationLink = ({ onLocationChange ,setnamegoogle,google }) => {
       {showMap && (
         <div className="w-full h-[300px] mt-4">
           <MapContainer
-            center={[30.033333, 31.233334]}
-            zoom={6}
+            center={
+              position ? [position.lat, position.lng] : [30.033333, 31.233334]
+            }
+            zoom={position ? 10 : 6}
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+              attribution='© <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
             />
             <MapClickHandler />
             {position && (
@@ -83,17 +89,23 @@ const GetLocationLink = ({ onLocationChange ,setnamegoogle,google }) => {
         </div>
       )}
 
-      {google && (
+      {googleMapLink && (
         <div className="mt-4">
-          <p className="mb-1 text-gray-700 font-semibold">📍 رابط جوجل ماب:</p>
+          <p className="mb-1 text-gray-700 font-semibold">📍google map link  :</p>
           <a
             href={googleMapLink}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 underline break-all"
           >
-            {googleMapLink||google}
+            {googleMapLink}
           </a>
+        </div>
+      )}
+
+      {placeName  && (
+        <div className="mt-2 text-sm text-gray-600">
+          <strong>📌 place name :</strong> {placeName}
         </div>
       )}
     </div>

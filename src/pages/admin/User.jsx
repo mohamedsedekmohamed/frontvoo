@@ -135,9 +135,10 @@ const User = () => {
               ))}
             </select>
           </button>
-          <button onClick={() => navigate('/admin/addUser')} className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
-            <FaPlus className='text-white w-4 h-4 md:w-6 md:h-6' />
-            <span className='text-[16px] md:text-[20px] font-medium text-white'>Add</span>
+          <button onClick={() => navigate('/admin/addUser')}
+           className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
+            <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
+            <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
           </button>
         </div>
       </div>
@@ -148,11 +149,11 @@ const User = () => {
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">User</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">Phone</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
             </tr>
@@ -175,9 +176,6 @@ const User = () => {
   </td>
 
   <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
-    {item?.phone ?? "N/A"}
-  </td>
-  <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
     {item?.email ?? "N/A"}
   </td>
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
@@ -187,11 +185,14 @@ const User = () => {
     {item?.city?.name ?? "N/A"}
   </td>
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-  <button className='underline ' onClick={() => navigate('/admin/Userdetails', { state: { sendData: item.id } })}>
+  <button className='underline ' onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}>
    Details
 </button>
 
     </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
+    {item?.orgnization?.name ?? "N/A"}
+  </td>
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
     {item?.account_status ?? "N/A"}
   </td>

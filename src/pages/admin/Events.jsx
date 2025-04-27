@@ -83,12 +83,12 @@ const Events = () => {
       return value?.toString().toLowerCase().includes(query);
     }
   });
-  const cheose = ["Filter", "name","date","time","location"];
+  const cheose = ["Filter", "name","date","start_time","location"];
   const labelMap = {
     Filter: "Filter",
     name: "event",
     date:"date",
-    start_time:"time",
+    start_time:"time(start)",
     location:"location"
   };
 
@@ -127,10 +127,11 @@ const Events = () => {
                  ))}
                </select>
              </button>
-             <button onClick={() => navigate('/admin/addevents')} className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
-               <FaPlus className='text-white w-4 h-4 md:w-6 md:h-6' />
-               <span className='text-[16px] md:text-[20px] font-medium text-white'>Add</span>
-             </button>
+            <button onClick={() => navigate('/admin/addevents')}
+                     className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
+                      <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
+                      <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
+                    </button>
            </div>
          </div>
     <div className="mt-10  block">
@@ -141,6 +142,7 @@ const Events = () => {
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">event</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">location</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
             </tr>
@@ -152,6 +154,12 @@ const Events = () => {
                 <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.name ?? "N/A"}</td>
                 <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.date ?? "N/A"}</td>
                 <td className="w-[160px] h-[56px] lg:text-[10px] xl:text-[12px]"> start{item?.start_time ?? "N/A"} end{item?.end_time ?? "N/A"}</td>
+                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/admin/eventDetalis', { state: { sendData: item.id } })}>
+   Details
+</button>
+
+    </td>
                 <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.location ?? "N/A"}</td>
                 <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[12px] flex justify-start items-center">
                   <CiEdit

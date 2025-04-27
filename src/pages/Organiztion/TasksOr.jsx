@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
-const Tasks = () => {
+const TasksOr = () => {
   const [data, setData] = useState([]);
    const [update, setUpdate] = useState(false);
    const [searchQuery, setSearchQuery] = useState('');
@@ -16,7 +16,7 @@ const Tasks = () => {
    const navigate = useNavigate();
    useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get("https://backndVoo.voo-hub.com/api/admin/task", {
+    axios.get("https://backndVoo.voo-hub.com/api/ornization/task", {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -42,7 +42,7 @@ const Tasks = () => {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://backndVoo.voo-hub.com/api/admin/task/delete/${userId}`, {
+        axios.delete(`https://backndVoo.voo-hub.com/api/ornization/task/delete/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -60,7 +60,7 @@ const Tasks = () => {
     });
   };
   const handleEdit = (id) => {
-    navigate('/admin/addtasks', { state: { sendData: id } });
+    navigate('/organizeation/addtasksor', { state: { sendData: id } });
   };
     const filteredData = data.filter((item) => {
       const query = searchQuery.toLowerCase();
@@ -125,7 +125,7 @@ const Tasks = () => {
                   ))}
                 </select>
               </button>
-               <button onClick={() => navigate('/admin/addtasks')}
+               <button onClick={() => navigate('/organizeation/addtasksor')}
                         className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
                          <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
                          <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
@@ -179,4 +179,5 @@ const Tasks = () => {
   )
 }
 
-export default Tasks
+
+export default TasksOr

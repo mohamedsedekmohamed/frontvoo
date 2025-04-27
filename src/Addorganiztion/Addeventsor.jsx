@@ -17,7 +17,7 @@ import 'react-time-picker/dist/TimePicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const AddEvents = () => {
+const Addeventsor = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [id, setid] = useState('');
@@ -87,7 +87,7 @@ const AddEvents = () => {
 
       const token = localStorage.getItem('token');
       axios
-        .get('https://backndVoo.voo-hub.com/api/admin/event', {
+        .get('https://backndVoo.voo-hub.com/api/ornization/event', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -246,7 +246,7 @@ if(!image &&!edit)formErrors.image="image is required"
 
     if (edit) {
       axios
-        .put(`https://backndVoo.voo-hub.com/api/admin/event/update/${id}`, eventData, { headers })
+        .put(`https://backndVoo.voo-hub.com/api/ornization/event/update/${id}`, eventData, { headers })
         .then(() => {
           toast.success('Event updated successfully');
           setTimeout(() => navigate(-1), 2000);
@@ -254,7 +254,7 @@ if(!image &&!edit)formErrors.image="image is required"
         .catch(() => toast.error('Failed to update event'));
     } else {
       axios
-        .post('https://backndVoo.voo-hub.com/api/admin/event/add', eventData, { headers })
+        .post('https://backndVoo.voo-hub.com/api/ornization/event/add', eventData, { headers })
         .then(() => {
           toast.success('Event added successfully');
           setTimeout(() => navigate(-1), 2000);
@@ -472,4 +472,4 @@ if(!image &&!edit)formErrors.image="image is required"
   );
 };
 
-export default AddEvents;
+export default Addeventsor

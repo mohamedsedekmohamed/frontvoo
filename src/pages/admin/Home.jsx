@@ -1,10 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-const Dashboard = () => {
+
+const Home = () => {
+
+ 
+
   return (
     <div>
+     
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Home;

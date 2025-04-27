@@ -8,8 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
-
-const Country = () => {
+const EventsOr = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,19 +17,18 @@ const Country = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get("https://backndVoo.voo-hub.com/api/admin/country", {
+    axios.get("https://backndVoo.voo-hub.com/api/ornization/event", {
       headers: {
         Authorization: `Bearer ${token}`,
       }
     })
       .then(response => {
-        setData(response.data.countries);
+        setData(response.data.events);
       })
       .catch(() => {
         toast.error("Error fetching data");
       });
   }, [update]);
-
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
@@ -46,7 +44,7 @@ const Country = () => {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://backndVoo.voo-hub.com/api/admin/country/delete/${userId}`, {
+        axios.delete(`https://backndVoo.voo-hub.com/api/ornization/event/delete/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,14 +61,12 @@ const Country = () => {
       }
     });
   };
-
   const handleEdit = (id) => {
-    navigate('/admin/addcountry', { state: { sendData: id } });
+    navigate('/organizeation/addeventsor', { state: { sendData: id } });
   };
-
   const filteredData = data.filter((item) => {
     const query = searchQuery.toLowerCase();
-  
+
     if (selectedFilter === "Filter" || selectedFilter === "") {
       return Object.values(item).some(value =>
         typeof value === "object"
@@ -83,68 +79,71 @@ const Country = () => {
       for (let key of keys) {
         value = value?.[key];
       }
-  
+
       return value?.toString().toLowerCase().includes(query);
     }
   });
-  
-  const cheose = ["Filter", "name"];
+  const cheose = ["Filter", "name","date","start_time","location"];
   const labelMap = {
     Filter: "Filter",
-    name: "country",
+    name: "event",
+    date:"date",
+    start_time:"time(start)",
+    location:"location"
   };
 
   return (
     <div>
-      <div className='flex justify-between items-center'>
-        <div className='relative items-center'>
-          <input
-            placeholder='Search'
-            className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
-        </div>
-        <div className='flex gap-2'>
-          <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
-            <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />
-            <select
-              style={{
-                appearance: 'none',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                paddingRight: '20px',
-                backgroundImage: 'none',
-              }}
-              value={selectedFilter}
-              onChange={handleChange}
-              className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
-            >
-              {cheose.map((option, index) => (
-                <option key={index} value={option}>
-                  {labelMap[option] || option}
-                </option>
-              ))}
-            </select>
-          </button>
-           <button onClick={() => navigate('/admin/addcountry')}
-                    className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
-                     <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
-                     <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
-                   </button>
-        </div>
-      </div>
 
-      <div className="mt-10  block">
+    <div className='flex justify-between items-center'>
+           <div className='relative items-center'>
+             <input
+               placeholder='Search'
+               className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+             />
+             <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
+           </div>
+           <div className='flex gap-2'>
+             <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
+               <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />
+               <select
+                 style={{
+                   appearance: 'none',
+                   WebkitAppearance: 'none',
+                   MozAppearance: 'none',
+                   paddingRight: '20px',
+                   backgroundImage: 'none',
+                 }}
+                 value={selectedFilter}
+                 onChange={handleChange}
+                 className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+               >
+                 {cheose.map((option, index) => (
+                   <option key={index} value={option}>
+                     {labelMap[option] || option}
+                   </option>
+                 ))}
+               </select>
+             </button>
+            <button onClick={() => navigate('/organizeation/addeventsor')}
+                     className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
+                      <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
+                      <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
+                    </button>
+           </div>
+         </div>
+    <div className="mt-10  block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-      
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Flag</th>
-          
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">event</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">location</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
             </tr>
           </thead>
@@ -152,9 +151,17 @@ const Country = () => {
             {filteredData.map((item, index) => (
               <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
                 <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">{index + 1}</td>
-                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]">{item?.name ?? "N/A"}</td>
-                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]"><img  className='w-10 h-10' src={item.flag_link === null ? `data:image/png;base64,${item.flag_link}` : item.flag_link}/></td>
-                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
+                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.name ?? "N/A"}</td>
+                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.date ?? "N/A"}</td>
+                <td className="w-[160px] h-[56px] lg:text-[10px] xl:text-[12px]"> start{item?.start_time ?? "N/A"} end{item?.end_time ?? "N/A"}</td>
+                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/admin/eventDetalis', { state: { sendData: item.id } })}>
+   Details
+</button>
+
+    </td>
+                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.location ?? "N/A"}</td>
+                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[12px] flex justify-start items-center">
                   <CiEdit
                     className="w-[24px] h-[24px] text-six cursor-pointer"
                     onClick={() => handleEdit(item.id)}
@@ -169,12 +176,10 @@ const Country = () => {
           </tbody>
         </table>
       </div>
-
       <ToastContainer />
     </div>
-  );
-};
+  )
+}
 
 
-
-export default Country
+export default EventsOr

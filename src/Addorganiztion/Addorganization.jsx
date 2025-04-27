@@ -1,10 +1,11 @@
 import React from 'react'
 
-const Settings = () => {
+const Addorganization = () => {
   return (
     <div>
+      
     </div>
   )
 }
 
-export default Settings
+export default Addorganization

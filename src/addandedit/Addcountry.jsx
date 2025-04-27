@@ -11,6 +11,7 @@ const Addcountry = () => {
   const location = useLocation();
   const [id, setid] = useState('');
   const [flag, setFlag] = useState(null);
+  const [checkflag, setcheckFlag] = useState(null);
   const [country, setCountry] = useState('');
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,7 @@ const Addcountry = () => {
           if (user) {
             setCountry(user.name || '');
             setFlag(user.flag_link || '');
+            setcheckFlag(user.flag_link || '');
           
           }
         })
@@ -84,16 +86,16 @@ const Addcountry = () => {
     }
 
     const token = localStorage.getItem('token');
-    const newUser = {
+    const newUsers = {
       name: country,
     };
 
-    if (flag !== newUser) {
+    if (flag !== checkflag) {
       newUser.flag = flag;
     }
 
     if (edit) {
-      axios.put(`https://backndVoo.voo-hub.com/api/admin/country/update/${id}`, newUser, {
+      axios.put(`https://backndVoo.voo-hub.com/api/admin/country/update/${id}`, newUsers, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -109,6 +111,10 @@ const Addcountry = () => {
         });
       return;
     }
+    const newUser = {
+      name: country,
+      flag:flag
+    };
 
     axios.post('https://backndVoo.voo-hub.com/api/admin/country/add', newUser, {
       headers: {

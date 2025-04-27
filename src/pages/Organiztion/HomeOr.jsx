@@ -1,10 +1,11 @@
 import React from 'react'
 
-const Settings = () => {
+const HomeOr = () => {
   return (
     <div>
+      saaa
     </div>
   )
 }
 
-export default Settings
+export default HomeOr

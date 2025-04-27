@@ -10,8 +10,10 @@ import Tasks from "../pages/admin/Tasks";
 import Zone from "../pages/admin/Zone";
 import Organizeation from "../pages/admin/Organizeation";
 import Settings from "../pages/admin/Settings";
-import Information from "../pages/admin/Information";
+import Information from '../pages/admin/Information'
+// import Information from "../pages/admin/Information";
 import Userdetails from "../pages/admin/Userdetails";
+import EventDetalis from "../pages/admin/EventDetalis";
 import Organizeationdatali from "../pages/admin/Organizeationdatali";
 import TasksDetails from "../pages/admin/TasksDetails";
 import Requests from "../pages/admin/Requests";
@@ -26,11 +28,12 @@ import Addcity from "../addandedit/Addcity";
 import Addzone from "../addandedit/Addzone";
 import Putprofile from "../addandedit/Putprofile";
 
-const AppRoutes = () => {
+const AppRoutes = ({setIsLoggedIn}) => {
   return (
     <Routes>
 
-<Route path="/" element={<Navigate to="/admin/Home" />} />
+<Route path="/" element={<Navigate to="/admin/home" />} />
+<Route path="*" element={<Navigate to="/admin/home" replace />} />
    <Route path="/admin" element={<AdminLayout />}>
   <Route path="home" element={<Home />} />
   <Route path="city" element={<City />} />
@@ -42,6 +45,7 @@ const AppRoutes = () => {
   <Route path="organizeation" element={<Organizeation />} />
   <Route path="settings" element={<Settings />} />
   <Route path="userdetails" element={<Userdetails />} />
+  <Route path="eventDetalis" element={<EventDetalis />} />
   <Route path="organizeationdatali" element={<Organizeationdatali />} />
   <Route path="tasksDetails" element={<TasksDetails />} />
   <Route path="requests" element={<Requests />} />
@@ -55,7 +59,7 @@ const AppRoutes = () => {
   <Route path="addcity" element={<Addcity />} />
   <Route path="addzone" element={<Addzone />} />
   <Route path="putprofile" element={<Putprofile />} />
-  <Route path="information" element={<Information />} />
+  <Route path="information" element={<Information setIsLoggedIn={setIsLoggedIn} />} />
 
 </Route>
 

@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-const Country = () => {
+const UserOr = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,16 +18,18 @@ const Country = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get("https://backndVoo.voo-hub.com/api/admin/country", {
+    axios.get("https://backndVoo.voo-hub.com/api/ornization/users", {
       headers: {
         Authorization: `Bearer ${token}`,
       }
     })
       .then(response => {
-        setData(response.data.countries);
+        setData(response.data.users);
+        console.log(response.data.users);
       })
       .catch(() => {
         toast.error("Error fetching data");
+        console.log(token)
       });
   }, [update]);
 
@@ -46,7 +48,7 @@ const Country = () => {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://backndVoo.voo-hub.com/api/admin/country/delete/${userId}`, {
+        axios.delete(`https://backndVoo.voo-hub.com/api/organizeation/user/delete/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -65,7 +67,7 @@ const Country = () => {
   };
 
   const handleEdit = (id) => {
-    navigate('/admin/addcountry', { state: { sendData: id } });
+    navigate('/organizeation/adduser', { state: { sendData: id } });
   };
 
   const filteredData = data.filter((item) => {
@@ -88,10 +90,15 @@ const Country = () => {
     }
   });
   
-  const cheose = ["Filter", "name"];
+  const cheose = ["Filter", "name", "email", "phone", "country.name", "city.name", "account_status"];
   const labelMap = {
     Filter: "Filter",
-    name: "country",
+    name: "User",
+    email: "Email",
+    phone: "Phone",
+    "country.name": "Country",
+    "city.name": "City",
+    "account_status": "status",
   };
 
   return (
@@ -128,11 +135,11 @@ const Country = () => {
               ))}
             </select>
           </button>
-           <button onClick={() => navigate('/admin/addcountry')}
-                    className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
-                     <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
-                     <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
-                   </button>
+          <button onClick={() => navigate('/organizeation/adduser')}
+           className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
+            <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
+            <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
+          </button>
         </div>
       </div>
 
@@ -141,30 +148,68 @@ const Country = () => {
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-      
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">User</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Flag</th>
-          
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.map((item, index) => (
-              <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
-                <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">{index + 1}</td>
-                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]">{item?.name ?? "N/A"}</td>
-                <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]"><img  className='w-10 h-10' src={item.flag_link === null ? `data:image/png;base64,${item.flag_link}` : item.flag_link}/></td>
-                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-                  <CiEdit
-                    className="w-[24px] h-[24px] text-six cursor-pointer"
-                    onClick={() => handleEdit(item.id)}
-                  />
-                  <RiDeleteBin6Line
-                    className="w-[24px] h-[24px] ml-2 text-five cursor-pointer"
-                    onClick={() => handleDelete(item.id, item.name)}
-                  />
-                </td>
-              </tr>
+                              <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
+
+  <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
+    {index + 1}
+  </td>
+
+  <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
+    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
+      {item?.name ?? "N/A"}
+    </span>
+    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
+      {item?.phone ?? "N/A"}
+    </span>
+  </td>
+
+  <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
+    {item?.email ?? "N/A"}
+  </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
+    {item?.country?.name ?? "N/A"}
+  </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
+    {item?.city?.name ?? "N/A"}
+  </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}>
+   Details
+</button>
+
+    </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
+    {item?.orgnization?.name ?? "N/A"}
+  </td>
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
+    {item?.account_status ?? "N/A"}
+  </td>
+
+  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
+    <CiEdit
+      className="w-[24px] h-[24px] text-six cursor-pointer"
+      onClick={() => handleEdit(item.id)}
+    />
+    <RiDeleteBin6Line
+      className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+      onClick={() => handleDelete(item.id, item.name)}
+    />
+  </td>
+</tr>
+
+ 
             ))}
           </tbody>
         </table>
@@ -176,5 +221,4 @@ const Country = () => {
 };
 
 
-
-export default Country
+export default UserOr
