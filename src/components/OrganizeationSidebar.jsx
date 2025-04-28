@@ -48,11 +48,13 @@ const AdminSidebar = () => {
   useEffect(() => {
     const customPaths = {
       '/organizeation/adduser': '/organizeation/user',
-      // '/organizeation/Userdetails': '/organizeation/user',
+      '/organizeation/userDetails': '/organizeation/user',
+      '/organizeation/eventsdetails': '/organizeation/events',
     //   '/admin/addorganizeation': '/admin/organizeation',
     //   '/admin/organizeationdatali': '/admin/organizeation',
       '/organizeation/addeventsor': '/organizeation/events',
       '/organizeation/addtasksor': '/organizeation/tasks',
+      '/organizeation/tasksdetails': '/organizeation/tasks',
     //   '/admin/requestsdetails': '/admin/requests',
     //   '/admin/tasksDetails': '/admin/tasks',
     //   '/admin/addcountry': '/admin/country',

@@ -185,7 +185,7 @@ const UserOr = () => {
     {item?.city?.name ?? "N/A"}
   </td>
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-  <button className='underline ' onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}>
+  <button className='underline ' onClick={() => navigate('/organizeation/userDetails', { state: { sendData: item.id } })}>
    Details
 </button>
 

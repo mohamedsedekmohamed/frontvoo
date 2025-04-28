@@ -78,10 +78,11 @@ const AdminSidebar = () => {
   useEffect(() => {
     const customPaths = {
       '/admin/addUser': '/admin/user',
-      '/admin/Userdetails': '/admin/user',
+      '/admin/userdetails': '/admin/user',
       '/admin/addorganizeation': '/admin/organizeation',
       '/admin/organizeationdatali': '/admin/organizeation',
       '/admin/addevents': '/admin/events',
+      '/admin/eventDetalis': '/admin/events',
       '/admin/addtasks': '/admin/tasks',
       '/admin/requestsdetails': '/admin/requests',
       '/admin/tasksDetails': '/admin/tasks',

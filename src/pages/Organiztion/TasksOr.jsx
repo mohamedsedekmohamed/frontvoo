@@ -154,7 +154,7 @@ const TasksOr = () => {
                  <td className="w-[160px] h-[56px] lg:text-[10px] xl:text-[12px]">{item?.start_time ?? "N/A"} </td>
                  <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[12px]">{item?.description ?? "N/A"}</td>
                  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-  <button className='underline ' onClick={() => navigate('/admin/tasksDetails', { state: { sendData: item.id } })}>
+  <button className='underline ' onClick={() => navigate('/organizeation/tasksdetails', { state: { sendData: item.id } })}>
    Details
 </button>
 
