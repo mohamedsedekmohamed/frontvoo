@@ -2,14 +2,19 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 
+import { useTranslation } from 'react-i18next';
 const InputArrow = ({ placeholder, value, like, onChange, name }) => {
+  
+  const {  i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
   
   const [arrayof, setArray] = useState([]);
   const [control, setControl] = useState();
 
+  // تعديل مكان السهم حسب اللغة
   const shape = like
-    ? "absolute top-[60%] left-43 md:left-65 w-[18px] h-[24px] transition group-focus-within:rotate-90"
-    : "absolute top-[60%] right-4 w-[18px] h-[24px] transition group-focus-within:rotate-90";
+    ? `absolute top-[60%] md:left-65 w-[18px] h-[24px] transition group-focus-within:rotate-90 ${!isArabic ? 'left-10' : 'left-43'}`
+    : `absolute top-[60%] w-[18px] h-[24px] transition group-focus-within:rotate-90 ${!isArabic ? 'right-4' : 'left-4'}`;
 
   useEffect(() => {
     setControl(name);
@@ -28,7 +33,6 @@ const InputArrow = ({ placeholder, value, like, onChange, name }) => {
      
       })
       .catch((error) => {
-      
         console.log(error);
       });
   }, [name]);  

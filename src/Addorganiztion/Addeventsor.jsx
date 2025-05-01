@@ -5,9 +5,9 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import InputArrow from '../ui/InputArrow';
+import InputArrowOr from '../ui/InputArrowOr';
+import InputfiltterOr from '../ui/InputfiltterOr';
 import SwitchButton from '../ui/SwitchButton';
-import Inputfiltter from '../ui/Inputfiltter';
 import GetLocationLink from '../ui/GetLocationLink';
 import AddBenefitsRequirements from '../ui/AddBenefitsRequirements';
 import FileUploadButton from '../ui/FileUploadButton';
@@ -16,10 +16,14 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useTranslation } from 'react-i18next';
 
 const Addeventsor = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+    const isArabic = i18n.language === 'ar';
+  
   const [id, setid] = useState('');
   const [country, setCountry] = useState('');
   const [zone, setzone] = useState('');
@@ -140,13 +144,13 @@ const Addeventsor = () => {
       case 'Event':
         setName(value);
         break;
-      case 'country':
+      case 'getCountry':
         setCountry(value);
         break;
-      case 'city':
+      case 'getCity':
         setCity(value);
         break;
-      case 'zone':
+      case 'getZone':
         setzone(value);
         break;
       case 'date':
@@ -248,18 +252,18 @@ if(!image &&!edit)formErrors.image="image is required"
       axios
         .put(`https://backndVoo.voo-hub.com/api/ornization/event/update/${id}`, eventData, { headers })
         .then(() => {
-          toast.success('Event updated successfully');
+          toast.success( t('EventUpdated'));
           setTimeout(() => navigate(-1), 2000);
         })
-        .catch(() => toast.error('Failed to update event'));
+        .catch(() => toast.error(t("NetworkFailed")));
     } else {
       axios
         .post('https://backndVoo.voo-hub.com/api/ornization/event/add', eventData, { headers })
         .then(() => {
-          toast.success('Event added successfully');
+          toast.success(t('EventAdded'));
           setTimeout(() => navigate(-1), 2000);
         })
-        .catch(() => toast.error('Failed to add event'));
+      .catch(() => toast.error(t('NetworkFailed')));
     }
 
     // Reset form
@@ -323,41 +327,41 @@ if(!image &&!edit)formErrors.image="image is required"
   }
 
   return (
-    <div>
-      <AddAll name={edit ? 'Edit Event' : 'Add Event'} navGo={-1} />
+    <div dir={isArabic ? 'rtl' : 'ltr'}>
+      <AddAll name={edit ? t("EditEvent") : t("AddEvent")} navGo={-1} />
       <div className="flex flex-wrap gap-6 mt-6">
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">Information</span>
+          <span className="text-3xl font-bold text-three ">{t("Information")}</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <InputField
-              placeholder="Event"
+              placeholder={t("Event")}
               name="Event"
               value={name}
               onChange={handleChange}
             />
             <InputField
-              placeholder="volunteers "
+              placeholder={t("volunteers")}
               name="volunteers"
               value={volunteers}
               onChange={handleChange}
               email="number"
             />
             <InputField
-              placeholder="organizers "
+              placeholder={t("organizers")}
               name="organizers"
               value={organizers}
               onChange={handleChange}
               email="number"
             />
-            <FileUploadButton name="image" kind="image" flag={image} onFileChange={handleFileChange} />
+            <FileUploadButton name="image" kind={t("image")} flag={image} onFileChange={handleFileChange} />
             <InputField
-              placeholder="Location"
+              placeholder={t("location")}
               name="Location"
               value={locat}
               onChange={handleChange}
             />
             <InputField
-              placeholder="description"
+              placeholder={t("description")}
               name="description"
               value={description}
               onChange={handleChange}
@@ -365,24 +369,24 @@ if(!image &&!edit)formErrors.image="image is required"
           </div>
         </div>
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">Place</span>
+          <span className="text-3xl font-bold text-three ">{t("place")} </span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
-            <InputArrow
-              placeholder="Country"
-              name="country"
+            <InputArrowOr
+              placeholder={t("Country")}
+              name="getCountry"
               value={country}
               onChange={handleChange}
             />
-            <Inputfiltter
-              placeholder="city"
-              name="city"
+            <InputfiltterOr
+              placeholder={t("City")}
+              name="getCity"
               value={city}
               onChange={handleChange}
               shara={country}
             />
-            <Inputfiltter
-              placeholder="zone"
-              name="zone"
+            <InputfiltterOr
+              placeholder={t("Zone")}
+              name="getZone"
               value={zone}
               onChange={handleChange}
               shara={city}
@@ -390,17 +394,18 @@ if(!image &&!edit)formErrors.image="image is required"
           </div>
         </div>
 
-        <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">Date and Time</span>
+        <div className=" flex flex-col   ">
+          <span className="text-3xl font-bold text-three ">   {t("Date_Time")}</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">Date</span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]">{t("date")}</span>
               <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]">
                 <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
                 <DatePicker
+                    minDate={new Date()} // يمنع اختيار أي تاريخ قبل النهارده
                   selected={date}
                   onChange={handstartDate}
-                  placeholderText="Select date"
+                  placeholderText={t("SelectDate")}
                   dateFormat="yyyy-MM-dd"
                   className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
                   showYearDropdown
@@ -411,7 +416,7 @@ if(!image &&!edit)formErrors.image="image is required"
             </div>
 
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">start Time </span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]"> {t("start")} </span>
               <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
                 <TimePicker
                   className={`w-full h-full `}
@@ -423,7 +428,7 @@ if(!image &&!edit)formErrors.image="image is required"
               </div>
             </div>
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">end Time </span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]">{t("end")} </span>
               <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
                 <TimePicker
                   className={`w-full h-full `}
@@ -437,8 +442,8 @@ if(!image &&!edit)formErrors.image="image is required"
           </div>
         </div>
       </div>
-      <div className=" flex flex-col my-3 ">
-        <span className="text-3xl font-bold text-three ">Place</span>
+      <div className=" flex flex-col my-3 mt-20 ">
+        <span className="text-3xl font-bold text-three ">{t("Zone")}</span>
         <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
         <GetLocationLink
             google={google} // تمرير الإحداثيات هنا
@@ -448,7 +453,7 @@ if(!image &&!edit)formErrors.image="image is required"
                   </div>
       </div>
       <div className=" flex flex-col my-3 ">
-        <span className="text-3xl font-bold text-three ">benfit And requirment</span>
+        <span className="text-3xl font-bold text-three ">{t("benfitAndrequirment")}</span>
         <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
           <AddBenefitsRequirements
             benfit={benfit}
@@ -464,8 +469,8 @@ if(!image &&!edit)formErrors.image="image is required"
           className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
           onClick={handleSave}
         >
-          Done
-        </button>
+          {t("Done")}
+          </button>
       </div>
       <ToastContainer />
     </div>

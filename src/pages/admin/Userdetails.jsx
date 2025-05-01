@@ -147,23 +147,4 @@ import { HiClock } from "react-icons/hi2";
     }
     
     export default Userdetails
-     //     <div className='flex flex-col relative'> 
-    //      <div className='w-full text-right absolute'>
-    //          <button   className='text-3xl text-nine' onClick={()=>navigate(-1)} ><MdOutlineArrowBackIos /></button></div>
     
-    //
-    //  <div className='flex flex-col gap-8'>
-    //   <span className='text-nine text-[16px]'>Name: {data?.name ?? "N/A"}</span>
-   
-    //   <span className='text-nine text-[16px]'>Account status: {data?.account_status ?? "N/A"}</span>
-    //   <span className='text-nine text-[16px]'>Role: {data?.role ?? "N/A"}</span>
-    //   <span className='text-nine text-[16px]'>Total hours: {data?.total_hours ?? "N/A"}</span>
-    //   <span className='text-nine text-[16px]'>Total events: {data?.total_events ?? "N/A"}</span>
-    //   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-     
-       
-    // </div>
-    //   <span className='text-nine text-[16px]'></span>
-    // </div>
-    
-    //         </div>

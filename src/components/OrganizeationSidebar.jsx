@@ -3,10 +3,11 @@ import { NavLink, useLocation } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import {  FaCalendarAlt } from "react-icons/fa"; 
 import { FaUser } from "react-icons/fa6"; 
-import { RiOrganizationChart } from "react-icons/ri";
 import IconTasks from '../Icons/IconTasks';
-
+import { useTranslation } from 'react-i18next';
 import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
+import { FaPersonMilitaryToPerson } from "react-icons/fa6";
+
 const links = [
 
   {
@@ -15,12 +16,7 @@ const links = [
     icon: <FaUser />,
     iconActive: <FaUser />
   },
-  // {
-  //   to: "organization",
-  //   name: "Organization",
-  //   icon: <RiOrganizationChart />,
-  //   iconActive: <RiOrganizationChart />
-  // },
+
   {
     to: "events",
     name: "Events",
@@ -38,11 +34,24 @@ const links = [
     name: "Requests",
     icon: <VscGitPullRequestGoToChanges  />,
     iconActive: <VscGitPullRequestGoToChanges variant/>
+
   },
+  {
+   
+       to: "pendingusers",
+       name: "Pending",
+       icon: <FaPersonMilitaryToPerson />,
+       iconActive: <FaPersonMilitaryToPerson />
+     
+
+  },
+ 
 
 
 ];
 const AdminSidebar = () => {
+  const { t } = useTranslation();
+
   const [isActive, setIsActive] = useState('/organiztion/user');
   const location = useLocation();
   useEffect(() => {
@@ -50,16 +59,10 @@ const AdminSidebar = () => {
       '/organizeation/adduser': '/organizeation/user',
       '/organizeation/userDetails': '/organizeation/user',
       '/organizeation/eventsdetails': '/organizeation/events',
-    //   '/admin/addorganizeation': '/admin/organizeation',
-    //   '/admin/organizeationdatali': '/admin/organizeation',
       '/organizeation/addeventsor': '/organizeation/events',
       '/organizeation/addtasksor': '/organizeation/tasks',
       '/organizeation/tasksdetails': '/organizeation/tasks',
-    //   '/admin/requestsdetails': '/admin/requests',
-    //   '/admin/tasksDetails': '/admin/tasks',
-    //   '/admin/addcountry': '/admin/country',
-    //   '/admin/addcity': '/admin/city',
-    //   '/admin/addzone': '/admin/zone',
+      '/organizeation/pendingusersDetaklis': '/organizeation/pendingusers',
     };
   
     const newPath = customPaths[location.pathname] || location.pathname;
@@ -96,8 +99,8 @@ const AdminSidebar = () => {
             <span
               className={`font-bold text-[20px] ${isCurrent ? "text-one" : "text-white"}`}
             >
-              {link.name}
-            </span>
+  {t(link.name)}
+  </span>
           </NavLink>
         );
       })}

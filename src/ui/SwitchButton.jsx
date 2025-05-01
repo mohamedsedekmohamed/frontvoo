@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const SwitchButton = ({ value, setValue, title}) => {
+  const { t,i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
 
 
   const toggleValue = () => {
@@ -15,7 +18,7 @@ const SwitchButton = ({ value, setValue, title}) => {
 
       
         <StyledWrapper>
-          <span className='mt-2 text-[18px] text-one font-bold' >statue </span>
+          <span className='mt-2 text-[18px] text-one font-bold' >{t("statue")} </span>
           <label className="switch">
             <input  
               type="checkbox"

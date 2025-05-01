@@ -91,7 +91,7 @@ const Addcountry = () => {
     };
 
     if (flag !== checkflag) {
-      newUser.flag = flag;
+      newUsers.flag = flag;
     }
 
     if (edit) {
@@ -111,12 +111,12 @@ const Addcountry = () => {
         });
       return;
     }
-    const newUser = {
+    const newUseer = {
       name: country,
       flag:flag
     };
 
-    axios.post('https://backndVoo.voo-hub.com/api/admin/country/add', newUser, {
+    axios.post('https://backndVoo.voo-hub.com/api/admin/country/add', newUseer, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -5,18 +5,24 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import InputArrow from '../ui/InputArrow';
 import SwitchButton from '../ui/SwitchButton';
-import Inputfiltter from '../ui/Inputfiltter';
-import AddBenefitsRequirements from '../ui/AddBenefitsRequirements';
+import AddBenefitOr from '../ui/AddBenefitOr';
 import FileUploadButton from '../ui/FileUploadButton';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import InputArrowOr from '../ui/InputArrowOr';
+import { useTranslation } from 'react-i18next';
 
 const Addtasksor = () => {
+    const { t, i18n } = useTranslation();
+  const [locat, setLocation] = useState('');
+  const isArabic = i18n.language === 'ar';
+
+   const [benfit, setbenfit] = useState([]);
+    const [requirment, setrequirment] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const [id, setid] = useState('');
@@ -60,11 +66,16 @@ const Addtasksor = () => {
           const event = response.data.tasks.find((e) => e.id === sendData);
           if (event) {
             setName(event.name || '');
-            // console.log(event.to_zone?.name)
-            // console.log(event.from_zone?.name )
-            settozone(event.to_zone?.id || '');
-            setfromzone(event.from_zone?.id || '');
-
+           
+            settozone(event.to_zone_id || '');
+            setfromzone(event.from_zone_id || '');
+            setLocation(event.location || '');
+            setbenfit(
+              event.event_benfits?.map((b) => ({ text: b.benfit, status: b.status })) || []
+            );
+            setrequirment(
+              event.event_requirments?.map((r) => ({ text: r.requirment, status: r.status })) || []
+            );
             setDate(event.date || '');
             setStart(event.start_time || '');
             setvolunteers(event.number_of_voo_needed || '');
@@ -90,8 +101,9 @@ const Addtasksor = () => {
   };
   const handlechangetwo = (e) => {
     const { name, value } = e.target;
-    if (name === "zone") settozone(value)
+    if (name === "getZone") settozone(value)
   }
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -99,7 +111,7 @@ const Addtasksor = () => {
       case 'Task':
         setName(value);
         break;
-      case 'zone':
+      case 'getZone':
         setfromzone(value);
         break;
       case 'date':
@@ -117,6 +129,10 @@ const Addtasksor = () => {
       case 'organization':
         setorgnization(value);
         break;
+      case 'locat':
+        setLocation(value);
+        break;
+    
       default:
         break;
     }
@@ -178,7 +194,11 @@ const Addtasksor = () => {
       description,
       image: image,
       status: value,
-      orgnization_id:orgnization
+      location: locat,
+      orgnization_id:orgnization,
+      benfit: benfit.map((item) => ({ benfit: item.text, })),
+      requirment: requirment.map((item) => ({ requirment: item.text})),
+    
          };
 
     const headers = {
@@ -207,12 +227,16 @@ const Addtasksor = () => {
     setName('');
     setDate('');
     setStart('');
+    setLocation('');
     setvolunteers('');
+  
     setorgnization('');
     setimage(null);
     setdescription('');
     setvalue('inactive');
     settozone('');
+    setbenfit([]);
+    setrequirment([]);
     setfromzone('');
     setEdit(false);
     setid('')
@@ -232,54 +256,56 @@ const Addtasksor = () => {
 
   return (
     <div>
-      <AddAll name={edit ? 'Edit Task' : 'Add Task'} navGo={-1} />
+      <AddAll name={edit ? t("Edittask") : t("Addtask")} navGo={-1} />
       <div className="flex flex-wrap gap-6 mt-6">
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">Information</span>
+          <span className="text-3xl font-bold text-three ">{t("Information")}</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <InputField
-              placeholder="Task"
+         placeholder={t("Task")}
               name="Task"
               value={name}
               onChange={handleChange}
             />
             <InputField
-              placeholder="description"
+              placeholder={t("description")}
               name="description"
               value={description}
               onChange={handleChange}
             />
-            <InputArrow
-              placeholder="organizers"
-              name="organization"
-              value={orgnization}
+           <InputField
+          placeholder={t("location")}
+              name="locat"
+              value={locat}
               onChange={handleChange}
             />
           </div>
         </div>
+     
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">place and time</span>
+          <span className="text-3xl font-bold text-three ">{t("Date_Time")}</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
-            <InputArrow
-              placeholder="From zone"
-              name="zone"
+            <InputArrowOr
+              placeholder={t("From_zone")}
+              name="getZone"
               value={fromzone}
               onChange={handleChange}
             />
-            <InputArrow
-              placeholder="To zone"
-              name="zone"
+            <InputArrowOr
+              placeholder={t("To_zone")}
+              name="getZone"
               value={tozone}
               onChange={handlechangetwo}
             />
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">Date</span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]">{t("date")}</span>
               <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]">
                 <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
                 <DatePicker
                   selected={date}
+                  minDate={new Date()} // يمنع اختيار أي تاريخ قبل النهارده
                   onChange={handstartDate}
-                  placeholderText="Select date"
+                  placeholderText={t("SelectDate")}
                   dateFormat="yyyy-MM-dd"
                   className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
                   showYearDropdown
@@ -289,10 +315,10 @@ const Addtasksor = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">start Time </span>
-              <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
+            <span className="text-[12px] font-bold text-one md:text-[16px]"> {t("start")} </span>
+            <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
                 <TimePicker
-                  className={`w-full h-full `}
+                  className={`w-full h-full`}
                   onChange={handStartTime}
                   value={start}
                   format="HH:mm"
@@ -303,10 +329,10 @@ const Addtasksor = () => {
           </div>
         </div>
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">volunteers</span>
+          <span className="text-3xl font-bold text-three ">{t("volunteers")}</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <InputField
-              placeholder="number of volunteers  "
+              placeholder={t("number_of_volunteers")}
               name="volunteers"
               value={volunteers}
               onChange={handleChange}
@@ -314,17 +340,22 @@ const Addtasksor = () => {
             />
 
 
-            <FileUploadButton name="image" kind="image" flag={image} onFileChange={handleFileChange} />
+            <FileUploadButton name="image" kind={t("image")} flag={image} onFileChange={handleFileChange} />
 
           </div>
         </div>
         <SwitchButton value={value} setValue={setvalue} />
+        <AddBenefitOr 
+            benfit={benfit}
+            setbenfit={setbenfit}
+            requirment={requirment}
+            setrequirment={setrequirment}/>
         <div className="flex mt-6">
           <button
             className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
             onClick={handleSave}
           >
-            Done
+          {t("Done")}
           </button>
         </div>
       </div>

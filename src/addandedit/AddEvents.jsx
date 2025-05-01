@@ -400,6 +400,7 @@ if(!image &&!edit)formErrors.image="image is required"
                 <DatePicker
                   selected={date}
                   onChange={handstartDate}
+                  minDate={new Date()} // يمنع اختيار أي تاريخ قبل النهارده
                   placeholderText="Select date"
                   dateFormat="yyyy-MM-dd"
                   className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"

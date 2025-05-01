@@ -22,8 +22,12 @@ const AdminNavbar = () => {
   return (
     <div className="flex justify-between items-center">
 <div className=' flex items-center gap-3'>
-  <span  className='w-10 h-10 bg-gray-200 rounded-full' />
-  <div className='flex flex-col gap-0.5'>
+{data.avatar_image_link ?(
+            <img src={data.avatar_image_link} className='w-10 h-10 rounded-full' />
+
+):( 
+           <span className='w-10 h-10 bg-gray-200 rounded-full' />
+)}  <div className='flex flex-col gap-0.5'>
   <span className='text-2xl font-bold text-white'>{data.name||"no name"}</span> 
   </div>
   </div> 
@@ -31,7 +35,7 @@ const AdminNavbar = () => {
       <button onClick={()=>navigate('/admin/information')}>
      <IoPersonCircleSharp className='  text-2xl text-white'  />
       </button>
-      <span className='flex gap-1 items-center justify-center text-white'> <GrLanguage/> <span className='pb-1'> En</span>  <IoIosArrowDown /></span>
+      {/* <span className='flex gap-1 items-center justify-center text-white'> <GrLanguage/> <span className='pb-1'> En</span>  <IoIosArrowDown /></span> */}
       <i className='text-white text-2xl'><FaRegBell  /></i>
     </div>
   </div>

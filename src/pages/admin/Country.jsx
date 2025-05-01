@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Pagination from '@mui/material/Pagination';
 
 const Country = () => {
   const [data, setData] = useState([]);
@@ -16,6 +17,9 @@ const Country = () => {
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
 
+    useEffect(() => {
+      setCurrentPage(1);
+    }, [searchQuery]);
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios.get("https://backndVoo.voo-hub.com/api/admin/country", {
@@ -87,7 +91,14 @@ const Country = () => {
       return value?.toString().toLowerCase().includes(query);
     }
   });
-  
+   
+      const [currentPage, setCurrentPage] = useState(1);
+      const rowsPerPage = 10;
+      const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+      const paginatedData = filteredData.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+      );
   const cheose = ["Filter", "name"];
   const labelMap = {
     Filter: "Filter",
@@ -151,7 +162,9 @@ const Country = () => {
           <tbody>
             {filteredData.map((item, index) => (
               <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
-                <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">{index + 1}</td>
+                <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
+                {(currentPage - 1) * rowsPerPage + index + 1}
+                </td>
                 <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]">{item?.name ?? "N/A"}</td>
                 <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]"><img  className='w-10 h-10' src={item.flag_link === null ? `data:image/png;base64,${item.flag_link}` : item.flag_link}/></td>
                 <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
@@ -169,6 +182,15 @@ const Country = () => {
           </tbody>
         </table>
       </div>
+       <div className="flex justify-center mt-4">
+              <Pagination
+                count={pageCount}
+                page={currentPage}
+                onChange={(e, page) => setCurrentPage(page)}
+                color="secondary"
+                shape="rounded"
+              />
+            </div>
 
       <ToastContainer />
     </div>

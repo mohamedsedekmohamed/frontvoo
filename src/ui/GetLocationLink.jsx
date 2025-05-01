@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useTranslation } from 'react-i18next';
 
 const GetLocationLink = ({ onLocationChange, setnamegoogle, google, defaultLocation }) => {
   const [showMap, setShowMap] = useState(true);
   const [position, setPosition] = useState(defaultLocation || null);
   const [placeName, setPlaceName] = useState("");
   const [googleMapLink, setGoogleMapLink] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (google?.lat && google?.lng) {
@@ -65,8 +67,9 @@ const GetLocationLink = ({ onLocationChange, setnamegoogle, google, defaultLocat
         onClick={() => setShowMap(!showMap)}
         className="w-full h-[48px] md:h-[72px] border-1 text-one font-bold border-two rounded-[8px] placeholder-seven"
       >
-        Location
-      </button>
+{
+  t("location")
+}      </button>
 
       {showMap && (
         <div className="w-full h-[300px] mt-4">

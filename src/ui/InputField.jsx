@@ -1,6 +1,8 @@
 import React from 'react'
-
 const InputField = ({placeholder,value, onChange,name  ,email,disabled}) => {
+  
+   
+  
   return (
     <div className='flex flex-col gap-3 items-start justify-center'>
       <span className='font-bold  text-one'>{placeholder}</span>

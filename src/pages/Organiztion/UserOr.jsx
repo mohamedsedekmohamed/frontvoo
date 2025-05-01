@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useTranslation } from 'react-i18next';
 
 const UserOr = () => {
   const [data, setData] = useState([]);
@@ -15,7 +16,10 @@ const UserOr = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
+     const { t, i18n } = useTranslation();
+      const isArabic = i18n.language === 'ar';
 
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios.get("https://backndVoo.voo-hub.com/api/ornization/users", {
@@ -25,7 +29,6 @@ const UserOr = () => {
     })
       .then(response => {
         setData(response.data.users);
-        console.log(response.data.users);
       })
       .catch(() => {
         toast.error("Error fetching data");
@@ -48,26 +51,25 @@ const UserOr = () => {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://backndVoo.voo-hub.com/api/organizeation/user/delete/${userId}`, {
+        axios.delete(`https://backndVoo.voo-hub.com/api/ornization/user/delete/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
           .then(() => {
             setUpdate(!update);
+            console.log(userId);
             Swal.fire('Deleted!', `${userName} has been deleted successfully.`, 'success');
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error);
+
             Swal.fire('Error!', `There was an error while deleting ${userName}.`, 'error');
           });
       } else {
         Swal.fire('Cancelled', `${userName} was not deleted.`, 'info');
       }
     });
-  };
-
-  const handleEdit = (id) => {
-    navigate('/organizeation/adduser', { state: { sendData: id } });
   };
 
   const filteredData = data.filter((item) => {
@@ -92,24 +94,25 @@ const UserOr = () => {
   
   const cheose = ["Filter", "name", "email", "phone", "country.name", "city.name", "account_status"];
   const labelMap = {
-    Filter: "Filter",
-    name: "User",
-    email: "Email",
-    phone: "Phone",
-    "country.name": "Country",
-    "city.name": "City",
-    "account_status": "status",
+    Filter: t("Filter"),
+    name: t("User"),
+    email: t("Email"),
+    phone: t("Phone"),
+    "country.name": t("Country"),
+    "city.name": t("City"),
+    "account_status": t("Status"),
   };
-
+  
   return (
-    <div>
+    <div >
       <div className='flex justify-between items-center'>
         <div className='relative items-center'>
           <input
-            placeholder='Search'
-            className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
+placeholder={t("Search")}
+className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            
           />
           <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
         </div>
@@ -138,80 +141,134 @@ const UserOr = () => {
           <button onClick={() => navigate('/organizeation/adduser')}
            className='flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1'>
             <FaPlus className='text-one w-4 h-4 md:w-6 md:h-6' />
-            <span className='text-[16px] md:text-[20px] font-medium text-one'>Add</span>
+            <span className='text-[16px] md:text-[20px] font-medium text-one'>{isArabic ? 'أضافة' : 'Add'}</span>
           </button>
         </div>
       </div>
 
-      <div className="mt-10  block">
+      <div className="mt-10  block " >
         <table className="w-full border-y border-x border-black">
-          <thead className="w-full">
-            <tr className='bg-four w-[1012px] h-[56px]'>
-              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">User</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.map((item, index) => (
-                              <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
+    
+        <thead className="w-full" dir={isArabic ? "rtl" : "ltr"}>
+  <tr className='bg-four w-[1012px] h-[56px]'>
+    {isArabic ? (
+      <>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الإجراء</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الحالة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">المؤسسة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">تفاصيل</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">المدينة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الدولة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">الإيميل</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">المستخدم</th>
+        <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">رقم</th>
+      </>
+    ) : (
+      <>
+        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">User</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+      </>
+    )}
+  </tr>
+</thead>
 
-  <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-    {index + 1}
-  </td>
+<tbody dir={isArabic ? "rtl" : "ltr"}>
+  {filteredData.map((item, index) => (
+    <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
+      {isArabic ? (
+        <>
+          <td className="w-[143px] h-[56px] flex justify-start px-5 items-center">
+          
+            <RiDeleteBin6Line
+              className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
+              onClick={() => handleDelete(item.id, item.name)}
+            />
+          </td>
+          <td className="w-[143px] h-[56px] text-six text-right px-1">
+            {item?.account_status ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] font-medium text-right px-1">
+            {item?.orgnization?.name ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] text-right px-1">
+            <button className='underline' onClick={() => navigate('/organizeation/userDetails', { state: { sendData: item.id } })}>
+              التفاصيل
+            </button>
+          </td>
+          <td className="w-[143px] h-[56px] text-right px-1">
+            {item?.city?.name ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] text-right px-1">
+            {item?.country?.name ?? "N/A"}
+          </td>
+          <td className="w-[150px] h-[56px] text-end ">
+            {item?.email ?? "N/A"}
+          </td>
+          <td className="flex flex-col w-[143px] absolute top-1 left-10 h-[56px] p-1 gap-1 items-end">
+            <span className="text-[12px] font-normal px-1">
+              {item?.name ?? "N/A"}
+            </span>
+            <span className="text-[12px] font-normal px-1">
+              {item?.phone ?? "N/A"}
+            </span>
+          </td>
+          <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
+            {index + 1}
+          </td>
+        </>
+      ) : (
+        <>
+          <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
+            {index + 1}
+          </td>
+          <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
+            <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
+              {item?.name ?? "N/A"}
+            </span>
+            <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
+              {item?.phone ?? "N/A"}
+            </span>
+          </td>
+          <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
+            {item?.email ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
+            {item?.country?.name ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
+            {item?.city?.name ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+            <button className='underline ' onClick={() => navigate('/organizeation/userDetails', { state: { sendData: item.id } })}>
+              Details
+            </button>
+          </td>
+          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
+            {item?.orgnization?.name ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
+            {item?.account_status ?? "N/A"}
+          </td>
+          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
 
-  <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
-    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-      {item?.name ?? "N/A"}
-    </span>
-    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-      {item?.phone ?? "N/A"}
-    </span>
-  </td>
+            <RiDeleteBin6Line
+              className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+              onClick={() => handleDelete(item.id, item.name)}
+            />
+          </td>
+        </>
+      )}
+    </tr>
+  ))}
+</tbody>
 
-  <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
-    {item?.email ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-    {item?.country?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-    {item?.city?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-  <button className='underline ' onClick={() => navigate('/organizeation/userDetails', { state: { sendData: item.id } })}>
-   Details
-</button>
-
-    </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
-    {item?.orgnization?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
-    {item?.account_status ?? "N/A"}
-  </td>
-
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-    <CiEdit
-      className="w-[24px] h-[24px] text-six cursor-pointer"
-      onClick={() => handleEdit(item.id)}
-    />
-    <RiDeleteBin6Line
-      className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-      onClick={() => handleDelete(item.id, item.name)}
-    />
-  </td>
-</tr>
-
- 
-            ))}
-          </tbody>
         </table>
       </div>
 

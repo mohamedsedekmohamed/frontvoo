@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { FaRegEyeSlash } from "react-icons/fa6";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +10,7 @@ function Login({ setIsLoggedIn,setorganiztionLayout }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  // const togglePasswordVisibility = () => setShowPassword(!showPassword);
 useEffect(()=>{
   localStorage.removeItem('token');
 
@@ -68,22 +66,17 @@ useEffect(()=>{
             placeholder='Email'
           />
 
-          <div className='relative'>
-            <button type="button" onClick={togglePasswordVisibility}>
-              {showPassword ? (
-                <FaRegEyeSlash className='absolute top-1/3 right-10 text-2xl' />
-              ) : (
-                <MdOutlineRemoveRedEye className='absolute top-1/3 right-10 text-2xl' />
-              )}
-            </button>
-            <input 
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className='w-[450px] h-[56px] border-one border-1 rounded-[8px] mt-2 pl-3'
-              placeholder='Password'
-            />
-          </div>
+<div className='relative mt-2'>
+  <input 
+    type={showPassword ? 'text' : 'password'}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    className='w-[450px] h-[56px] border-one border-1 rounded-[8px] pl-3 pr-12' // زود pr-12
+    placeholder='Password'
+  />
+  
+  
+</div>
 
           <button onClick={handleLogin} className='w-[450px] h-[72px] bg-one rounded-[8px] mt-5 text-white font-medium
           transition transform hover:scale-90

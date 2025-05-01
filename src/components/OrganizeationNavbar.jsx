@@ -13,11 +13,19 @@ const AdminNavbar = () => {
     const { t, i18n } = useTranslation();
     const [data, setData] = useState([]);
     const navigate = useNavigate();
-  
-    useEffect(() => {
-      const userLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
-      i18n.changeLanguage(userLang);
-    }, [i18n]);
+  //  useEffect(() => {
+  //     const storedLang = localStorage.getItem('language');
+  //     const browserLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
+    
+  //     const langToUse = storedLang || browserLang;
+    
+  //     if (i18n.language !== langToUse) {
+  //       i18n.changeLanguage(langToUse)}
+  //     if (!storedLang) {
+  //       localStorage.setItem('language', langToUse);
+  //     }
+  //   }, []);
+    
   
 useEffect(() => {
   const token = localStorage.getItem('token');
@@ -35,6 +43,8 @@ useEffect(() => {
     const handleLanguage = () => {
       const newLang = i18n.language === 'ar' ? 'en' : 'ar';
       i18n.changeLanguage(newLang);
+      localStorage.setItem('language', newLang);
+
     }
   
     return (

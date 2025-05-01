@@ -7,9 +7,12 @@ import { FaUser } from "react-icons/fa6";
 import { RiOrganizationChart } from "react-icons/ri";
 import IconTasks from '../Icons/IconTasks';
 import IconCity from '../Icons/IconCity';
+import IconOperation from '../Icons/IconOperation';
 import { HiFlag } from "react-icons/hi";
 import { HiOutlineSignal } from "react-icons/hi2";
 import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
+import { FaPersonMilitaryToPerson } from "react-icons/fa6";
+
 const links = [
   {
     to: "home",
@@ -66,11 +69,19 @@ const links = [
     iconActive: <HiOutlineSignal />
   },
   {
-    to: "settings",
-    name: "Settings",
-    icon: <FaCog />,
-    iconActive: <FaCog />
+    to: "pendingusers",
+    name: "Pending users",
+    icon: <FaPersonMilitaryToPerson />,
+    iconActive: <FaPersonMilitaryToPerson />
   },
+
+    {
+      to: "settings",
+      name: "Settings",
+      icon: <FaCog />,
+      iconActive: <FaCog />
+    }
+  
 ];
 const AdminSidebar = () => {
   const [isActive, setIsActive] = useState('/admin/home');
@@ -82,13 +93,16 @@ const AdminSidebar = () => {
       '/admin/addorganizeation': '/admin/organizeation',
       '/admin/organizeationdatali': '/admin/organizeation',
       '/admin/addevents': '/admin/events',
+      '/admin/operation': '/admin/events',
       '/admin/eventDetalis': '/admin/events',
       '/admin/addtasks': '/admin/tasks',
+      '/admin/operationTasks': '/admin/tasks',
       '/admin/requestsdetails': '/admin/requests',
       '/admin/tasksDetails': '/admin/tasks',
       '/admin/addcountry': '/admin/country',
       '/admin/addcity': '/admin/city',
       '/admin/addzone': '/admin/zone',
+      '/admin/pendingusersDetaklis': '/admin/pendingusers',
     };
   
     const newPath = customPaths[location.pathname] || location.pathname;

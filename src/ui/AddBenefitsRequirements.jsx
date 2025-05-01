@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AddBenefitsRequirements = ({ benfit, setbenfit, requirment, setrequirment }) => {
+  const { t } = useTranslation();
+  // const isArabic = i18n.language === 'ar';
   const handleAdd = (type) => {
     const newItem = { text: "", status: "active", error: "" }; // إضافة حالة للخطأ
     if (type === "benefit") {
@@ -31,13 +34,13 @@ const AddBenefitsRequirements = ({ benfit, setbenfit, requirment, setrequirment 
     <div className="p-4 flex justify-evenly w-full">
       {/* Benefits Section */}
       <div>
-        <h2 className="text-lg  text-one font-bold mb-2">(Benefits)</h2>
+        <h2 className="text-lg  text-one font-bold mb-2">{t("Benefits")}</h2>
         {benfit.map((item, idx) => (
           <div key={idx} className="flex gap-2 items-center mb-2">
             <input
               type="text"
               className={`border p-2 rounded w-full ${item.error && 'border-red-500'}`} // إضافة نمط للحدود عند وجود خطأ
-              placeholder="Add Benefits  "
+              placeholder="Add Benefits"
               value={item.text}
               onChange={(e) => handleChange("benefit", idx, "text", e.target.value)}
             />
@@ -47,8 +50,8 @@ const AddBenefitsRequirements = ({ benfit, setbenfit, requirment, setrequirment 
               value={item.status}
               onChange={(e) => handleChange("benefit", idx, "status", e.target.value)}
             >
-              <option value="active">active</option>
-              <option value="inactive">inactive</option>
+              <option value="active">{t("active")}</option>
+              <option value="inactive">{t("inactive")}</option>
             </select>
             <button
               onClick={() => handleRemove("benefit", idx)}
@@ -62,13 +65,13 @@ const AddBenefitsRequirements = ({ benfit, setbenfit, requirment, setrequirment 
           onClick={() => handleAdd("benefit")}
           className="border-one broder-2 bg-three text-white px-4 py-2 rounded"
         >
-          ➕ Add
+          ➕ {t("add")}
         </button>
       </div>
 
       {/* Requirements Section */}
       <div>
-        <h2 className="text-lg font-bold text-one mb-2">(Requirements)</h2>
+        <h2 className="text-lg font-bold text-one mb-2">{t("Requirements")}</h2>
         {requirment.map((item, idx) => (
           <div key={idx} className="flex gap-2 items-center mb-2">
             <input
@@ -99,8 +102,8 @@ const AddBenefitsRequirements = ({ benfit, setbenfit, requirment, setrequirment 
           onClick={() => handleAdd("requirement")}
           className="border-one broder-2 bg-three text-white px-4 py-2 rounded"
         >
-          ➕ Add
-        </button>
+          ➕ {t("add")}
+          </button>
       </div>
     </div>
   );

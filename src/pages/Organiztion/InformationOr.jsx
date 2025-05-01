@@ -13,8 +13,16 @@ const InformationOr = ({ setorganiztionLayout, setIsLoggedIn }) => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const userLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
-    i18n.changeLanguage(userLang);
+    const storedLang = localStorage.getItem('language');
+
+    if (storedLang) {
+      i18n.changeLanguage(storedLang);
+    } else {
+      // إذا لم تكن موجودة، نحدد اللغة بناءً على المتصفح
+      const userLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
+      i18n.changeLanguage(userLang);
+      localStorage.setItem('language', userLang);  // تخزين اللغة في localStorage
+    }
   }, [i18n]);
 
   useEffect(() => {
@@ -25,8 +33,11 @@ const InformationOr = ({ setorganiztionLayout, setIsLoggedIn }) => {
       }
     })
     .then(response => {
-      setData(response.data.Orgnization)
+      setData(response.data.Orgnization);
     })
+    .catch(error => {
+      console.log('Error fetching data', error);
+    });
   }, []);
 
   const handleLogout = () => {
@@ -36,7 +47,7 @@ const InformationOr = ({ setorganiztionLayout, setIsLoggedIn }) => {
     navigate('/login', { replace: true });
   };
 
-  // نحدد هل اللغة عربية ولا لا
+  // نحدد هل اللغة عربية أم لا
   const isArabic = i18n.language === 'ar';
 
   return (

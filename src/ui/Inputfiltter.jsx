@@ -1,11 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
+import { useTranslation } from 'react-i18next';
 
 const Inputfiltter = ({ placeholder, value, like, onChange, name, shara }) => {
   const [arrThing, setArrthing] = useState([]);
   const [control, setControl] = useState(name);
 
+  const {  i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
+  
   useEffect(() => {
     setControl(name);
     const token = localStorage.getItem('token');
@@ -43,9 +47,10 @@ const Inputfiltter = ({ placeholder, value, like, onChange, name, shara }) => {
     
   }, [name, shara]);
 
-const shape = like
-  ? "absolute top-[60%] left-42 md:left-65 w-[18px] h-[24px] transition group-focus-within:rotate-90"
-  : "absolute top-[60%] right-4 md:right-4 w-[18px] h-[24px] transition group-focus-within:rotate-90";
+  // تعديل مكان السهم حسب اللغة
+  const shape = like
+    ? `absolute top-[60%] md:left-65 w-[18px] h-[24px] transition group-focus-within:rotate-90 ${!isArabic ? 'left-10' : 'left-43'}`
+    : `absolute top-[60%] w-[18px] h-[24px] transition group-focus-within:rotate-90 ${!isArabic ? 'right-4' : 'left-4'}`;
 
 return (
   <div className="relative group flex flex-col gap-3 items-start justify-center">

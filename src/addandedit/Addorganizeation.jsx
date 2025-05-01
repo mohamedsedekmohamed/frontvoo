@@ -86,7 +86,7 @@ const Addorganizeation = () => {
       if (!city) formErrors.city = 'City is required';
       if (!email.includes('@gmail.com')) formErrors.email = 'Email should contain @gmail.com';
       if (!edit && password.length < 8) {
-        formErrors.password = 'Password must be at least 6 characters';
+        formErrors.password = 'Password must be at least 8 characters';
       }
   
       Object.values(formErrors).forEach((error) => {
@@ -144,6 +144,7 @@ const Addorganizeation = () => {
           }, 3000);
         })
         .catch(() => {
+
           toast.error("Failed network");
         });
   

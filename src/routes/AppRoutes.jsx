@@ -5,6 +5,7 @@ import Home from "../pages/admin/Home";
 import City from "../pages/admin/City";
 import Country from "../pages/admin/Country";
 import Events from "../pages/admin/Events";
+import Pendingusers from "../pages/admin/Pendingusers";
 import User from "../pages/admin/User";
 import Tasks from "../pages/admin/Tasks";
 import Zone from "../pages/admin/Zone";
@@ -16,8 +17,12 @@ import Userdetails from "../pages/admin/Userdetails";
 import EventDetalis from "../pages/admin/EventDetalis";
 import Organizeationdatali from "../pages/admin/Organizeationdatali";
 import TasksDetails from "../pages/admin/TasksDetails";
+import Operation from '../pages/admin/Operation';
+import OperationTasks from '../pages/admin/OperationTasks';
 import Requests from "../pages/admin/Requests";
 import Requestsdetails from "../pages/admin/Requestsdetails";
+import PendingusersDetaklis from "../pages/admin/PendingusersDetaklis";
+
 //add
 import AddUser from "../addandedit/AddUser";
 import Addorganizeation from "../addandedit/Addorganizeation";
@@ -50,6 +55,10 @@ const AppRoutes = ({setIsLoggedIn}) => {
   <Route path="tasksDetails" element={<TasksDetails />} />
   <Route path="requests" element={<Requests />} />
   <Route path="requestsdetails" element={<Requestsdetails />} />
+    <Route path="operation" element={<Operation/>} />
+    <Route path="operationTasks" element={<OperationTasks/>} />
+    <Route path="pendingusers" element={<Pendingusers/>} />
+    <Route path="pendingusersDetaklis" element={<PendingusersDetaklis/>} />
   {/* add */}
   <Route path="addUser" element={<AddUser />} />
   <Route path="addorganizeation" element={<Addorganizeation />} />

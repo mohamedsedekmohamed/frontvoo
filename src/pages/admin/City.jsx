@@ -8,12 +8,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Pagination from '@mui/material/Pagination';
+
 const City = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
+  
+      useEffect(() => {
+        setCurrentPage(1);
+      }, [searchQuery]);
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios.get("https://backndVoo.voo-hub.com/api/admin/city", {
@@ -86,6 +92,13 @@ const City = () => {
       }
     });
     
+        const [currentPage, setCurrentPage] = useState(1);
+        const rowsPerPage = 10;
+        const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+        const paginatedData = filteredData.slice(
+          (currentPage - 1) * rowsPerPage,
+          currentPage * rowsPerPage
+        );
     const cheose = ["Filter", "name","country_name"];
     const labelMap = {
       Filter: "Filter",
@@ -149,7 +162,7 @@ const City = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredData.map((item, index) => (
+                        {paginatedData.map((item, index) => (
                           <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
                             <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">{index + 1}</td>
                             <td className="w-[160px] h-[56px] lg:text-[14px] xl:text-[16px]">{item?.name ?? "N/A"}</td>
@@ -169,7 +182,15 @@ const City = () => {
                       </tbody>
                     </table>
                   </div>
-            
+             <div className="flex justify-center mt-4">
+                    <Pagination
+                      count={pageCount}
+                      page={currentPage}
+                      onChange={(e, page) => setCurrentPage(page)}
+                      color="secondary"
+                      shape="rounded"
+                    />
+                  </div>
                   <ToastContainer />
 
     </div>
