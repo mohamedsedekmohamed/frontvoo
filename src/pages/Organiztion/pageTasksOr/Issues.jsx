@@ -9,7 +9,7 @@ import { CiCircleMore } from "react-icons/ci";
 import { IoPerson } from "react-icons/io5";
 import IconSuggest  from "../../../Icons/IconSuggest";
 import { IoCallSharp } from "react-icons/io5";
- const Issues = () => {
+ const Issues = ({id}) => {
     const [data, setData] = useState([]);
       const [searchQuery, setSearchQuery] = useState("");
       const [selectedFilter, setSelectedFilter] = useState("");
@@ -23,15 +23,15 @@ import { IoCallSharp } from "react-icons/io5";
   useEffect(() => {
     const token = localStorage.getItem("token");
    
-    
+    // ss
     axios
-      .get(`https://backndVoo.voo-hub.com/api/admin/shakwa`, {
-        headers: {
+    .get(`https://backndVoo.voo-hub.com/api/orgnization/getTaskShakawy/${id}`, {
+      headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setData(response.data.shakawy || []);
+        setData(response.data.data || []);
       })
       .catch(() => {
         toast.error('faild network');});
@@ -82,7 +82,7 @@ import { IoCallSharp } from "react-icons/io5";
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      `https://backndVoo.voo-hub.com/api/admin/getEventShakawy/${eventId}`,
+      `https://backndVoo.voo-hub.com/api/orgnization/getEventShakawy/${eventId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

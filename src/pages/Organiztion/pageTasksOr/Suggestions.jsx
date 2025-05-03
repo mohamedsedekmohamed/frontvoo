@@ -10,7 +10,7 @@ import { IoPerson } from "react-icons/io5";
 import IconSuggest  from "../../../Icons/IconSuggest";
 import { IoCallSharp } from "react-icons/io5";
 
-const Suggestions = () => {
+const Suggestions = ({id}) => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -25,8 +25,9 @@ const Suggestions = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios
-      .get(`https://backndVoo.voo-hub.com/api/admin/suggest`, {
+    axios(
+    `https://backndVoo.voo-hub.com/api/orgnization/getTaskSuggest/${id}`,
+    {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +86,7 @@ const Suggestions = () => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      `https://backndVoo.voo-hub.com/api/admin/getEventSuggest/${eventId}`,
+      `https://backndVoo.voo-hub.com/api/orgnization/getTaskSuggest/${eventId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -93,6 +94,7 @@ const Suggestions = () => {
       }
     );
     setSelectedEvent(response.data.data[0]); 
+    console.log(eventId);
     setShowModal(true);
   } catch (error) {
     console.error("Error fetching event details:", error);
@@ -103,7 +105,7 @@ const markEventAsRead = async (eventId) => {
   const token = localStorage.getItem('token');
 console.log(eventId)
   try {
-    await axios.put(`https://backndVoo.voo-hub.com/api/admin/readEventSuggest/${eventId}`, {}, {
+    await axios.put(`https://backndVoo.voo-hub.com/api/orgnization/readTaskSuggest/${eventId}`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -114,7 +116,6 @@ console.log(eventId)
     console.error(error);
   }
 };
-
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -177,7 +178,7 @@ console.log(eventId)
                 <td className="w-[190px] h-[56px] text-white text-[16px]">
                   <button
                     onClick={() => {
-                        fetchEventDetails(item.event_id)
+                        fetchEventDetails(item.task_id)
                     }}
                     className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
                   >
@@ -219,22 +220,22 @@ console.log(eventId)
                  </div>
             
               <div className='flex gap-5 my-1 items-center'>
-                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.event.name??"N/A"}</span> 
+                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.task.name??"N/A"}</span> 
                  </div>
               <div className='flex gap-5 my-1 items-center'>
                  <IoCallSharp className='text-[14px] text-ten '/>phone number: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.phone??"N/A"}</span> 
                  </div>
           </div>
+          <div className="mt-6 text-right flex gap-2">
 
-      <div className="mt-6 text-right flex gap-2">
-        <button
+          <button
           onClick={() => setShowModal(false)}
           className="bg-one text-white px-4 py-2 rounded"
         >
           Close
         </button>
         <button
-    onClick={() => markEventAsRead(selectedEvent?.event.id)}
+    onClick={() => markEventAsRead(selectedEvent?.task.id)}
     className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
   >
  Read

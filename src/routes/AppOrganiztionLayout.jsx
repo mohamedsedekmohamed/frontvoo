@@ -4,8 +4,10 @@ import { Routes, Route,Navigate} from "react-router-dom";
 import User from '../pages/Organiztion/UserOr';
 import AddInformationor from '../pages/Organiztion/AddInformationor';
 import Events from '../pages/Organiztion/EventsOr';
+import OperationTasksOr from '../pages/Organiztion/OperationTasksOr';
 import Requests from '../pages/Organiztion/RequestsOr';
 import Tasks from '../pages/Organiztion/TasksOr';
+import OperationOr from '../pages/Organiztion/OperationOr';
 import UserDetails from '../pages/Organiztion/UserDetails';
 import PendingusersDetaklis from '../pages/Organiztion/PendingusersDetaklis';
 // import Operation from '../pages/admin/Operation';
@@ -52,7 +54,9 @@ useEffect(() => {
        <Route path="tasks" element={<Tasks />} />
        <Route path="addInformationor" element={<AddInformationor />} />
        <Route path="userDetails" element={<UserDetails />} />
+       <Route path="operationTasksOr" element={<OperationTasksOr />} />
        <Route path="eventsdetails" element={<Eventsdetails />} />
+       <Route path="operationOr" element={<OperationOr />} />
        {/* <Route path="operation" element={<Operation />} /> */}
       
        <Route path="tasksdetails" element={<Tasksdetails />} />

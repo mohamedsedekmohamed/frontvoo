@@ -9,7 +9,7 @@ import { CiCircleMore } from "react-icons/ci";
 import { IoPerson } from "react-icons/io5";
 import IconSuggest  from "../../../Icons/IconSuggest";
 import { IoCallSharp } from "react-icons/io5";
- const Issues = () => {
+ const Issues = ({id}) => {
     const [data, setData] = useState([]);
       const [searchQuery, setSearchQuery] = useState("");
       const [selectedFilter, setSelectedFilter] = useState("");
@@ -25,13 +25,13 @@ import { IoCallSharp } from "react-icons/io5";
    
     
     axios
-      .get(`https://backndVoo.voo-hub.com/api/admin/shakwa`, {
+      .get(`https://backndVoo.voo-hub.com/api/orgnization/getEventShakawy/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setData(response.data.shakawy || []);
+        setData(response.data.data || []);
       })
       .catch(() => {
         toast.error('faild network');});
@@ -82,7 +82,7 @@ import { IoCallSharp } from "react-icons/io5";
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      `https://backndVoo.voo-hub.com/api/admin/getEventShakawy/${eventId}`,
+      `https://backndVoo.voo-hub.com/api/orgnization/getEventShakawy/${eventId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -90,7 +90,6 @@ import { IoCallSharp } from "react-icons/io5";
       }
     );
     setSelectedEvent(response.data.data[0]); 
-    console.log(eventId);
     setShowModal(true);
   } catch (error) {
     console.error("Error fetching event details:", error);
@@ -175,7 +174,7 @@ import { IoCallSharp } from "react-icons/io5";
                 <td className="w-[190px] h-[56px] text-white text-[16px]">
                   <button
                     onClick={() => {
-                        fetchEventDetails(item.task_id)
+                        fetchEventDetails(item.event_id)
                     }}
                     className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
                   >
@@ -200,7 +199,7 @@ import { IoCallSharp } from "react-icons/io5";
   <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
     <div className="bg-white p-6 rounded-md  w-full shadow-xl text-black overflow-y-auto max-h-[90vh]">
       <div className=" font-bold mb-4 flex items-center "> 
-        <CiCircleMore className="text-one text-[50px] py-2"/> <span className="text-one font-medium">Suggestion</span>
+        <CiCircleMore className="text-one text-[50px] py-2"/> <span className="text-one font-medium">Problem</span>
         </div>
       <div className="s">
       <span className="text-one my-3">Audio Problem </span> 
@@ -215,7 +214,7 @@ import { IoCallSharp } from "react-icons/io5";
                  </div>
             
               <div className='flex gap-5 my-1 items-center'>
-                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.task.name??"N/A"}</span> 
+                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.event.name??"N/A"}</span> 
                  </div>
               <div className='flex gap-5 my-1 items-center'>
                  <IoCallSharp className='text-[14px] text-ten '/>phone number: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.phone??"N/A"}</span> 

@@ -22,7 +22,7 @@ const Requests = () => {
   
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get("https://backndVoo.voo-hub.com/api/admin/request  ", {
+    axios.get("https://backndVoo.voo-hub.com/api/admin/request", {
       headers: {
         Authorization: `Bearer ${token}`,
       }

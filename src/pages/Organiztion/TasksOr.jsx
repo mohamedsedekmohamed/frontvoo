@@ -160,6 +160,8 @@ const TasksOr = () => {
               {isArabic ? (
       <>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الإجراء</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right">العمليات</th>
+
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">تفاصيل</th>
 
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الوقت</th>
@@ -176,6 +178,8 @@ const TasksOr = () => {
         <th className="w-[158px] h-[56px] text-[16px] border-b text-left">description</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">operation</th>
+
         <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
       </>
     )}
@@ -200,6 +204,12 @@ const TasksOr = () => {
           onClick={() => handleEdit(item.id)}
         />
       </td>
+      <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/organizeation/operationTasksOr', { state: { sendData: item.id } })}>
+  عملية 
+</button>
+
+    </td>
       <td className="w-[143px] h-[56px]  text-right px-1">
         <button
           className="underline"
@@ -257,6 +267,12 @@ const TasksOr = () => {
           Details
         </button>
       </td>
+      <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <button className='underline ' onClick={() => navigate('/organizeation/operationTasksOr', { state: { sendData: item.id } })}>
+  operation
+</button>
+
+    </td>
       <td className="w-[143px] h-[56px] flex justify-start items-center px-5">
         <CiEdit
           className="w-[24px] h-[24px] text-six cursor-pointer"

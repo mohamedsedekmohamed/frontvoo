@@ -63,6 +63,8 @@ const AdminSidebar = () => {
       '/organizeation/addtasksor': '/organizeation/tasks',
       '/organizeation/tasksdetails': '/organizeation/tasks',
       '/organizeation/pendingusersDetaklis': '/organizeation/pendingusers',
+      '/organizeation/OperationOr': '/organizeation/events',
+      '/organizeation/operationTasksOr': '/organizeation/tasks',
     };
   
     const newPath = customPaths[location.pathname] || location.pathname;

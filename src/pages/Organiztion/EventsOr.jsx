@@ -147,6 +147,7 @@ const EventsOr = () => {
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الإجراء</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">المكان</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">تفاصيل</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">العمليات</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الوقت </th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">الميعاد</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">الحدث</th>
@@ -159,6 +160,7 @@ const EventsOr = () => {
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left"> operation</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">location</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
       </>
@@ -186,6 +188,11 @@ const EventsOr = () => {
                  
                     <td className="w-[143px] h-[56px] font-medium text-right px-1">
                       {item?.location ?? "N/A"}
+                    </td>
+                    <td className="w-[143px] h-[56px] text-right px-1">
+                      <button className='underline' onClick={() => navigate('/organizeation/OperationOr', { state: { sendData: item.id } })}>
+                        عملية 
+                      </button>
                     </td>
                     <td className="w-[143px] h-[56px] text-right px-1">
                       <button className='underline' onClick={() => navigate('/organizeation/eventsdetails', { state: { sendData: item.id } })}>
@@ -225,6 +232,11 @@ const EventsOr = () => {
                       <button className='underline ' onClick={() => navigate('/organizeation/eventsdetails', { state: { sendData: item.id } })}>
                         Details
                       </button>
+                    </td>
+                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+                      <button className='underline ' onClick={() => navigate('/organizeation/OperationOr', { state: { sendData: item.id } })}>
+                      Operation
+                                            </button>
                     </td>
                     <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
                       {item?.location ?? "N/A"}

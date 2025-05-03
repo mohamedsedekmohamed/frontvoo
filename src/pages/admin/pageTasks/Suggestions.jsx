@@ -85,7 +85,7 @@ const Suggestions = () => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      `https://backndVoo.voo-hub.com/api/admin/getEventSuggest/${eventId}`,
+      `https://backndVoo.voo-hub.com/api/admin/getTaskSuggest/${eventId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,6 +100,22 @@ const Suggestions = () => {
   }
 };
 
+
+const markEventAsRead = async (eventId) => {
+  const token = localStorage.getItem('token');
+console.log(eventId)
+  try {
+    await axios.put(`https://backndVoo.voo-hub.com/api/admin/readTaskSuggest/${eventId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    toast.success("Event marked as read successfully");
+  } catch (error) {
+    toast.error("Failed to mark event as read");
+    console.error(error);
+  }
+};
 
   return (
     <div>
@@ -163,7 +179,7 @@ const Suggestions = () => {
                 <td className="w-[190px] h-[56px] text-white text-[16px]">
                   <button
                     onClick={() => {
-                        fetchEventDetails(item.event_id)
+                        fetchEventDetails(item.task_id)
                     }}
                     className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
                   >
@@ -205,20 +221,26 @@ const Suggestions = () => {
                  </div>
             
               <div className='flex gap-5 my-1 items-center'>
-                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.event.name??"N/A"}</span> 
+                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.task.name??"N/A"}</span> 
                  </div>
               <div className='flex gap-5 my-1 items-center'>
                  <IoCallSharp className='text-[14px] text-ten '/>phone number: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.phone??"N/A"}</span> 
                  </div>
           </div>
 
-      <div className="mt-6 text-right">
+          <div className="mt-6 text-right flex gap-2">
         <button
           onClick={() => setShowModal(false)}
           className="bg-one text-white px-4 py-2 rounded"
         >
           Close
         </button>
+        <button
+    onClick={() => markEventAsRead(selectedEvent?.task.id)}
+    className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+  >
+ Read
+  </button>
       </div>
     </div>
   </div>
