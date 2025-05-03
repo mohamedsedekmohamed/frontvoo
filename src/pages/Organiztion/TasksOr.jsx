@@ -9,6 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Pagination from '@mui/material/Pagination';
+
 const TasksOr = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
@@ -108,6 +110,18 @@ const TasksOr = () => {
     description: t("description"),
   };
 
+  
+    useEffect(() => {
+      setCurrentPage(1);
+    }, [searchQuery]);
+  const [currentPage, setCurrentPage] = useState(1);
+      const rowsPerPage = 10;
+      const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+      const paginatedData = filteredData.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+      );
+      
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -186,7 +200,7 @@ const TasksOr = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item, index) => (
+            {paginatedData.map((item, index) => (
               <tr
                 key={item.id}
                 className="border-y hover:border-3 relative hover:bg-four"
@@ -235,13 +249,13 @@ const TasksOr = () => {
         {item?.name ?? "N/A"}
       </td>
       <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
-        {index + 1}
+      {(currentPage - 1) * rowsPerPage + index + 1}
       </td>
     </>
   ) : (
     <>
       <td className="w-[30px] h-[56px] font-bold text-[12px] px-3">
-        {index + 1}
+      {(currentPage - 1) * rowsPerPage + index + 1}
       </td>
       <td className="w-[160px] h-[56px] px-1">
         {item?.name ?? "N/A"}
@@ -291,6 +305,16 @@ const TasksOr = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      
+       <div className="flex justify-center mt-4">
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={(e, page) => setCurrentPage(page)}
+          color="secondary"
+          shape="rounded"
+        />
       </div>
       <ToastContainer />
     </div>

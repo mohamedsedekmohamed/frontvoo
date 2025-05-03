@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from 'react-i18next';
+import Pagination from '@mui/material/Pagination';
 
 const EventsOr = () => {
   const [data, setData] = useState([]);
@@ -95,7 +96,19 @@ const EventsOr = () => {
     start_time:t("start"),
     location:t("location")
   };
-
+  
+    useEffect(() => {
+      setCurrentPage(1);
+    }, [searchQuery]);
+  
+ const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
+    const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+    const paginatedData = filteredData.slice(
+      (currentPage - 1) * rowsPerPage,
+      currentPage * rowsPerPage
+    );
+    
   return (
     <div>
 
@@ -171,7 +184,7 @@ const EventsOr = () => {
          
           
           <tbody dir={isArabic ? "rtl" : "ltr"}>
-            {filteredData.map((item, index) => (
+            {paginatedData.map((item, index) => (
               <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
                 {isArabic ? (
                   <>
@@ -210,13 +223,13 @@ const EventsOr = () => {
                     </td>
                   
                     <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
-                      {index + 1}
+                    {(currentPage - 1) * rowsPerPage + index + 1}
                     </td>
                   </>
                 ) : (
                   <>
                     <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-                      {index + 1}
+                    {(currentPage - 1) * rowsPerPage + index + 1}
                     </td>
                     <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
               {item?.name ?? "N/A"}
@@ -258,6 +271,16 @@ const EventsOr = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      
+       <div className="flex justify-center mt-4">
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={(e, page) => setCurrentPage(page)}
+          color="secondary"
+          shape="rounded"
+        />
       </div>
       <ToastContainer />
     </div>

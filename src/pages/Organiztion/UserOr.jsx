@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from 'react-i18next';
+import Pagination from '@mui/material/Pagination';
 
 const UserOr = () => {
   const [data, setData] = useState([]);
@@ -18,6 +19,11 @@ const UserOr = () => {
   const navigate = useNavigate();
      const { t, i18n } = useTranslation();
       const isArabic = i18n.language === 'ar';
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
 
   
   useEffect(() => {
@@ -103,6 +109,14 @@ const UserOr = () => {
     "account_status": t("Status"),
   };
   
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
+    const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+    const paginatedData = filteredData.slice(
+      (currentPage - 1) * rowsPerPage,
+      currentPage * rowsPerPage
+    );
+    
   return (
     <div >
       <div className='flex justify-between items-center'>
@@ -180,7 +194,7 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
 </thead>
 
 <tbody dir={isArabic ? "rtl" : "ltr"}>
-  {filteredData.map((item, index) => (
+  {paginatedData.map((item, index) => (
     <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
       {isArabic ? (
         <>
@@ -220,13 +234,13 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
             </span>
           </td>
           <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
-            {index + 1}
+          {(currentPage - 1) * rowsPerPage + index + 1}
           </td>
         </>
       ) : (
         <>
           <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-            {index + 1}
+          {(currentPage - 1) * rowsPerPage + index + 1}
           </td>
           <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
             <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
@@ -271,7 +285,15 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
 
         </table>
       </div>
-
+ <div className="flex justify-center mt-4">
+  <Pagination
+    count={pageCount}
+    page={currentPage}
+    onChange={(e, page) => setCurrentPage(page)}
+    color="secondary"
+    shape="rounded"
+  />
+</div>
       <ToastContainer />
     </div>
   );
