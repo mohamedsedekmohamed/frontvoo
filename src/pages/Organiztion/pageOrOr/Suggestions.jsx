@@ -102,6 +102,7 @@ const Suggestions = ({id}) => {
 
 
 const markEventAsRead = async (eventId) => {
+  console.log(eventId)
   const token = localStorage.getItem('token');
 console.log(eventId)
   try {
