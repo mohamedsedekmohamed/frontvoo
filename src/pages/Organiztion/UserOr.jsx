@@ -143,7 +143,7 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+              className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -164,30 +164,31 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
         <table className="w-full border-y border-x border-black">
     
         <thead className="w-full" dir={isArabic ? "rtl" : "ltr"}>
-  <tr className='bg-four w-[1012px] h-[56px]'>
-    {isArabic ? (
+          
+        <tr className='bg-four w-[1012px] h-[56px] text-one'>
+        {isArabic ? (
       <>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الإجراء</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الحالة</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">المؤسسة</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">تفاصيل</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">المدينة</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الدولة</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">الإيميل</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">المستخدم</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الإجراء</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الحالة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">المؤسسة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">تفاصيل</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">المدينة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الدولة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">الإيميل</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">المستخدم</th>
         <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">رقم</th>
       </>
     ) : (
       <>
         <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">User</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">User</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Gmail</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">City</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">orgnization</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Status</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
       </>
     )}
   </tr>
@@ -199,7 +200,7 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
       {isArabic ? (
         <>
           <td className="w-[143px] h-[56px] flex justify-start px-5 items-center">
-          
+  
             <RiDeleteBin6Line
               className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
               onClick={() => handleDelete(item.id, item.name)}
@@ -222,9 +223,11 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
           <td className="w-[143px] h-[56px] text-right px-1">
             {item?.country?.name ?? "N/A"}
           </td>
+          
           <td className="w-[150px] h-[56px] text-end ">
             {item?.email ?? "N/A"}
           </td>
+
           <td className="flex flex-col w-[143px] absolute top-1 left-10 h-[56px] p-1 gap-1 items-end">
             <span className="text-[12px] font-normal px-1">
               {item?.name ?? "N/A"}

@@ -37,7 +37,7 @@ const Eventsdetails = () => {
           return <div className='flex flex-col gap-3'>   
       <div className='flex gap-2 items-center '>
       <FaCalendarAlt className='h-10 w-10 text-one'/>
-    <span className='text-2xl font-medium my-6'>{t("EventInformation")}</span>
+    <span className='text-2xl font-medium  text-one my-6'>{t("EventInformation")}</span>
     </div>
     <div className='flex justify-between'>
 
@@ -54,16 +54,16 @@ const Eventsdetails = () => {
           </div>;
         case 'events':
           return  <div className="bg-gray-50 p-4 rounded-lg shadow-md">
-          <p className="text-xl font-semibold text-gray-800">{t("EventBenefits")}:</p>
+          <p className="text-xl font-semibold  text-one">{t("EventBenefits")}:</p>
           <div className="mt-2">
             {data?.event_benfits?.length > 0 ? (
               data.event_benfits.map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <span className={`text-lg ${benefit.status === 'inactive' ? 'text-red-500' : 'text-green-600'}`}>
+                  <span className={`text-lgtext-gray-800x`}>
                     {benefit.benfit}
                   </span>
                   {benefit.status === 'inactive' && (
-                    <span className="text-sm text-red-500">{t("active")}</span>
+                    <span className="text-sm text-gray-800">{t("active")}</span>
                   )}
                 </div>
               ))
@@ -74,12 +74,12 @@ const Eventsdetails = () => {
         </div>;
         case 'tasks':
           return<div className="bg-gray-50 p-4 rounded-lg shadow-md">
-          <p className="text-xl font-semibold text-gray-800">{t("EventRequirements")}:</p>
+          <p className="text-xl font-semibold  text-one">{t("EventRequirements")}:</p>
           <div className="mt-2">
             {data?.event_requirments?.length > 0 ? (
               data.event_requirments.map((requirement, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <span className={`text-lg ${requirement.status === 'inactive' ? 'text-red-500' : 'text-green-600'}`}>
+                  <span className={`text-lg text-gray-800`}>
                     {requirement.requirment}
                   </span>
                   {requirement.status === 'inactive' && (

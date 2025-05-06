@@ -4,12 +4,14 @@ import React, { useState } from 'react'
  import Issues from './pageOrOr/Issues'
  import Suggestions from './pageOrOr/Suggestions'
  import {  useLocation } from 'react-router-dom';
+ import { useTranslation } from 'react-i18next';
 
  const OperationOr = () => {
     const [activeTab, setActiveTab] = useState('EventDetails');
     const location = useLocation();
     const { sendData } = location.state || {};
-
+ const { t, i18n } = useTranslation();
+      const isArabic = i18n.language === 'ar';
     const renderContent = () => {
       switch (activeTab) {
         case 'EventDetails':
@@ -31,25 +33,30 @@ import React, { useState } from 'react'
           className={`rounded-2xl w-full h-15 ${activeTab === 'EventDetails' ? 'bg-one text-white' : 'bg-gray-200'}`}
           onClick={() => setActiveTab('EventDetails')}
           >
-          Event Details
-        </button>
+{t("EventDetails")}       
+
+
+ </button>
         <button
           className={`rounded-2xl  w-full h-15 ${activeTab === 'Attendees' ? 'bg-one text-white' : 'bg-gray-200'}`}
           onClick={() => setActiveTab('Attendees')}
           >
-          Attendees
+          {t("Attendees")}       
+
         </button>
         <button
           className={`rounded-2xl h-15 w-full  ${activeTab === 'Issues' ? 'bg-one text-white' : 'bg-gray-200'}`}
           onClick={() => setActiveTab('Issues')}
           >
-          Issues
+          {t("Issues")}       
+
         </button>
         <button
           className={`rounded-2xl h-15 w-full  ${activeTab === 'Suggestions' ? 'bg-one text-white' : 'bg-gray-200'}`}
           onClick={() => setActiveTab('Suggestions')}
           >
-          Suggestions
+          {t("Suggestions")}       
+
         </button>
       </div>
           <div className='w-full'>{renderContent()}</div>

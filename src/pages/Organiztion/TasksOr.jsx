@@ -147,7 +147,7 @@ const TasksOr = () => {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -169,32 +169,32 @@ const TasksOr = () => {
       <div className="mt-10  block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
-            <tr className="bg-four w-[1012px] h-[56px]">
+          <tr className='bg-four w-[1012px] h-[56px] text-one'>
               
               {isArabic ? (
       <>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الإجراء</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right">العمليات</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الإجراء</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right">العمليات</th>
 
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">تفاصيل</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">تفاصيل</th>
 
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الوقت</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الوصف</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">الميعاد</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pr-3">المهمة</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الوقت</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الوصف</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">الميعاد</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">المهمة</th>
         <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">رقم</th>
       </>
     ) : (
       <>
         <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">Task</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">description</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">operation</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">Task</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">time</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">description</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">date</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">operation</th>
 
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
       </>
     )}
             </tr>

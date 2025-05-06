@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Loginpic from '../assets/login.png';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 function Login({ setIsLoggedIn,setorganiztionLayout }) {
   const [username, setUsername] = useState('');
@@ -62,23 +63,32 @@ useEffect(()=>{
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className='w-[450px] h-[72px] border-one border-1 rounded-[8px] mt-2 lg:mt-5 pl-3'
+            className='w-[300px] md:w-[450px] h-[72px] border-one border-1 rounded-[8px] mt-2 lg:mt-5 pl-3'
             placeholder='Email'
           />
 
 <div className='relative mt-2'>
-  <input 
-    type={showPassword ? 'text' : 'password'}
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    className='w-[450px] h-[56px] border-one border-1 rounded-[8px] pl-3 pr-12' // زود pr-12
-    placeholder='Password'
-  />
-  
-  
+<input
+        type='password'
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-[300px] md:w-[450px] h-[72px] border border-one rounded-[8px] pl-3 pr-12"
+        placeholder="Password"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+      >
+        {/* {showPassword ? (
+          <FiEyeOff size={24} />
+        ) : (
+          <FiEye size={24} />
+        )} */}
+      </button>
 </div>
 
-          <button onClick={handleLogin} className='w-[450px] h-[72px] bg-one rounded-[8px] mt-5 text-white font-medium
+          <button onClick={handleLogin} className='w-[300px] md:w-[450px] h-[72px] bg-one rounded-[8px] mt-5 text-white font-medium
           transition transform hover:scale-90
           '>
             Login

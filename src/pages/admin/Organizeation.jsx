@@ -135,7 +135,7 @@ const Organizeation = () => {
                 }}
                 value={selectedFilter}
                 onChange={handleChange}
-                className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+                className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
               >
                 {cheose.map((option, index) => (
                   <option key={index} value={option}>
@@ -156,12 +156,12 @@ const Organizeation = () => {
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">organization</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">organization</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Gmail</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">City</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
          </tr>
           </thead>
           <tbody>

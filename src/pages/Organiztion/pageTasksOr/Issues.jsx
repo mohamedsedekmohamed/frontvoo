@@ -9,6 +9,8 @@ import { CiCircleMore } from "react-icons/ci";
 import { IoPerson } from "react-icons/io5";
 import IconSuggest  from "../../../Icons/IconSuggest";
 import { IoCallSharp } from "react-icons/io5";
+import { useTranslation } from 'react-i18next';
+
  const Issues = ({id}) => {
     const [data, setData] = useState([]);
       const [searchQuery, setSearchQuery] = useState("");
@@ -16,6 +18,8 @@ import { IoCallSharp } from "react-icons/io5";
       const [currentPage, setCurrentPage] = useState(1);
       const [selectedEvent, setSelectedEvent] = useState(null);
         const [showModal, setShowModal] = useState(false);
+           const { t, i18n } = useTranslation();
+                const isArabic = i18n.language === 'ar';
       useEffect(() => {
         setCurrentPage(1);
       }, [searchQuery]);
@@ -69,10 +73,10 @@ import { IoCallSharp } from "react-icons/io5";
 
   const cheose = ["Filter", "shakwa_title", "shakwa_description", "user.name"];
   const labelMap = {
-    Filter: "Filter",
-    "shakwa_title": "title",
-    "shakwa_description": "description",
-    "user.name": "User name",    
+    Filter: t("Filter"),
+    "shakwa_title": t("title"),
+    "shakwa_description": t("description"),
+    "user.name":t("Name") 
   };
   const fetchEventDetails = async (eventId) => {
     if(eventId === null) {
@@ -102,7 +106,7 @@ import { IoCallSharp } from "react-icons/io5";
          <div className="flex justify-between items-center">
                 <div className="relative items-center">
                   <input
-                    placeholder="Search"
+                    placeholder={t("Search")}
                     className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -134,23 +138,30 @@ import { IoCallSharp } from "react-icons/io5";
                 </div>
               </div>
 
-              <div className="mt-10 block">
-        <table className="w-full border-y border-x border-black">
-          <thead>
-            <tr className="bg-four w-[1012px] h-[56px]">
-              <th className="w-[30px] h-[56px]  text-[16px] border-b text-left pl-3">
-                ID
-              </th>
-              <th className="w-[158px] h-[56px]  text-[16px] border-b text-left">
-              title
-              </th>
-              <th className="w-[220px]  h-[56px] text-[16px] border-b text-left">
-              description
-              </th>
-              <th className="w-[158px]  h-[56px] text-[16px] border-b text-left">
-                User name 
-              </th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">View</th>
+              <div className="mt-10 overflow-x-auto w-full">
+  <table 
+    dir={isArabic ? "rtl" : "ltr"}
+    className="min-w-full border border-black"
+  >
+    <thead>
+    <tr className="bg-four h-[56px] text-one">
+    {isArabic ? (
+  <>
+    <th className="w-[30px] text-[16px] border-b text-right pr-3">رقم</th>
+    <th className="w-[158px] text-[16px] border-b text-right pr-3">العنوان</th>
+    <th className="w-[158px] text-[16px] border-b text-right pr-3">ألأسم</th>
+    <th className="w-[158px] text-[16px] border-b text-right pr-3">الوصف</th>
+    <th className="w-[158px] text-[16px] border-b text-right pr-3">الإجراء</th>
+  </>
+) : (
+  <>
+    <th className="w-[30px] text-[16px] border-b text-left pl-3">ID</th>
+    <th className="w-[158px] h-[56px]  text-[16px] border-b text-left">     title      </th>
+    <th className="w-[158px] text-[16px] border-b text-left">Description</th>
+    <th className="w-[158px] text-[16px] border-b text-left">Name</th>
+    <th className="w-[158px] text-[16px] border-b text-left">Action</th>
+  </>
+)}
 
             </tr>
           </thead>
@@ -166,21 +177,22 @@ import { IoCallSharp } from "react-icons/io5";
                 <td className="w-[160px]  h-[56px]  text-[14px]">
                   {item.shakwa_title ?? "N/A"}
                 </td>
-                <td className="w-[220px] h-[56px]  text-[12px]">
-                  {item.shakwa_description ?? "N/A"}
-                </td>
                 <td className="w-[190px] h-[56px]  text-[12px]">
                   {item.user?.name ?? "N/A"}
                 </td>
+                <td className="w-[220px] h-[56px]  text-[12px]">
+                  {item.shakwa_description ?? "N/A"}
+                </td>
+              
                 <td className="w-[190px] h-[56px] text-white text-[16px]">
                   <button
                     onClick={() => {
-                        fetchEventDetails(item.task_id)
+                        fetchEventDetails(item.event_id)
                     }}
                     className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
                   >
-                    View
-                  </button>
+                    {t("View")}
+                    </button>
                 </td>
               </tr>
             ))}
@@ -200,10 +212,10 @@ import { IoCallSharp } from "react-icons/io5";
   <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
     <div className="bg-white p-6 rounded-md  w-full shadow-xl text-black overflow-y-auto max-h-[90vh]">
       <div className=" font-bold mb-4 flex items-center "> 
-        <CiCircleMore className="text-one text-[50px] py-2"/> <span className="text-one font-medium">Suggestion</span>
+        <CiCircleMore className="text-one text-[50px] py-2"/> <span className="text-one font-medium">{t("Problem")}</span>
         </div>
       <div className="s">
-      <span className="text-one my-3">Audio Problem </span> 
+      <span className="text-one my-3">{t("AudioProblem")} </span> 
         <p>{selectedEvent.shakwa_description??"N/A"} </p>
       </div>
 
@@ -211,14 +223,14 @@ import { IoCallSharp } from "react-icons/io5";
           <div className="flex flex-col mt-2 gap-1">
           
               <div className='flex gap-5 my-2 items-center'>
-                 <IoPerson className='text-[14px] text-ten '/> Name: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.name??"N/A"}</span> 
+                 <IoPerson className='text-[14px] text-ten '/> {t("Name")}: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.name??"N/A"}</span> 
                  </div>
             
               <div className='flex gap-5 my-1 items-center'>
-                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.task.name??"N/A"}</span> 
+                 <IconSuggest /> {t("Subject")}: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.event.name??"N/A"}</span> 
                  </div>
               <div className='flex gap-5 my-1 items-center'>
-                 <IoCallSharp className='text-[14px] text-ten '/>phone number: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.phone??"N/A"}</span> 
+                 <IoCallSharp className='text-[14px] text-ten '/>{t("phonenumber")}: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.phone??"N/A"}</span> 
                  </div>
           </div>
 
@@ -227,7 +239,8 @@ import { IoCallSharp } from "react-icons/io5";
           onClick={() => setShowModal(false)}
           className="bg-one text-white px-4 py-2 rounded"
         >
-          Close
+                     {t("close")}
+
         </button>
       </div>
     </div>

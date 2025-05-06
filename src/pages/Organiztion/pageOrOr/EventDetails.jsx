@@ -9,11 +9,12 @@ import IconRequirements from '../../../Icons/IconRequirements';
 import { HiMiniCheck } from "react-icons/hi2";
 import axios from 'axios';
 import { GiTrophyCup } from "react-icons/gi";
+import { useTranslation } from 'react-i18next';
 
 import 'react-toastify/dist/ReactToastify.css';
  const EventDetails = ({id}) => {
       const [data, setData] = useState([]);
-
+ const { t, i18n } = useTranslation();
     useEffect(() => {
 
         const token = localStorage.getItem('token');
@@ -35,7 +36,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 <div className='flex flex-col gap-3 bg-eight w-[500px] h-[335px] p-5'>
     <div className='flex gap-2 my-1 items-center'>
-    <CiCircleMore className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'> Details</span> 
+    <CiCircleMore className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>{t("Details")}</span> 
     </div>
     <span className='text-one  font-normal text-[20px] mt-2'> {data?.name??"N/A"}</span>
     
@@ -49,7 +50,7 @@ import 'react-toastify/dist/ReactToastify.css';
     <GiTrophyCup className='text-[14px] text-ten '/> <span className='text-ten font-medium text-[16px]'> {data?.orgnization?.name ??"N/A"}</span> 
     </div>
     <div className='flex gap-1 my-1 items-center'>
-    <IoPerson className='text-[14px] text-ten '/> <span className='text-ten font-medium text-[16px]'>volunteers {data?.number_of_volunteers??"N/A"} </span> 
+    <IoPerson className='text-[14px] text-ten '/> <span className='text-ten font-medium text-[16px]'>{t("volunteers")} {data?.number_of_volunteers??"N/A"} </span> 
     </div>
     <div className='flex gap-1 my-1 items-center'>
     <CiClock2    className='text-[14px] text-ten '/> <span className='text-ten font-medium text-[16px]'> hours {data?.event_hours??"N/A"} </span> 
@@ -58,11 +59,11 @@ import 'react-toastify/dist/ReactToastify.css';
 {/* start two */}
 <div className='flex flex-col gap-3 bg-eight w-[500px] h-[335px] p-5'>
 <div className='flex gap-2 my-1 items-center'>
-    <CiLocationOn className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>Location </span> 
+    <CiLocationOn className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>{t("location")} </span> 
     </div>
     <span className='text-one  font-normal text-[20px] mt-2'> {data?.location??"N/A"}  {data?.zone?.name??"N/A"} </span>
     <span className='text-ten  font-normal text-[14px] mt-2'> {data?.zone?.name??"N/A"}</span>
-    <span className='text-one  font-normal text-[20px] mt-6'> description </span>
+    <span className='text-one  font-normal text-[20px] mt-6'> {t("description")} </span>
     <span className='text-ten  font-normal text-[14px] mt-2'> {data?.description ??"N/A"}</span>
 </div>
 </div>
@@ -71,9 +72,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 <div className='flex flex-col gap-3 bg-eight w-[500px] h-[335px] p-5'>
 <div className='flex gap-2 my-1 items-center'>
-    <IconRequirements variant className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>Requirements </span> 
+    <IconRequirements variant className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>{t("Requirements")} </span> 
     </div>
-    <span className='text-one  font-normal text-[20px] mt-2'> Requirements</span>
+    <span className='text-one  font-normal text-[20px] mt-2'> {t("Requirements")} </span>
     {data?.event_requirments?.length > 0 ? (
   data.event_requirments.map((req) => (
     <div key={req.id} className='flex gap-1 my-1 items-center'>
@@ -82,16 +83,16 @@ import 'react-toastify/dist/ReactToastify.css';
     </div>
   ))
 ) : (
-  <span className="text-ten">No requirements available</span>
+  <span className="text-ten">{t("Norequirementsavailable")}</span>
 )}
     
 </div>
 {/* four */}
 <div className='flex flex-col gap-3 bg-eight w-[500px] h-[335px] p-5'>
 <div className='flex gap-2 my-1 items-center'>
-    <VscExpandAll    variant className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>Benefits </span> 
+    <VscExpandAll    variant className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>{t("Benefits")} </span> 
     </div>
-    <span className='text-one  font-normal text-[20px] mt-2'> Benefits</span>
+    <span className='text-one  font-normal text-[20px] mt-2'> {t("Benefits")} </span>
     {data?.event_benfits?.length > 0 ? (
   data.event_benfits.map((req) => (
     <div key={req.id} className='flex gap-1 my-1 items-center'>
@@ -100,7 +101,7 @@ import 'react-toastify/dist/ReactToastify.css';
     </div>
   ))
 ) : (
-  <span className="text-ten">No requirements available</span>
+  <span className="text-ten">{t("Norequirementsavailable")}</span>
 )}
     
 </div>        

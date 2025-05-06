@@ -5,6 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import Pagination from "@mui/material/Pagination";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from 'react-i18next';
 
 const Attendees = ({ id }) => {
   const [data, setData] = useState([]);
@@ -12,6 +13,8 @@ const Attendees = ({ id }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+    const { t, i18n } = useTranslation();
+    const isArabic = i18n.language === 'ar';
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -63,9 +66,9 @@ const Attendees = ({ id }) => {
 
   const cheose = ["Filter", "name", "email"];
   const labelMap = {
-    Filter: "Filter",
-    name: "Name",
-    email: "Email",
+    Filter: t("Filter"),
+    name: t("Name"),
+    email: t("Email"),
   };
   const handleStatusChange = (ids, newStatus) => {
     console.log(ids, newStatus)
@@ -99,7 +102,7 @@ const Attendees = ({ id }) => {
       <div className="flex justify-between items-center">
         <div className="relative items-center">
           <input
-            placeholder="Search"
+            placeholder={t("Search")}
             className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -131,58 +134,62 @@ const Attendees = ({ id }) => {
         </div>
       </div>
 
-      <div className="mt-10 block">
-        <table className="w-full border-y border-x border-black">
-          <thead>
-            <tr className="bg-four w-[1012px] h-[56px]">
-              <th className="w-[30px] h-[56px]  text-[16px] border-b text-left pl-3">
-                ID
-              </th>
-              <th className="w-[158px] h-[56px]  text-[16px] border-b text-left">
-                Name
-              </th>
-              <th className="w-[158px]  h-[56px] text-[16px] border-b text-left">
-                Email
-              </th>
-              <th className="w-[158px]  h-[56px] text-[16px] border-b text-left">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.map((item, index) => (
-              <tr
-                key={item.id}
-                className="border-y hover:border-3 relative hover:bg-four"
-              >
-                <td className="w-[30px]  h-[56px]  font-bold text-[12px] px-3">
-                  {(currentPage - 1) * rowsPerPage + index + 1}
-                </td>
-                <td className="w-[160px]  h-[56px]  text-[14px]">
-                  {item.user?.name ?? "N/A"}
-                </td>
-                <td className="w-[160px] h-[56px]  text-[14px]">
-                  {item.user?.email ?? "N/A"}
-                </td>
-                <td className="p-2 h-[56px] text-[12px] md:text-[14px]  ">
-                    <select
-                      value={item.status?? "pending"}
-                      onChange={(e) => handleStatusChange(item.user_id, e.target.value)}
-                      className="border p-1 rounded bg-one text-white text-[12px] md:text-[14px]"
-                      style={{minWidth: '100px'}}
-                    >
-                      <option value="accepted">Accepted</option>
-                      <option value="rejected">Rejected</option>
-                      <option value="attend">Attend</option>
-                      <option value="lost">Lost</option>
-                    </select>
-                  </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <div className="mt-10 overflow-x-auto w-full">
+  <table 
+    dir={isArabic ? "rtl" : "ltr"}
+    className="min-w-full border border-black"
+  >
+    <thead>
+      <tr className="bg-four h-[56px] text-one">
+        {isArabic ? (
+          <>
+            <th className="w-[30px] text-[16px] border-b text-right pr-3">رقم</th>
+            <th className="w-[158px] text-[16px] border-b text-right pr-3">ألأسم</th>
+            <th className="w-[158px] text-[16px] border-b text-right pr-3">الإيميل</th>
+            <th className="w-[158px] text-[16px] border-b text-right pr-3">الإجراء</th>
+          </>
+        ) : (
+          <>
+            <th className="w-[30px] text-[16px] border-b text-left pl-3">ID</th>
+            <th className="w-[158px] text-[16px] border-b text-left">Name</th>
+            <th className="w-[158px] text-[16px] border-b text-left">Email</th>
+            <th className="w-[158px] text-[16px] border-b text-left">Action</th>
+          </>
+        )}
+      </tr>
+    </thead>
 
+    <tbody>
+      {paginatedData.map((item, index) => (
+        <tr key={item.id} className="border-y hover:bg-four">
+          <td className={`w-[30px] font-bold text-[12px] px-3 ${isArabic ? 'text-right' : 'text-left'}`}>
+            {(currentPage - 1) * rowsPerPage + index + 1}
+          </td>
+          <td className={`w-[160px] text-[14px] ${isArabic ? 'text-right' : 'text-left'}`}>
+            {item.user?.name ?? "N/A"}
+          </td>
+          <td className={`w-[160px] text-[14px] ${isArabic ? 'text-right' : 'text-left'}`}>
+            {item.user?.email ?? "N/A"}
+          </td>
+          <td className={`p-2 text-[12px] md:text-[14px] ${isArabic ? 'text-right' : 'text-left'}`}>
+            <select
+              value={item.status }
+              onChange={(e) => handleStatusChange(item.user_id, e.target.value)}
+              className="border p-1 rounded bg-one text-white text-[12px] md:text-[14px]"
+              style={{ minWidth: '100px' }}
+            >
+                <option disabled>Pending</option>
+              {/* <option value="accepted">{t("Accepted")}</option>
+              <option value="rejected">{t("Rejected")}</option> */}
+              <option value="attend">{t("Attend")}</option>
+              <option value="lost">{t("Lost")}</option>
+            </select>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
       <div className="flex justify-center mt-4">
         <Pagination
           count={pageCount}

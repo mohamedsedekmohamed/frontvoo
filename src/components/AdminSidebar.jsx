@@ -12,7 +12,8 @@ import { HiFlag } from "react-icons/hi";
 import { HiOutlineSignal } from "react-icons/hi2";
 import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
 import { FaPersonMilitaryToPerson } from "react-icons/fa6";
-
+import { PiCityFill } from "react-icons/pi";
+import { FaTasks } from "react-icons/fa";
 const links = [
   {
     to: "home",
@@ -41,8 +42,8 @@ const links = [
   {
     to: "tasks",
     name: "Tasks",
-    icon: <IconTasks  />,
-    iconActive: <IconTasks variant/>
+    icon: <FaTasks  />,
+    iconActive: <FaTasks variant  />,
   },
   {
     to: "requests",
@@ -59,8 +60,8 @@ const links = [
   {
     to: "city",
     name: "City",
-    icon: <IconCity />,
-    iconActive: <IconCity  variant/>
+    icon: <PiCityFill  />,
+    iconActive: <PiCityFill    />,
   },
   {
     to: "zone",
@@ -83,7 +84,7 @@ const links = [
     }
   
 ];
-const AdminSidebar = () => {
+const AdminSidebar = ({setIsOpen,isOpen}) => {
   const [isActive, setIsActive] = useState('/admin/home');
   const location = useLocation();
   useEffect(() => {
@@ -109,11 +110,10 @@ const AdminSidebar = () => {
     setIsActive(newPath);
   }, [location.pathname]);
   
-
   return (
     <div className='h-screen '>
 
-      <nav className="space-y-3 pt-6 text-center px-3 h-[calc(100vh-1px)] overflow-y-auto  overflow-x-hidden">
+      <nav className="hidden md:block space-y-3 pt-6 text-center px-3 h-[calc(100vh-1px)] overflow-y-auto  overflow-x-hidden">
       <div className="flex gap-4 justify-start items-center  ">
         <i><FaHeart className="w-12 h-12 text-white" /></i>
         <h1 className="text-white font-bold text-[36px]">Voo</h1>
@@ -145,6 +145,43 @@ const AdminSidebar = () => {
         );
       })}
     </nav>
+{isOpen && <div className='' onClick={()=>setIsOpen(!isOpen)}>
+<nav className="block md:hidden space-y-3 pt-6 text-center px-3 h-[calc(100vh-1px)] overflow-y-auto  overflow-x-hidden">
+      <div className="flex gap-4 justify-start items-center  ">
+        <i><FaHeart className="w-6 h-6 text-white" /></i>
+        <h1 className="text-white font-bold text-[16px]">Voo</h1>
+      <button   onClick={()=>setIsOpen(!isOpen)} className='text-white border-2 rounded-full'>X</button>
+      </div>
+      <div className="border-1 border-gray-300 w-full px-1" />
+
+      {links.map((link) => {
+        const isCurrent = isActive === `/admin/${link.to}`;
+
+        return (
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={`flex gap-2 w-[110px] rounded-lg h-[56px] items-center pl-3 transition-all duration-200 ${
+              isCurrent ? "bg-white" : ""
+            }`}
+          >
+            <div className="w-6 h-6">
+              {React.cloneElement(isCurrent ? link.iconActive : link.icon, {
+                className: `w-[11px] h-[22px] ${isCurrent ? "text-one" : "text-white"}`
+              })}
+            </div>
+            <span
+              className={`font-bold text-[10px] ${isCurrent ? "text-one" : "text-white"}`}
+            >
+              {link.name}
+            </span>
+          </NavLink>
+        );
+      })}
+    </nav>
+  </div>}
+   
+    
     </div>
   );
 };

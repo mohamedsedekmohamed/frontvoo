@@ -142,7 +142,7 @@ const User = () => {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+              className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>

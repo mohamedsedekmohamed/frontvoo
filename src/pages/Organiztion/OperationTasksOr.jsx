@@ -4,11 +4,13 @@ import Attendees from './pageTasksOr/Attendees'
 import Issues from './pageTasksOr/Issues'
 import Suggestions from './pageTasksOr/Suggestions'
 import {  useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const OperationTasksOr = () => {
    const [activeTab, setActiveTab] = useState('EventDetails');
    const location = useLocation();
    const { sendData } = location.state || {};
+ const { t, i18n } = useTranslation();
 
    const renderContent = () => {
      switch (activeTab) {
@@ -31,26 +33,26 @@ const OperationTasksOr = () => {
          className={`rounded-2xl w-full h-15 ${activeTab === 'EventDetails' ? 'bg-one text-white' : 'bg-gray-200'}`}
          onClick={() => setActiveTab('EventDetails')}
          >
-         Event Details
-       </button>
+{t("EventDetails")}       
+</button>
        <button
          className={`rounded-2xl  w-full h-15 ${activeTab === 'Attendees' ? 'bg-one text-white' : 'bg-gray-200'}`}
          onClick={() => setActiveTab('Attendees')}
          >
-         Attendees
-       </button>
+          {t("Attendees")}       
+          </button>
        <button
          className={`rounded-2xl h-15 w-full  ${activeTab === 'Issues' ? 'bg-one text-white' : 'bg-gray-200'}`}
          onClick={() => setActiveTab('Issues')}
          >
-         Issues
-       </button>
+          {t("Issues")}       
+          </button>
        <button
          className={`rounded-2xl h-15 w-full  ${activeTab === 'Suggestions' ? 'bg-one text-white' : 'bg-gray-200'}`}
          onClick={() => setActiveTab('Suggestions')}
          >
-         Suggestions
-       </button>
+          {t("Suggestions")}       
+          </button>
      </div>
          <div className='w-full'>{renderContent()}</div>
      </div>

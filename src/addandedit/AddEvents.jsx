@@ -34,6 +34,7 @@ const AddEvents = () => {
   const [namegoogle, setnamegoogle] = useState('');
   const [description, setdescription] = useState('');
   const [image, setimage] = useState(null);
+    const [imagetwo, setimagetwo] = useState(null);
   const [value, setvalue] = useState('inactive');
   const [city, setCity] = useState('');
   const [edit, setEdit] = useState(false);
@@ -116,6 +117,7 @@ const AddEvents = () => {
               event.event_requirments?.map((r) => ({ text: r.requirment, status: r.status })) || []
             );
             setimage(event.image_link || null);
+            setimagetwo(event.image_link || null);
           }
         })
         .catch((error) => {
@@ -234,11 +236,15 @@ if(!image &&!edit)formErrors.image="image is required"
       location: locat,
       google_maps_location: namegoogle,
       description,
-      image: image,
       status: value,
       benfit: benfit.map((item) => ({ benfit: item.text, status: item.status })),
       requirment: requirment.map((item) => ({ requirment: item.text, status: item.status })),
     };
+    
+if(imagetwo!==image)
+  {
+    eventData.image = image;
+  }
 
     const headers = {
       Authorization: `Bearer ${token}`,

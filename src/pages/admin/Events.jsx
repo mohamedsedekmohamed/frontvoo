@@ -134,7 +134,7 @@ const Events = () => {
                  }}
                  value={selectedFilter}
                  onChange={handleChange}
-                 className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+                 className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
                >
                  {cheose.map((option, index) => (
                    <option key={index} value={option}>
@@ -155,13 +155,13 @@ const Events = () => {
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">event</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">operation</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">location</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Tasks</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">date</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">time</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">operation</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">location</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
             </tr>
           </thead>
           <tbody>

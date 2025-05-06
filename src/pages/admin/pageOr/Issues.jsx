@@ -150,7 +150,7 @@ import { IoCallSharp } from "react-icons/io5";
               <th className="w-[158px]  h-[56px] text-[16px] border-b text-left">
                 User name 
               </th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">View</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">View</th>
 
             </tr>
           </thead>

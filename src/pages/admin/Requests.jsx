@@ -13,6 +13,7 @@ const Requests = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [active, setActive] = useState('task'); // task or event
   const [selectedFilter, setSelectedFilter] = useState('');
     const navigate = useNavigate();
   
@@ -146,7 +147,7 @@ const Requests = () => {
   };
 
 
-  const cheose = ["Filter", "user.name", "user.email", "task.email", "event.name", "orgnization.name"];
+  const cheose = ["Filter", "user.name", "user.email", "task.name", "event.name", "orgnization.name"];
   const labelMap = {
     Filter: "Filter",
     "user.name": "user",
@@ -156,13 +157,15 @@ const Requests = () => {
     "orgnization.name": "orgnization",
   };
   
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 10;
-    const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-    const paginatedData = filteredData.slice(
-      (currentPage - 1) * rowsPerPage,
-      currentPage * rowsPerPage
-    );
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  
+  const filteredByType = filteredData.filter(item => item.request_type === active);
+const pageCount = Math.ceil(filteredByType.length / rowsPerPage);
+const paginatedData = filteredByType.slice(
+  (currentPage - 1) * rowsPerPage,
+  currentPage * rowsPerPage
+);
   return (
     <div>
       <div className='flex justify-between items-center'>
@@ -175,6 +178,35 @@ const Requests = () => {
           />
           <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
         </div>
+        <div className='flex justify-center items-center gap-2 '>
+   <button
+  onClick={() => {
+    setActive('task');
+    setCurrentPage(1); // reset to first page
+  }}
+  className={`w-40 h-10 ${
+    active === 'task'
+      ? 'bg-one text-white'
+      : 'bg-white text-black border border-one'
+  } rounded`}
+>
+  Task
+</button>
+
+<button
+  onClick={() => {
+    setActive('event');
+    setCurrentPage(1); // reset to first page
+  }}
+  className={`w-40 h-10 ${
+    active === 'event'
+      ? 'bg-one text-white'
+      : 'bg-white text-black border border-one'
+  } rounded`}
+>
+  Event
+</button>
+   </div>
         <div className='flex gap-2'>
           <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
             <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />
@@ -188,7 +220,7 @@ const Requests = () => {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+              className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -201,6 +233,7 @@ const Requests = () => {
         </div>
       </div>
 
+
       <div className="mt-10  block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
@@ -209,14 +242,14 @@ const Requests = () => {
               <th className="w-[75px] h-[56px] text-[16px] border-b text-left">type</th>
               <th className="w-[200px] h-[56px] text-[16px] border-b text-left">user</th>
               <th className="w-[75px] h-[56px] text-[16px] border-b text-left">task</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">event</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Accept</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Reject</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">status</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">event</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">orgnization</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Accept</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Reject</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">status</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
 
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -246,8 +279,7 @@ const Requests = () => {
                 <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px] text-three "> <span className='bg-eight rounded-circle px-2 py-1'>{item?.status ?? "N/A"}</span></td>
                 <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
                   <button className='underline ' onClick={() => navigate('/admin/requestsdetails', { state: { sendData: item.id } })}>
-                    Details
-                  </button>
+                  details                  </button>
 
                 </td>
                 <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] flex justify-start items-center">

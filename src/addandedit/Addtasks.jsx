@@ -26,6 +26,7 @@ const Addtasks = () => {
   const [start, setStart] = useState('');
   const [volunteers, setvolunteers] = useState('');
   const [image, setimage] = useState(null);
+  const [imagetwo, setimagetwo] = useState(null);
   const [value, setvalue] = useState('inactive');
   const [edit, setEdit] = useState(false);
   const [date, setDate] = useState('');
@@ -70,6 +71,7 @@ const Addtasks = () => {
             setvolunteers(event.number_of_voo_needed || '');
             setdescription(event.description || '');
             setimage(event.image_link || null);
+            setimagetwo(event.image_link || null);
             setvalue(event.status || "")
             setorgnization(event.orgnization_id || "")
           }
@@ -176,10 +178,13 @@ const Addtasks = () => {
       start_time: start,
       number_of_voo_needed: parseInt(volunteers),
       description,
-      image: image,
       status: value,
       orgnization_id:orgnization
          };
+if(imagetwo!==image)
+  {
+    eventData.image = image;
+  }
 
     const headers = {
       Authorization: `Bearer ${token}`,

@@ -159,7 +159,7 @@ import Pagination from '@mui/material/Pagination';
                   }}
                   value={selectedFilter}
                   onChange={handleChange}
-                  className='flex justify-center w-20 text-[12px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+                  className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
                 >
                   {cheose.map((option, index) => (
                     <option key={index} value={option}>
@@ -177,11 +177,11 @@ import Pagination from '@mui/material/Pagination';
                      <tr className='bg-four w-[1012px] h-[56px]'>
                        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
                        <th className="w-[200px] h-[56px] text-[16px] border-b text-left">user</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Accept</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Reject</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-left">status</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">orgnization</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Accept</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Reject</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">status</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
          
                      </tr>
                    </thead>
@@ -209,8 +209,7 @@ import Pagination from '@mui/material/Pagination';
                          <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px] text-three "> <span className='bg-eight rounded-circle px-2 py-1'>{item?.status ?? "N/A"}</span></td>
                          <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
                            <button className='underline ' onClick={() => navigate('/admin/pendingusersDetaklis', { state: { sendData: item.id } })}>
-                             Details
-                           </button>
+                           details                           </button>
          
                          </td>
                        

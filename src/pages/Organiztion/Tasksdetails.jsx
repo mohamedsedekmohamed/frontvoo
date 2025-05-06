@@ -38,7 +38,7 @@ const Tasksdetails = () => {
                 return <div className='flex flex-col gap-3'>   
             <div className='flex gap-2 items-center '>
             <FaCalendarAlt className='h-10 w-10 text-one'/>
-          <span className='text-2xl font-medium my-6'>{t('EventInformation')}</span>
+          <span className='text-2xl font-medium text-one my-6'>{t('EventInformation')}</span>
           </div>
           <div className='flex justify-between'>
       
@@ -52,7 +52,7 @@ const Tasksdetails = () => {
                 </div>
               case 'events':
                 return  <div className="bg-gray-50 p-4 rounded-lg shadow-md">
-                <p className="text-xl font-semibold text-gray-800">{t("EventLocation")}</p>
+                <p className="text-xl font-semibold text-one">{t("EventLocation")}</p>
                 <div className="mt-2 flex flex-col gap-2">
                 <span className='text-nine text-[16px]'>{t("Country")}: {data?.to_zone?.city?.country?.name ?? "N/A"}</span>
                 <span className='text-nine text-[16px]'>{t("City")}: {data?.to_zone?.city?.name ?? "N/A"}</span>
@@ -61,7 +61,7 @@ const Tasksdetails = () => {
               </div>
               case 'tasks':
                 return<div className="bg-gray-50 p-4 rounded-lg shadow-md">
-                <p className="text-xl font-semibold text-gray-800">{t("EventRequirements")}:</p>
+                <p className="text-xl font-semibold text-one">{t("EventRequirements")}:</p>
                 <div className="mt-2">
                 <div className="mt-2 flex flex-col gap-2">
                 <span className='text-nine text-[16px]'>{t("numberneeded")}: {data?.number_of_voo_needed ?? "N/A"}</span>

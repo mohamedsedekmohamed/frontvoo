@@ -17,6 +17,7 @@ const Suggestions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showModal, setShowModal] = useState(false);
+    const [update, setUpdate] = useState(false);
   
 
   useEffect(() => {
@@ -32,12 +33,12 @@ const Suggestions = () => {
         },
       })
       .then((response) => {
-        setData(response.data.Suggests || []);
+        setData(response.data.tasks || []);
       })
       .catch(() => {
         toast.error('faild network');
       });
-  }, []);
+    }, [update]);
 
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
@@ -92,8 +93,10 @@ const Suggestions = () => {
         },
       }
     );
-    setSelectedEvent(response.data.data[0]); 
+    // setSelectedEvent(response.data.data[0]);
+  // THIS IS THE LINE THAT WAS MISSING
     console.log(eventId);
+
     setShowModal(true);
   } catch (error) {
     console.error("Error fetching event details:", error);
@@ -110,6 +113,8 @@ console.log(eventId)
         Authorization: `Bearer ${token}`,
       }
     });
+    setShowModal(false)
+
     toast.success("Event marked as read successfully");
   } catch (error) {
     toast.error("Failed to mark event as read");
@@ -159,10 +164,10 @@ console.log(eventId)
           <thead>
             <tr className="bg-four w-[1012px] h-[56px]">
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Title</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Title</th>
               <th className="w-[220px] h-[56px] text-[16px] border-b text-left">Description</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">User Name</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">View</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">User Name</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">View</th>
             </tr>
           </thead>
           <tbody>

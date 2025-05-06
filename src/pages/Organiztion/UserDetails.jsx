@@ -5,6 +5,11 @@ import { FaUser } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
 import { HiClock } from "react-icons/hi2";
 import { useTranslation } from 'react-i18next';
+import { IoPersonSharp } from "react-icons/io5";
+import IconDate from '../../Icons/IconDate';
+import { IoLocationSharp } from "react-icons/io5";
+import { RiOrganizationChart } from "react-icons/ri";
+import { TbFileDescription } from "react-icons/tb";
 
 const UserDetails = () => {
   const location = useLocation();
@@ -63,9 +68,169 @@ const UserDetails = () => {
           </div>
         );
       case 'events':
-        return <div>{t("Events")}</div>;
+        return<div className="flex flex-col gap-4">
+          
+        <h2 className="text-2xl font-semibold text-three mb-6">{t("AllEvents")}</h2>
+      
+        {data?.user_events?.map((event,index) => (
+          <details
+            key={event.id}
+            className=" rounded-md shadow-md  bg-elven" 
+          >
+            <summary className="cursor-pointer  my-4 text-lg font-semibold text-white">
+      {index+1}  {t("Event")}  
+        </summary>
+      
+            <div className=" bg-four text-sm mt-4 flex flex-col gap-2">
+            <div className="grid grid-cols-3 gap-4">
+              <div className='p-4 space-y-2'>
+      
+        <div className=" rounded flex gap-2 items-center  "> 
+        <IoPersonSharp  className='text-three text-2xl font-medium'/>
+        <span className='text-three font-semibold text-[20px]'>{t("Eventname")}</span>
+              </div>
+              <span className='text-twelve font-semibold text-[16px]'>{event.name ?? "N/A"}</span>
+        
+        </div>
+      
+        <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <IconDate variant/>
+      <span className='text-three font-semibold text-[20px]'>{t("DateTimeDetails")} </span>
+            </div>
+            <div className='flex flex-col gap-4'>
+            <span className='text-twelve font-semibold text-[16px]'>{t("date")}: {event.date  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'> {t("start")} : {event.start_time  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'>{t("end")} : {event.end_time  ?? "N/A"}</span>
+            </div>
+      
+      </div>
+      
+      
+      <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <IoLocationSharp  className='text-three text-2xl font-medium'/>
+      <span className='text-three font-semibold text-[20px]'>{t("LocationMapLink")} </span>
+            </div>
+            <div className='flex flex-col gap-4'>
+            <span className='text-twelve font-semibold text-[16px]'>{t("location")}: {event.location  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold   text-[16px]'> {t("MapLink")}:<a   className="underline" href={event.google_maps_location }>{event.google_maps_location  ?? "N/A"}</a></span>
+            </div>
+      
+      </div>
+      
+      
+      <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <TbFileDescription  className='text-three text-2xl font-medium'/>
+      <span className='text-three font-semibold text-[20px]'>{t("description")}  </span>
+            </div>
+            <span className='text-twelve font-semibold text-[16px]'> {event.description  ?? "N/A"}</span>
+      
+      </div>
+        
+      <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <RiOrganizationChart  className='text-three text-2xl font-medium'/>
+      <span className='text-three font-semibold text-[20px]'>{t("VolunteersOrganizersInformation")} </span>
+            </div>
+            <div className='flex flex-col gap-4'>
+            <span className='text-twelve font-semibold text-[16px]'>{t("NumberofVolunteers")}: {event.number_of_volunteers  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'>{t("AvailableVolunteers")}: {event.available_volunteers  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'> {t("NumberOfOrganizers")}: {event.number_of_organizers  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'>{t("EventHours")} : {event.event_hours  ?? "N/A"}</span>
+            </div>
+            
+      </div>
+      </div>
+            </div>
+          </details>
+        ))}
+      </div>
+      
+
+
+
+
+
+
+
+
       case 'tasks':
-        return <div>{t("Tasks")}</div>;
+        return <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold text-three mb-6">{t("AllTasks")}</h2>
+      
+        {data?.user_tasks?.map((event,index) => (
+          <details
+            key={event.id}
+            className=" rounded-md shadow-md  bg-elven" 
+          >
+            <summary className="cursor-pointer  my-4 text-lg font-semibold text-white">
+      {index+1}  {t("Task")}  
+        </summary>
+      
+            <div className=" bg-four text-sm mt-4 flex flex-col gap-2">
+            <div className="grid grid-cols-3 gap-4">
+              <div className='p-4 space-y-2'>
+      
+        <div className=" rounded flex gap-2 items-center  "> 
+        <IoPersonSharp  className='text-three text-2xl font-medium'/>
+        <span className='text-three font-semibold text-[20px]'>  {t("Taskname")} </span>
+              </div>
+              <span className='text-twelve font-semibold text-[16px]'>{event.name ?? "N/A"}</span>
+        
+        </div>
+      
+        <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <IconDate variant/>
+      <span className='text-three font-semibold text-[20px]'>{t("NumberofVolunteers")} </span>
+            </div>
+            <div className='flex flex-col gap-4'>
+            <span className='text-twelve font-semibold text-[16px]'>{t("date")}: {event.date  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'>{t("start")}  : {event.start_time  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold text-[16px]'>  {t("taskhours")}: {event.task_hours  ?? "N/A"}</span>
+
+            </div>
+      
+      </div>
+      
+      
+      <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <IoLocationSharp  className='text-three text-2xl font-medium'/>
+      <span className='text-three font-semibold text-[20px]'>  </span>
+            </div>
+            <div className='flex flex-col gap-4'>
+            <span className='text-twelve font-semibold text-[16px]'>{t("location")}: {event.location  ?? "N/A"}</span>
+            <span className='text-twelve font-semibold   text-[16px]'>  {t("MapLink")}:<a   className="underline" href={event.google_maps_location }>{event.google_map_location  ?? "N/A"}</a></span>
+            </div>
+      
+      </div>
+      
+      
+      <div className='p-4 space-y-2'>
+      
+      <div className=" rounded flex gap-2 items-center  "> 
+      <TbFileDescription  className='text-three text-2xl font-medium'/>
+      <span className='text-three font-semibold text-[20px]'>{t("description")}  </span>
+            </div>
+            <span className='text-twelve font-semibold text-[16px]'> {event.description  ?? "N/A"}</span>
+      
+      </div>
+        
+
+      </div>
+            </div>
+          </details>
+        ))}
+      </div>
       default:
         return <div> </div>;
     }

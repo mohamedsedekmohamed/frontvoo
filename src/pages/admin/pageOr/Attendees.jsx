@@ -68,12 +68,12 @@ const Attendees = ({ id }) => {
     name: "Name",
     email: "Email",
   };
-  const handleStatusChange = (ids, newStatus) => {
-    console.log(ids, newStatus)
+  const handleStatusChange = (ids, newStatus,event_id) => {
     const token = localStorage.getItem("token");
     axios
       .put(`https://backndVoo.voo-hub.com/api/admin/changeEventVolunteerStatus/${ids}`, {
         status: newStatus,
+        event_id: event_id,
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -166,17 +166,16 @@ const Attendees = ({ id }) => {
                   {item.user?.email ?? "N/A"}
                 </td>
                 <td className="p-2 h-[56px] text-[12px] md:text-[14px]  ">
-                    <select
-                      value={item.status?? "pending"}
-                      onChange={(e) => handleStatusChange(item.user_id, e.target.value)}
-                      className="border p-1 rounded bg-one text-white text-[12px] md:text-[14px]"
-                      style={{minWidth: '100px'}}
-                    >
-                      <option value="accepted">Accepted</option>
-                      <option value="rejected">Rejected</option>
-                      <option value="attend">Attend</option>
-                      <option value="lost">Lost</option>
-                    </select>
+                <select
+  value={item.status}
+  onChange={(e) => handleStatusChange(item.user_id, e.target.value,item.event_id)}
+  className="border p-1 rounded bg-one text-white text-[12px] md:text-[14px]"
+  style={{ minWidth: '100px' }}
+>
+  <option disabled>Pending</option>
+  <option value="attend">Attend</option>
+  <option value="lost">Lost</option>
+</select>
                   </td>
               </tr>
             ))}

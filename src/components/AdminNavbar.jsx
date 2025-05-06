@@ -4,8 +4,10 @@ import { IoIosArrowDown } from "react-icons/io";
 import { GrLanguage } from "react-icons/gr";
 import axios from 'axios';
 import { IoPersonCircleSharp } from "react-icons/io5";
+import { PiList } from "react-icons/pi";
+
 import { useNavigate } from 'react-router-dom';
-const AdminNavbar = () => {
+const AdminNavbar = ({isOpen,setIsOpen}) => {
     const [data, setData] = useState([]);
             const navigate = useNavigate();
   useEffect(() => {
@@ -20,7 +22,7 @@ const AdminNavbar = () => {
       })
   }, []);
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex  justify-between items-center">
 <div className=' flex items-center gap-3'>
 {data.avatar_image_link ?(
             <img src={data.avatar_image_link} className='w-10 h-10 rounded-full' />
@@ -32,6 +34,8 @@ const AdminNavbar = () => {
   </div>
   </div> 
      <div className='flex items-center gap-3'>
+              {!isOpen&& <button className='bg-white text-2xl' onClick={()=>setIsOpen(!isOpen)}><PiList className='text-one text-2xl'/></button>} 
+      
       <button onClick={()=>navigate('/admin/information')}>
      <IoPersonCircleSharp className='  text-2xl text-white'  />
       </button>
