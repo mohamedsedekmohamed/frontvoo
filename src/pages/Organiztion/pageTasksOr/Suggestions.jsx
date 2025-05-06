@@ -172,7 +172,7 @@ console.log(eventId)
   </>
 ) : (
   <>
-   <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
+   <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Title</th>
               <th className="w-[220px] h-[56px] text-[16px] border-b text-left">Description</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">User Name</th>

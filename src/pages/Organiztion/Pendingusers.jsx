@@ -209,7 +209,7 @@ const Pendingusers = () => {
               ) : (
                 <>
                   <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">
-                    ID
+                  S/N
                   </th>
                   <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
                     user

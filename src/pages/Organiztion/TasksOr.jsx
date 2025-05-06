@@ -186,7 +186,7 @@ const TasksOr = () => {
       </>
     ) : (
       <>
-        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
+        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">Task</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">time</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">description</th>

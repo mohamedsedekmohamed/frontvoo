@@ -155,7 +155,7 @@ import { useTranslation } from 'react-i18next';
   </>
 ) : (
   <>
-    <th className="w-[30px] text-[16px] border-b text-left pl-3">ID</th>
+    <th className="w-[30px] text-[16px] border-b text-left pl-3">S/N</th>
     <th className="w-[158px] h-[56px]  text-[16px] border-b text-left">     title      </th>
     <th className="w-[158px] text-[16px] border-b text-left">Description</th>
     <th className="w-[158px] text-[16px] border-b text-left">Name</th>

@@ -15,8 +15,8 @@ const AdminLayout = () => {
              
     </aside>}
 
-    <div className="flex-1 flex flex-col gap-2 w-screen">
-      <header className=" bg-three rounded-[12px] shadow p-4">
+    <div className="flex-1 flex flex-col gap-2">
+      <header className=" bg-three rounded-[12px] shadow p-4   ">
         <AdminNavbar  setIsOpen={setIsOpen}  isOpen={isOpen}/>
       </header>
 

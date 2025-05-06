@@ -235,9 +235,8 @@ const RequestsOr = () => {
                 </>
               ) : (
                 <>
-                  <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">
-                    ID
-                  </th>
+                  <th className="w-[30px] h-[56px] text-[16px] border-b text-left px-2">
+                  S/N                  </th>
                   <th className="w-[75px] h-[56px] text-[16px] border-b text-left">
                     type
                   </th>

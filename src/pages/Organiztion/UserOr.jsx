@@ -180,7 +180,7 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
       </>
     ) : (
       <>
-        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
+        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">User</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Gmail</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>

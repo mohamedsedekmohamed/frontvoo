@@ -143,14 +143,14 @@ const Attendees = ({ id }) => {
       <tr className="bg-four h-[56px] text-one">
         {isArabic ? (
           <>
-            <th className="w-[30px] text-[16px] border-b text-right pr-3">رقم</th>
+            <th className="w-[30px] text-[16px] border-b text-right px-3">رقم</th>
             <th className="w-[158px] text-[16px] border-b text-right pr-3">ألأسم</th>
             <th className="w-[158px] text-[16px] border-b text-right pr-3">الإيميل</th>
             <th className="w-[158px] text-[16px] border-b text-right pr-3">الإجراء</th>
           </>
         ) : (
           <>
-            <th className="w-[30px] text-[16px] border-b text-left pl-3">ID</th>
+            <th className="w-[30px] text-[16px] border-b text-left pl-3">S/N</th>
             <th className="w-[158px] text-[16px] border-b text-left">Name</th>
             <th className="w-[158px] text-[16px] border-b text-left">Email</th>
             <th className="w-[158px] text-[16px] border-b text-left">Action</th>

@@ -115,7 +115,7 @@ const Events = () => {
            <div className='relative items-center'>
              <input
                placeholder='Search'
-               className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
+               className='w-[100px] md:min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
              />
@@ -134,7 +134,7 @@ const Events = () => {
                  }}
                  value={selectedFilter}
                  onChange={handleChange}
-                 className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+                 className='flex justify-center w-15 md:w-20 text-[10px] md:text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
                >
                  {cheose.map((option, index) => (
                    <option key={index} value={option}>
@@ -150,11 +150,11 @@ const Events = () => {
                     </button>
            </div>
          </div>
-    <div className="mt-10  block">
+    <div className="mt-10 hidden lg:block">
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
-              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
+              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Tasks</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">date</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">time</th>
@@ -201,6 +201,30 @@ const Events = () => {
           </tbody>
         </table>
       </div>
+      <div className="lg:hidden mt-6 mx-auto space-y-4 w-75">
+      {paginatedData.map((item,index) => (
+        <div key={item.id} className="border rounded-md p-4 shadow-sm">
+          <p className="text-sm"> S/N             {(currentPage - 1) * rowsPerPage + index + 1}
+          </p>
+          <h3 className="text-lg font-semibold">{item?.name ?? "Event"}</h3>
+          <p className="text-sm">📅 {item?.date ?? "N/A"}</p>
+          <p className="text-sm">⏰ Start: {item?.start_time ?? "N/A"}, End: {item?.end_time ?? "N/A"}</p>
+          <p className="text-sm">📍 {item?.location ?? "N/A"}</p>
+          <div className="flex justify-between mt-3">
+            <button onClick={() => navigate('/admin/eventDetalis', { state: { sendData: item.id } })} className="text-gray-950 underline text-sm">
+              Details
+            </button>
+            <button onClick={() => navigate('/admin/operation', { state: { sendData: item.id } })} className="text-gray-950 underline text-sm">
+              Operation
+            </button>
+            <div className="flex gap-2">
+              <CiEdit className="text-six cursor-pointer" onClick={() => handleEdit(item.id)} />
+              <RiDeleteBin6Line className="text-five cursor-pointer" onClick={() => handleDelete(item.id, item.name)} />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
          <div className="flex justify-center mt-4">
               <Pagination
                 count={pageCount}
