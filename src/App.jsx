@@ -4,6 +4,7 @@ import AppRoutes from "./routes/AppRoutes.jsx";
 import AppOrganiztionLayout from "./routes/AppOrganiztionLayout.jsx";
 import Login from "./Auth/Login.jsx";
 import Suppert from "./Auth/Suppert.jsx";
+import Privacy from "./Auth/Privacy.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/*" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setorganiztionLayout={setorganiztionLayout} />} />
             <Route path="/support" element={<Suppert />} />
+            <Route path="/Privacy" element={<Privacy />} />
           </>
         ) : (
           <>

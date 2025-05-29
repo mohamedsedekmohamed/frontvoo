@@ -23,7 +23,7 @@ const AdminNavbar = ({isOpen,setIsOpen}) => {
   }, []);
   return (
  
-    <div className=" w-full flex   justify-between items-center">
+    <div className=" w-full flex    justify-between items-center">
 <div className=' flex items-center gap-0.5'>
 {data.avatar_image_link ?(
   <img src={data.avatar_image_link} className='w-4 md:w-10 h-4 rounded-full' />
@@ -34,8 +34,11 @@ const AdminNavbar = ({isOpen,setIsOpen}) => {
   <span className='text-[12px] md:text-2xl font-bold text-white'>{data.name||"no name"}</span> 
   </div>
   </div> 
-     <div className='flex items-center gap-0.5'>
+     <div className=' flex items-center gap-0.5'>
+<div className='block lg:hidden'>
+
               {!isOpen&& <button className='bg-white text-[12px] md:text-2xl' onClick={()=>setIsOpen(!isOpen)}><PiList className='text-one text-[12px] md:text-2xl'/></button>} 
+</div>
       
       <button onClick={()=>navigate('/admin/information')}>
      <IoPersonCircleSharp className=' text-[12px] md:text-2xl text-white'  />

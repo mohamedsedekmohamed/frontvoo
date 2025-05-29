@@ -10,7 +10,7 @@ import { IoPerson } from "react-icons/io5";
 import IconSuggest  from "../../../Icons/IconSuggest";
 import { IoCallSharp } from "react-icons/io5";
 
-const Suggestions = () => {
+const Suggestions = ({id}) => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -25,15 +25,16 @@ const Suggestions = () => {
   }, [searchQuery]);
 
   useEffect(() => {
+    console.log(id)
     const token = localStorage.getItem("token");
     axios
-      .get(`https://backndVoo.voo-hub.com/api/admin/suggest`, {
+      .get(`https://backndVoo.voo-hub.com/api/admin/getTaskSuggest/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setData(response.data.tasks || []);
+        setData(response.data.data || []);
       })
       .catch(() => {
         toast.error('faild network');
@@ -78,53 +79,41 @@ const Suggestions = () => {
     suggest_description: "Description",
     "user.name": "User Name",
   };
-  const fetchEventDetails = async (eventId) => {
-    if(eventId === null) {
 
-        return toast.error("No Suggestions found  ");
+  const fetchEventDetails = (taskid) => {
+    const task = data.find((item) => item.id === taskid);
+    if (task) {
+      setSelectedEvent(task);
+      setShowModal(true);
     }
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(
-      `https://backndVoo.voo-hub.com/api/admin/getTaskSuggest/${eventId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    // setSelectedEvent(response.data.data[0]);
-  // THIS IS THE LINE THAT WAS MISSING
-    console.log(eventId);
+  };
+  
+ 
+ 
 
-    setShowModal(true);
-  } catch (error) {
-    console.error("Error fetching event details:", error);
-  }
-};
-
-
-const markEventAsRead = async (eventId) => {
+const markEventAsRead = async (taskid) => {
   const token = localStorage.getItem('token');
-console.log(eventId)
+console.log(taskid)
   try {
-    await axios.put(`https://backndVoo.voo-hub.com/api/admin/readTaskSuggest/${eventId}`, {}, {
+    await axios.put(`https://backndVoo.voo-hub.com/api/admin/readTaskSuggest/${taskid}`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
     });
-    setShowModal(false)
-
-    toast.success("Event marked as read successfully");
-  } catch (error) {
-    toast.error("Failed to mark event as read");
-    console.error(error);
-  }
+    setUpdate(prev => !prev);
+       toast.success("task marked as read successfully");
+       setShowModal(false)
+   
+     } catch {
+       toast.error("Failed to mark task as read");
+       setShowModal(false)
+   
+     }
 };
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex  flex-col  gap-1 lg:flex-row justify-between items-center">
         <div className="relative items-center">
           <input
             placeholder="Search"
@@ -159,7 +148,7 @@ console.log(eventId)
         </div>
       </div>
 
-      <div className="mt-10 block">
+      <div className="mt-10 hidden md:block">
         <table className="w-full border-y border-x border-black">
           <thead>
             <tr className="bg-four w-[1012px] h-[56px]">
@@ -184,7 +173,7 @@ console.log(eventId)
                 <td className="w-[190px] h-[56px] text-white text-[16px]">
                   <button
                     onClick={() => {
-                        fetchEventDetails(item.task_id)
+                        fetchEventDetails(item.id)
                     }}
                     className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
                   >
@@ -196,6 +185,28 @@ console.log(eventId)
           </tbody>
         </table>
       </div>
+
+          <div className="mt-6 md:hidden flex flex-col gap-4">
+    {paginatedData.map((item, index) => (
+      <div key={item.id} className="border border-gray-300 p-4 rounded shadow-sm bg-white">
+        <p><strong>ID:</strong> {(currentPage - 1) * rowsPerPage + index + 1}</p>
+        <p><strong>title:</strong> {item.suggest_title ?? "N/A"}</p>
+        <p><strong>description:</strong> {item.suggest_description ?? "N/A"}</p>
+        <p><strong> User name :
+        :</strong> {item.user?.name ?? "N/A"}</p>
+        <div className="mt-2  flex gap-2 justify-start items-center">
+          <label className="block text-sm mb-1">View:</label>
+          <button
+                                      onClick={() =>   fetchEventDetails(item.id)}
+
+                    className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
+                  >
+                    View
+                  </button>
+        </div>
+      </div>
+    ))}
+  </div>
 
       <div className="flex justify-center mt-4">
         <Pagination
@@ -241,7 +252,7 @@ console.log(eventId)
           Close
         </button>
         <button
-    onClick={() => markEventAsRead(selectedEvent?.task.id)}
+    onClick={() => markEventAsRead(selectedEvent?.id)}
     className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
   >
  Read

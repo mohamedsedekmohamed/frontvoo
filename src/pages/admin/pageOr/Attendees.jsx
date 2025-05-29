@@ -97,8 +97,8 @@ const Attendees = ({ id }) => {
   
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+      <div className="flex  flex-col  gap-1 lg:flex-row justify-between items-center">
+        <div className="relative  items-center">
           <input
             placeholder="Search"
             className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
@@ -132,7 +132,7 @@ const Attendees = ({ id }) => {
         </div>
       </div>
 
-      <div className="mt-10 block">
+      <div className="mt-10 hidden md:block">
         <table className="w-full border-y border-x border-black">
           <thead>
             <tr className="bg-four w-[1012px] h-[56px]">
@@ -182,6 +182,29 @@ const Attendees = ({ id }) => {
           </tbody>
         </table>
       </div>
+
+      <div className="mt-6 md:hidden flex flex-col gap-4">
+    {paginatedData.map((item, index) => (
+      <div key={item.id} className="border border-gray-300 p-4 rounded shadow-sm bg-white">
+        <p><strong>ID:</strong> {(currentPage - 1) * rowsPerPage + index + 1}</p>
+        <p><strong>Name:</strong> {item.user?.name ?? "N/A"}</p>
+        <p><strong>Email:</strong> {item.user?.email ?? "N/A"}</p>
+        <div className="mt-2">
+          <label className="block text-sm mb-1">Status:</label>
+          <select
+            value={item.status}
+            onChange={(e) => handleStatusChange(item.user_id, e.target.value, item.event_id)}
+            className="w-full border p-2 rounded bg-one text-white text-sm"
+          >
+            <option disabled>Pending</option>
+            <option value="attend">Attend</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+      </div>
+    ))}
+  </div>
+
 
       <div className="flex justify-center mt-4">
         <Pagination

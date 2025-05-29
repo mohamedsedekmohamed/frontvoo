@@ -26,9 +26,9 @@
          }
        };
      return (
-       <div className='flex flex-col gap-3 w-full'>
-       <div className='grid grid-cols-4 gap-4 mx-auto my-5 w-full'>
-           <button
+      <div className='flex flex-col gap-3 lg:w-full'>
+    <div className='grid   grid-cols-1 md:grid-cols-2  lg:grid-cols-4  gap-2 lg:gap-4 mx-auto my-5 w-[200px] md:w-[250px] lg:w-full'>
+        <button
              className={`rounded-2xl w-full h-15 ${activeTab === 'EventDetails' ? 'bg-one text-white' : 'bg-gray-200'}`}
              onClick={() => setActiveTab('EventDetails')}
              >

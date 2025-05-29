@@ -113,7 +113,11 @@ const AdminSidebar = ({setIsOpen,isOpen}) => {
   return (
     <div className='h-screen '>
 
-      <nav className="hidden lg:block space-y-3 pt-6 text-center px-3 h-[calc(100vh-1px)] overflow-y-auto  overflow-x-hidden">
+      <nav   style={{ 
+          msOverflowStyle: 'none', 
+          scrollbarWidth: 'none'
+        }}
+ className="hidden lg:block space-y-3 pt-6 text-center px-3 h-[calc(100vh-1px)] overflow-y-auto  overflow-x-hidden">
       <div className="flex gap-4 justify-start items-center  ">
         <i><FaHeart className="w-12 h-12 text-white" /></i>
         <h1 className="text-white font-bold text-[36px]">Voo</h1>

@@ -203,10 +203,10 @@ const Events = () => {
       </div>
       <div className="lg:hidden mt-6 mx-auto space-y-4 w-75">
       {paginatedData.map((item,index) => (
-        <div key={item.id} className="border rounded-md p-4 shadow-sm">
-          <p className="text-sm"> S/N             {(currentPage - 1) * rowsPerPage + index + 1}
+        <div key={item.id} className="border rounded-md relative p-4 shadow-sm">
+          <p className="text-sm text-right absolute top-1 right-1">           {(currentPage - 1) * rowsPerPage + index + 1}
           </p>
-          <h3 className="text-lg font-semibold">{item?.name ?? "Event"}</h3>
+          <h3 className="text-lg font-semibold">{item?.name ?? "N/A"}</h3>
           <p className="text-sm">📅 {item?.date ?? "N/A"}</p>
           <p className="text-sm">⏰ Start: {item?.start_time ?? "N/A"}, End: {item?.end_time ?? "N/A"}</p>
           <p className="text-sm">📍 {item?.location ?? "N/A"}</p>

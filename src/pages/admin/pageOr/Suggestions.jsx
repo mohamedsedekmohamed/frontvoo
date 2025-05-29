@@ -10,7 +10,7 @@ import { IoPerson } from "react-icons/io5";
 import IconSuggest  from "../../../Icons/IconSuggest";
 import { IoCallSharp } from "react-icons/io5";
 
-const Suggestions = () => {
+const Suggestions = ({id}) => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -25,15 +25,16 @@ const Suggestions = () => {
   }, [searchQuery]);
 
   useEffect(() => {
+
     const token = localStorage.getItem("token");
     axios
-      .get(`https://backndVoo.voo-hub.com/api/admin/suggest`, {
+      .get(`https://backndVoo.voo-hub.com/api/admin/getEventSuggest/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setData(response.data.events || []);
+        setData(response.data.data);
 
       })
       .catch(() => {
@@ -79,54 +80,38 @@ const Suggestions = () => {
     suggest_description: "Description",
     "user.name": "User Name",
   };
-  const fetchEventDetails = async (eventId) => {
-    if(eventId === null) {
-
-        return toast.error("No Suggestions found  ");
+  const fetchEventDetails = (eventId) => {
+    const event = data.find((item) => item.id === eventId);
+    if (event) {
+      setSelectedEvent(event);
+      setShowModal(true);
     }
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(
-      `https://backndVoo.voo-hub.com/api/admin/getEventSuggest/${eventId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    setSelectedEvent(response.data.data[0]); 
-    setUpdate(!update);
+  };
+  
 
-  } catch (error) {
-    console.error("Error fetching event details:", error);
-  }
-};
-
-const markEventAsRead = async (eventId) => {
+const markEventAsRead = async (id) => {
   const token = localStorage.getItem('token');
-console.log(eventId)
   try {
-    await axios.put(`https://backndVoo.voo-hub.com/api/admin/readEventSuggest/${eventId}`, {}, {
+    await axios.put(`https://backndVoo.voo-hub.com/api/admin/readEventSuggest/${id}`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
     });
-     // setSelectedEvent(response.data.data[0]);
-  // THIS IS THE LINE THAT WAS MISSING
+    setUpdate(prev => !prev);
     toast.success("Event marked as read successfully");
-    setUpdate(!update);
-            setShowModal(false)
+    setShowModal(false)
 
-  } catch (error) {
+  } catch {
     toast.error("Failed to mark event as read");
-    console.error(error);
+    setShowModal(false)
+
   }
 };
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+      <div className="flex  flex-col  gap-1 lg:flex-row justify-between items-center">
+      <div className="relative items-center">
           <input
             placeholder="Search"
             className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
@@ -160,8 +145,8 @@ console.log(eventId)
         </div>
       </div>
 
-      <div className="mt-10 block">
-        <table className="w-full border-y border-x border-black">
+      <div className="mt-10 hidden md:block">
+      <table className="w-full border-y border-x border-black">
           <thead>
             <tr className="bg-four w-[1012px] h-[56px]">
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">ID</th>
@@ -184,9 +169,7 @@ console.log(eventId)
                 </td>
                 <td className="w-[190px] h-[56px] text-white text-[16px]">
                   <button
-                    onClick={() => {
-                        fetchEventDetails(item.event_id)
-                    }}
+                    onClick={() =>   fetchEventDetails(item.id)}
                     className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
                   >
                     View
@@ -198,6 +181,35 @@ console.log(eventId)
         </table>
       </div>
 
+      <div className="mt-6 md:hidden flex flex-col gap-4">
+    {paginatedData.map((item, index) => (
+      <div key={item.id} className="border border-gray-300 p-4 rounded shadow-sm bg-white">
+        <p><strong>ID:</strong> {(currentPage - 1) * rowsPerPage + index + 1}</p>
+        <p><strong>title:</strong> {item.shakwa_title ?? "N/A"}</p>
+        <p><strong>description:</strong> {item.shakwa_description ?? "N/A"}</p>
+        <p><strong> User name :
+        :</strong> {item.user?.name ?? "N/A"}</p>
+        <div className="mt-2  flex gap-2 justify-start items-center">
+          <label className="block text-sm mb-1">View:</label>
+          <button
+                                      onClick={() =>   fetchEventDetails(item.id)}
+
+                    className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
+                  >
+                    View
+                  </button>
+        </div>
+      </div>
+    ))}
+  </div>
+
+
+
+
+
+
+
+'
       <div className="flex justify-center mt-4">
         <Pagination
           count={pageCount}
@@ -210,29 +222,39 @@ console.log(eventId)
 
       {showModal && selectedEvent && (
   <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-    <div className="bg-white p-6 rounded-md  w-full shadow-xl text-black overflow-y-auto max-h-[90vh]">
-      <div className=" font-bold mb-4 flex items-center "> 
-        <CiCircleMore className="text-one text-[50px] py-2"/> <span className="text-one font-medium">Suggestion</span>
-        </div>
-      <div className="s">
-      <span className="text-one my-3">Suggestion Details</span> 
-        <p>{selectedEvent.suggest_description??"N/A"} </p>
+    <div className="bg-white p-6 rounded-md w-full shadow-xl text-black overflow-y-auto max-h-[90vh]">
+      <div className="font-bold mb-4 flex items-center">
+        <CiCircleMore className="text-one text-[50px] py-2" />
+        <span className="text-one font-medium">Suggestion</span>
       </div>
 
-   
-          <div className="flex flex-col mt-2 gap-1">
-          
-              <div className='flex gap-5 my-2 items-center'>
-                 <IoPerson className='text-[14px] text-ten '/> Name: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.name??"N/A"}</span> 
-                 </div>
-            
-              <div className='flex gap-5 my-1 items-center'>
-                 <IconSuggest /> Subjec: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.event.name??"N/A"}</span> 
-                 </div>
-              <div className='flex gap-5 my-1 items-center'>
-                 <IoCallSharp className='text-[14px] text-ten '/>phone number: <span className='text-ten font-medium text-[12px]'>{selectedEvent?.user?.phone??"N/A"}</span> 
-                 </div>
-          </div>
+      <div>
+        <span className="text-one my-3">Suggestion Details</span>
+        <p>{selectedEvent.suggest_description ?? "N/A"}</p>
+      </div>
+
+      <div className="flex flex-col mt-2 gap-1">
+        <div className="flex gap-5 my-2 items-center">
+          <IoPerson className="text-[14px] text-ten" /> Name:
+          <span className="text-ten font-medium text-[12px]">
+            {selectedEvent?.user?.name ?? "N/A"}
+          </span>
+        </div>
+
+        <div className="flex gap-5 my-1 items-center">
+          <IconSuggest /> Subject:
+          <span className="text-ten font-medium text-[12px]">
+            {selectedEvent?.event?.name ?? "N/A"}
+          </span>
+        </div>
+
+        <div className="flex gap-5 my-1 items-center">
+          <IoCallSharp className="text-[14px] text-ten" /> Phone Number:
+          <span className="text-ten font-medium text-[12px]">
+            {selectedEvent?.user?.phone ?? "N/A"}
+          </span>
+        </div>
+      </div>
 
       <div className="mt-6 text-right flex gap-2">
         <button
@@ -242,15 +264,16 @@ console.log(eventId)
           Close
         </button>
         <button
-    onClick={() => markEventAsRead(selectedEvent?.event.id)}
-    className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
-  >
- Read
-  </button>
+          onClick={() => markEventAsRead(selectedEvent?.id)}
+          className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+        >
+          Read
+        </button>
       </div>
     </div>
   </div>
 )}
+
       <ToastContainer />
 
     </div>

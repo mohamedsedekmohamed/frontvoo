@@ -233,7 +233,7 @@ if(!image &&!edit)formErrors.image="image is required"
       end_time: end,
       number_of_volunteers: parseInt(volunteers),
       number_of_organizers: parseInt(organizers),
-      location: locat,
+      location : locat,
       google_maps_location: namegoogle,
       description,
       status: value,
@@ -277,7 +277,6 @@ if(imagetwo!==image)
     setvolunteers('');
     setorganizers('');
     setlocat('');
-    setgoogle('');
     setimage(null);
     setdescription('');
     setCountry('');

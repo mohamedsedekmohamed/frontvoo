@@ -99,8 +99,8 @@ import { IoCallSharp } from "react-icons/io5";
 
   return (
     <div>    
-         <div className="flex justify-between items-center">
-                <div className="relative items-center">
+      <div className="flex  flex-col  gap-1 lg:flex-row justify-between items-center">
+      <div className="relative items-center">
                   <input
                     placeholder="Search"
                     className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
@@ -134,8 +134,8 @@ import { IoCallSharp } from "react-icons/io5";
                 </div>
               </div>
 
-              <div className="mt-10 block">
-        <table className="w-full border-y border-x border-black">
+              <div className="mt-10 hidden md:block">
+              <table className="w-full border-y border-x border-black">
           <thead>
             <tr className="bg-four w-[1012px] h-[56px]">
               <th className="w-[30px] h-[56px]  text-[16px] border-b text-left pl-3">
@@ -187,6 +187,29 @@ import { IoCallSharp } from "react-icons/io5";
           </tbody>
         </table>
       </div>
+      <div className="mt-6 md:hidden flex flex-col gap-4">
+    {paginatedData.map((item, index) => (
+      <div key={item.id} className="border border-gray-300 p-4 rounded shadow-sm bg-white">
+        <p><strong>ID:</strong> {(currentPage - 1) * rowsPerPage + index + 1}</p>
+        <p><strong>title:</strong> {item.shakwa_title ?? "N/A"}</p>
+        <p><strong>description:</strong> {item.shakwa_description ?? "N/A"}</p>
+        <p><strong> User name :
+        :</strong> {item.user?.name ?? "N/A"}</p>
+        <div className="mt-2  flex gap-2 justify-start items-center">
+          <label className="block text-sm mb-1">View:</label>
+          <button
+                    onClick={() => {
+                        fetchEventDetails(item.event_id)
+                    }}
+                    className="text-white w-20 bg-one px-2 py-1 text-[16px] rounded-[8px]"
+                  >
+                    View
+                  </button>
+        </div>
+      </div>
+    ))}
+  </div>
+
       <div className="flex justify-center mt-4">
               <Pagination
                 count={pageCount}

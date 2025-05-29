@@ -94,33 +94,36 @@ const TasksDetails = () => {
           </div>
           <div className='grid grid-cols-3 gap-4 mx-auto my-5'>
     
-          <div className='h-30 bg-eight W-[25%] flex items-center p-4 gap-4'>
-        <FaUser className='h-10 w-10 text-one'/>
-            <div className='flex flex-col gap-1'>
-             <span className='text-nine text-[16px]'>Name </span>
-           <span className=' text-[24px] text-one'>{data?.name ?? "N/A"}</span>
-            </div>
-            </div>
-            {/*  */}
-          <div className='h-30 bg-eight W-[25%] flex items-center p-4 gap-4'>
-        <SlOrganization className='h-10 w-10 text-one'/>
-            <div className='flex flex-col gap-1'>
-             <span className='text-nine text-[16px]'>orgnization </span>
-           <span className=' text-[24px] text-one'>{data?.orgnization?.name ?? "N/A"}</span>
-            </div>
-            </div>
-            {/*  */}
-          <div className='h-30 bg-eight W-[25%] flex items-center p-4 gap-4'>
-        <HiClock className='h-10 w-10 text-one'/>
-            <div className='flex flex-col gap-1'>
-             <span className='text-nine text-[16px]'>time  </span>
-             <div className='flex  flex-col gap-0.5'>
-             <span className=' text-[16px] text-one'> strat:{data?.start_time ?? "N/A"}</span>
-             <span className=' text-[16px] text-one'>date:{data?.date ?? "N/A"}</span>
+     <div className='h-30 bg-eight W-[25%] flex  items-center  md:p-4 gap-1 md:gap-4 '>
+         <i> <FaUser className=' md:h-10 md:w-10 text-one'/></i>
+             <div className='flex flex-col gap-1'>
+              <span className='text-nine text-[10px] md:text-[16px]'>Name </span>   
+            <span className=' text-[8px] md:text-[16px] lg:text-[20px] text-one'>{data?.name ?? "N/A"}</span>
              </div>
-   
-            </div>
-            </div>
+             </div>
+            {/*  */}
+         <div className='h-30 bg-eight W-[25%] flex  items-center  md:p-4 gap-1 md:gap-4 '>
+                  <i> <SlOrganization className=' md:h-10 md:w-10 text-one'/></i>
+        
+                 <div className='flex flex-col gap-1'>
+                  <span className='text-nine text-[10px] md:text-[16px]'>orgnization </span>
+                <span className='text-[8px]md:text-[16px] lg:text-[20px] text-one'>{data?.orgnization?.name ?? "N/A"}</span>
+                 </div>
+                 </div>
+            {/*  */}
+         <div className='h-30 bg-eight W-[25%] flex  items-center  md:p-4 gap-1 md:gap-4 '>
+                      <i> <HiClock className=' md:h-10 md:w-10 text-one'/></i>
+       
+                <div className='flex flex-col gap-1'>
+                 <span className='text-nine text-[10px] md:text-[16px]'>time  </span>
+                 <div className='flex  flex-col gap-0.5'>
+                 <span className=' text-[8px] md:text-[16px] lg:text-[20px] text-one'> strat:{data?.start_time ?? "N/A"}</span>
+                 <span className='text-[8px] md:text-[16px] lg:text-[20px] text-one'>end:{data?.end_time ?? "N/A"}</span>
+                 </div>
+       
+                </div>
+                </div>
+            
         
        
     </div>

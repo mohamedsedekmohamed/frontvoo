@@ -31,7 +31,7 @@ import 'react-toastify/dist/ReactToastify.css';
   return (
     <div className='flex  flex-col  justify-center items-center w-full gap-4'>
         {/* one and two */}
-<div className='flex gap-5'>
+<div className='flex flex-col  lg:flex-row gap-5'>
 
 <div className='flex flex-col gap-3 bg-eight w-[500px] h-[335px] p-5'>
     <div className='flex gap-2 my-1 items-center'>
@@ -67,7 +67,7 @@ import 'react-toastify/dist/ReactToastify.css';
 </div>
 </div>
 {/* three and four  */}
-<div className='flex gap-5'>
+<div className='flex flex-col lg:flex-row gap-5'>
 
 <div className='flex flex-col gap-3 bg-eight w-[500px] h-[335px] p-5'>
 <div className='flex gap-2 my-1 items-center'>
