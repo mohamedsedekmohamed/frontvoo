@@ -31,7 +31,7 @@ const AddBenefitsRequirements = ({ benfit, setbenfit, requirment, setrequirment 
   };
 
   return (
-    <div className="p-4 flex justify-evenly w-full">
+    <div className="p-4 flex flex-wrap justify-evenly w-full">
       {/* Benefits Section */}
       <div>
         <h2 className="text-lg  text-one font-bold mb-2">{t("Benefits")}</h2>

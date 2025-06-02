@@ -17,6 +17,7 @@ import 'react-time-picker/dist/TimePicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'react-i18next';
+import MapPicker from '../ui/MapPicker'
 
 const Addeventsor = () => {
   const navigate = useNavigate();
@@ -34,8 +35,8 @@ const Addeventsor = () => {
   const [volunteers, setvolunteers] = useState('');
   const [organizers, setorganizers] = useState('');
   const [locat, setlocat] = useState('');
-  const [google, setgoogle] = useState('');
-  const [namegoogle, setnamegoogle] = useState('');
+  // const [google, setgoogle] = useState('');
+  // const [namegoogle, setnamegoogle] = useState('');
   const [description, setdescription] = useState('');
   const [image, setimage] = useState(null);
   const [value, setvalue] = useState('inactive');
@@ -60,28 +61,27 @@ const Addeventsor = () => {
     benfit: '',
     requirment: '',
   });
-  function extractLatLng(url) {
-    if (!url) return null;
   
-    try {
-      const decodedUrl = decodeURIComponent(url);
-      const match = decodedUrl.match(/q=([-.\d\s]+)[,;]([-.\d\s]+)/i);
-      
-      if (match) {
-        const lat = parseFloat(match[1].trim());
-        const lng = parseFloat(match[2].trim());
+   const [google, setgoogle] = useState({
+      lat: 30.033333, // القاهرة
+      lng: 31.233334,
+    });
+     const updateLocation = (newLocation) => {
+      setgoogle(newLocation);
+    };
+      const extractLatLng = (url) => {
+    // استخراج الإحداثيات من الرابط باستخدام تعبير منتظم
+    const regex = /q=([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)/;
+    const matches = url.match(regex);
   
-        if (!isNaN(lat) && !isNaN(lng)) {
-          return { lat, lng };
-        }
-      }
-    } catch (error) {
-      console.error("Invalid URL format", error);
+    if (matches) {
+      const lat = parseFloat(matches[1]);
+      const lng = parseFloat(matches[2]);
+      return { lat, lng };
+    } else {
+      return null; // في حالة عدم وجود الإحداثيات في الرابط
     }
-  
-    return null;
-  }
-  
+  };
   useEffect(() => {
     const { sendData } = location.state || {};
 
@@ -109,9 +109,21 @@ const Addeventsor = () => {
             setvolunteers(event.number_of_volunteers || '');
             setorganizers(event.number_of_organizers || '');
             setlocat(event.location || '');
-            const latLng = extractLatLng(event.google_maps_location);
-            setgoogle(latLng || ''); // هنا بنمرر الإحداثيات المستخرجة
-            setnamegoogle(event.google_maps_location || '');
+            // const latLng = extractLatLng(event.google_maps_location);
+            // setgoogle(latLng || ''); // هنا بنمرر الإحداثيات المستخرجة
+            // setnamegoogle(event.google_maps_location || '');
+              const url = event.google_maps_location;
+const locatio = extractLatLng(url);
+
+if (locatio) {
+  console.log(`Latitude: ${locatio.lat}, Longitude: ${locatio.lng}`);
+} else {
+  console.log("لم يتم العثور على الإحداثيات في الرابط.");
+}
+      setgoogle({ 
+        lat: locatio.lat, 
+    lng: locatio.lng,
+  })
             setdescription(event.description || '');
             setbenfit(
               event.event_benfits?.map((b) => ({ text: b.benfit, status: b.status })) || []
@@ -207,8 +219,8 @@ if(!image &&!edit)formErrors.image="image is required"
     }
 
     if (!locat) formErrors.locat = 'Location is required';
-    if (!namegoogle || !namegoogle.includes('http'))
-      formErrors.google = 'Google Maps link is required and must be valid';
+    // if (!namegoogle || !namegoogle.includes('http'))
+    //   formErrors.google = 'Google Maps link is required and must be valid';
     if (!description) formErrors.description = 'Description is required';
 
     Object.values(formErrors).forEach((error) => {
@@ -236,7 +248,7 @@ if(!image &&!edit)formErrors.image="image is required"
       number_of_volunteers: parseInt(volunteers),
       number_of_organizers: parseInt(organizers),
       location: locat,
-      google_maps_location: namegoogle,
+      google_maps_location:`https://maps.google.com/?q=${google.lat},${google.lng}`,
       description,
       image: image,
       status: value,
@@ -275,7 +287,10 @@ if(!image &&!edit)formErrors.image="image is required"
     setvolunteers('');
     setorganizers('');
     setlocat('');
-    setgoogle('');
+setgoogle({
+  lat: 30.033333,
+  lng: 31.233334,
+});
     setimage(null);
     setdescription('');
     setCountry('');
@@ -444,13 +459,15 @@ if(!image &&!edit)formErrors.image="image is required"
       </div>
       <div className=" flex flex-col my-3 mt-20 ">
         <span className="text-3xl font-bold text-three ">{t("Zone")}</span>
-        <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
-        <GetLocationLink
+         <div className="flex flex-wrap justify-center gap-6 mt-6 bg-eight p-5">
+        {/* <GetLocationLink
             google={google} // تمرير الإحداثيات هنا
             setnamegoogle={setnamegoogle}
             onLocationChange={(location) => setgoogle(location)}
-          />
-                  </div>
+          /> */}
+          <MapPicker location={google} onLocationChange={updateLocation} />
+                          </div>
+
       </div>
       <div className=" flex flex-col my-3 ">
         <span className="text-3xl font-bold text-three ">{t("benfitAndrequirment")}</span>

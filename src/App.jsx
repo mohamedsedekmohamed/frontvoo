@@ -23,6 +23,8 @@ function App() {
   }, [isLoggedIn, organiztionLayout]);
 
   return (
+    <div className="poppins-medium">
+
     <BrowserRouter>
       <Routes>
         {!isLoggedIn ? (
@@ -44,6 +46,7 @@ function App() {
         )}
       </Routes>
     </BrowserRouter>
+        </div>
   );
 }
 

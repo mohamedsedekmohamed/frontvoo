@@ -1,6 +1,8 @@
 * {
-   
-   /* font-family: 'Inter', sans-serif; */
+  
+ padding: 0;
+ margin: 0;
+
 }
 .loader {
  border-top-color: #fff;
@@ -14,4 +16,9 @@
  100% {
    transform: rotate(360deg);
  }
+}
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
 }

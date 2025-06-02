@@ -168,66 +168,73 @@ const User = () => {
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">orgnization</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Orgnization</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {paginatedData.map((item, index) => (
-                              <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
+      <tbody>
+  {paginatedData.map((item, index) => (
+    <tr key={item.id} className='border-y border-x hover:border-3 relative hover:bg-four h-[56px]'>
 
-  <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-  {(currentPage - 1) * rowsPerPage + index + 1}
-  </td>
+      <td className="w-[30px] text-[12px] text-left align-middle px-3 font-bold">
+        {(currentPage - 1) * rowsPerPage + index + 1}
+      </td>
 
-  <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
-    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-      {item?.name ?? "N/A"}
-    </span>
-    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-      {item?.phone ?? "N/A"}
-    </span>
-  </td>
+      <td className="w-[143px] text-[12px] align-middle px-3">
+        <div className="flex flex-col justify-center">
+          <span>{item?.name ?? "N/A"}</span>
+          <span>{item?.phone ?? "N/A"}</span>
+        </div>
+      </td>
 
-  <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
-    {item?.email ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-    {item?.country?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-    {item?.city?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-  <button className='underline ' onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}>
-   Details
-</button>
+      <td className="w-[160px] text-[12px] align-middle px-3">
+        {item?.email ?? "N/A"}
+      </td>
 
-    </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
-    {item?.orgnization?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
-    {item?.account_status ?? "N/A"}
-  </td>
+      <td className="w-[143px] text-[12px] align-middle px-3">
+        {item?.country?.name ?? "N/A"}
+      </td>
 
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-    <CiEdit
-      className="w-[24px] h-[24px] text-six cursor-pointer"
-      onClick={() => handleEdit(item.id)}
-    />
-    <RiDeleteBin6Line
-      className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-      onClick={() => handleDelete(item.id, item.name)}
-    />
-  </td>
-</tr>
+      <td className="w-[143px] text-[12px] align-middle px-3">
+        {item?.city?.name ?? "N/A"}
+      </td>
 
- 
-            ))}
-          </tbody>
+      <td className="w-[143px] text-[12px] align-middle px-3">
+        <button
+          className='underline'
+          onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}
+        >
+          Details
+        </button>
+      </td>
+
+      <td className="w-[143px] text-[12px] align-middle px-3 font-medium">
+        {item?.orgnization?.name ?? "N/A"}
+      </td>
+
+      <td className="w-[143px] text-[12px] align-middle px-3 text-six">
+        {item?.account_status ?? "N/A"}
+      </td>
+
+      <td className="w-[143px] text-[12px] align-middle px-3">
+        <div className="flex items-center">
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer"
+            onClick={() => handleEdit(item.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(item.id, item.name)}
+          />
+        </div>
+      </td>
+
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
       <div className="flex justify-center mt-4">

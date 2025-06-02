@@ -238,7 +238,7 @@ const paginatedData = filteredByType.slice(
         <table className="w-full border-y border-x border-black">
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
-              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
+              <th className="w-[30px] h-[56px] text-[16px] border-b text-left px-2">S/N</th>
               <th className="w-[75px] h-[56px] text-[16px] border-b text-left">type</th>
               <th className="w-[200px] h-[56px] text-[16px] border-b text-left">user</th>
               <th className="w-[75px] h-[56px] text-[16px] border-b text-left">task</th>
@@ -252,46 +252,81 @@ const paginatedData = filteredByType.slice(
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {paginatedData.map((item, index) => (
-              <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
-                <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-                {(currentPage - 1) * rowsPerPage + index + 1}
-                </td>
-                <td className="w-[75px] h-[56px] lg:text-[12px] xl:text-[12px]">{item?.request_type ?? "N/A"}</td>
-                <td className="flex flex-col w-[200px] absolute top-1 h-[56px] p-1 gap-1">
-                  <span className='text-[12px]'>
-                    {item?.user?.name ?? "N/A"}
-                  </span>
-                  <span className='text-[10px]'>
-                    {item?.user?.email ?? "N/A"}
-                  </span>
-                </td>
-                <td className="w-[75px] h-[56px] lg:text-[12px] xl:text-[14px]">{item?.task?.name ?? "N/A"}</td>
-                <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">{item?.event?.name ?? "N/A"}</td>
-                <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">{item?.orgnization?.name ?? "N/A"}</td>
-                <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
-                  <button className='text-white bg-three px-2 py-1 rounded-full' onClick={() => accept(item.id, item?.request_type)}>Accept</button>
-                </td>
-                <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
-                  <button className='text-white bg-three px-2 py-1 rounded-full' onClick={() => reject(item.id, item?.request_type)}>Reject</button>
-                </td>
-                <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px] text-three "> <span className='bg-eight rounded-circle px-2 py-1'>{item?.status ?? "N/A"}</span></td>
-                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-                  <button className='underline ' onClick={() => navigate('/admin/requestsdetails', { state: { sendData: item.id } })}>
-                  details                  </button>
+        <tbody>
+  {paginatedData.map((item, index) => (
+    <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four h-[56px]'>
 
-                </td>
-                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] flex justify-start items-center">
+      <td className="w-[30px] text-[12px] px-3 font-bold align-middle">
+        {(currentPage - 1) * rowsPerPage + index + 1}
+      </td>
 
-                  <RiDeleteBin6Line
-                    className="w-[24px] h-[24px] ml-2 text-five cursor-pointer"
-                    onClick={() => handleDelete(item.id, item?.request_type)} x
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
+      <td className="w-[75px] text-[12px] align-middle">
+        {item?.request_type ?? "N/A"}
+      </td>
+
+      <td className="w-[200px] text-[12px] align-middle px-2">
+        <div className="flex flex-col justify-center">
+          <span className="text-[12px]">{item?.user?.name ?? "N/A"}</span>
+          <span className="text-[10px] ">{item?.user?.email ?? "N/A"}</span>
+        </div>
+      </td>
+
+      <td className="w-[75px] text-[12px] align-middle">
+        {item?.task?.name ?? "N/A"}
+      </td>
+
+      <td className="w-[160px] text-[12px] align-middle">
+        {item?.event?.name ?? "N/A"}
+      </td>
+
+      <td className="w-[160px] text-[12px] align-middle">
+        {item?.orgnization?.name ?? "N/A"}
+      </td>
+
+      <td className="w-[160px] text-[12px] align-middle">
+        <button
+          className='text-white bg-three px-2 py-1 rounded-full'
+          onClick={() => accept(item.id, item?.request_type)}
+        >
+          Accept
+        </button>
+      </td>
+
+      <td className="w-[160px] text-[12px] align-middle">
+        <button
+          className='text-white bg-three px-2 py-1 rounded-full'
+          onClick={() => reject(item.id, item?.request_type)}
+        >
+          Reject
+        </button>
+      </td>
+
+      <td className="w-[160px] text-[12px] align-middle text-three">
+        <span className='bg-eight rounded-full px-2 py-1'>{item?.status ?? "N/A"}</span>
+      </td>
+
+      <td className="w-[143px] text-[12px] align-middle px-1">
+        <button
+          className='underline'
+          onClick={() => navigate('/admin/requestsdetails', { state: { sendData: item.id } })}
+        >
+          Details
+        </button>
+      </td>
+
+      <td className="w-[143px] text-[12px] align-middle px-1">
+        <div className="flex items-center">
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(item.id, item?.request_type)}
+          />
+        </div>
+      </td>
+
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
    <div className="flex justify-center mt-4">
