@@ -42,26 +42,26 @@ const AddEvents = () => {
   const [loading, setLoading] = useState(true);
 
 
- const [google, setgoogle] = useState({
-    lat: 30.033333, // القاهرة
-    lng: 31.233334,
-  });
-   const updateLocation = (newLocation) => {
-    setgoogle(newLocation);
-  };
-    const extractLatLng = (url) => {
-  // استخراج الإحداثيات من الرابط باستخدام تعبير منتظم
-  const regex = /q=([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)/;
-  const matches = url.match(regex);
+  const [google, setgoogle] = useState({
+      lat: 30.033333, // القاهرة
+      lng: 31.233334,
+    });
+    const updateLocation = (newLocation) => {
+      setgoogle(newLocation);
+    };
+      const extractLatLng = (url) => {
+    // استخراج الإحداثيات من الرابط باستخدام تعبير منتظم
+    const regex = /q=([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)/;
+    const matches = url.match(regex);
 
-  if (matches) {
-    const lat = parseFloat(matches[1]);
-    const lng = parseFloat(matches[2]);
-    return { lat, lng };
-  } else {
-    return null; // في حالة عدم وجود الإحداثيات في الرابط
-  }
-};
+    if (matches) {
+      const lat = parseFloat(matches[1]);
+      const lng = parseFloat(matches[2]);
+      return { lat, lng };
+    } else {
+      return null; // في حالة عدم وجود الإحداثيات في الرابط
+    }
+  };
 
   const [errors, setErrors] = useState({
     volunteers: '',

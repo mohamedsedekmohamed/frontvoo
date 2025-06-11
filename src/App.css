@@ -4,6 +4,19 @@
  margin: 0;
 
 }
+
+.scaleUpDown {
+  animation: scaleUpDown 2s ease-in-out infinite;
+}
+ 
+@keyframes scaleUpDown {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
 .loader {
  border-top-color: #fff;
  animation: spin 1s linear infinite;
@@ -22,3 +35,46 @@
   font-weight: 500;
   font-style: normal;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%; /* تأكد إنهم بياخدوا العرض الكامل */
+  overflow-x: hidden; /* مهم جداً لمنع ظهور شريط التمرير الأفقي */
+}
+
+.judson-regular {
+  font-family: "Judson", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.judson-bold {
+  font-family: "Judson", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+.open-sans-regular {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* الوزن (normal) */
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+.open-sans-light {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600; /* الوزن (normal) */
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+.open-sans-bold {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700; /* الوزن الثقيل */
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+
+

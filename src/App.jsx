@@ -5,6 +5,8 @@ import AppOrganiztionLayout from "./routes/AppOrganiztionLayout.jsx";
 import Login from "./Auth/Login.jsx";
 import Suppert from "./Auth/Suppert.jsx";
 import Privacy from "./Auth/Privacy.jsx";
+import Home from './Landpage/Home.jsx'
+import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -29,11 +31,11 @@ function App() {
       <Routes>
         {!isLoggedIn ? (
           <>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/*" element={<Navigate to="/login" />} />
+            <Route path="/" element={<Home />}  />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setorganiztionLayout={setorganiztionLayout} />} />
             <Route path="/support" element={<Suppert />} />
             <Route path="/Privacy" element={<Privacy />} />
+            <Route path="/*" element={<Navigate to="/login" />} />
           </>
         ) : (
           <>
@@ -46,6 +48,7 @@ function App() {
         )}
       </Routes>
     </BrowserRouter>
+  
         </div>
   );
 }
