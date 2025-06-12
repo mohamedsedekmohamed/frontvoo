@@ -4,7 +4,7 @@ import "aos/dist/aos.css";
 import Nav from "./Nav";
 import Earth from '../assets/Earth.png'
 import phone from '../assets/phone.png'
-import EasyVolunteering from '../icons/EasyVolunteering'
+import EasyVolunteering from '../Icons/EasyVolunteering'
 import Action from "../icons/Action";
 import TrustedOrganizations from '../icons/TrustedOrganizations'
 import frameone from '../assets/frameone.png'
