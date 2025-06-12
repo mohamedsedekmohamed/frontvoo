@@ -5,8 +5,8 @@ import Nav from "./Nav";
 import Earth from '../assets/Earth.png'
 import phone from '../assets/phone.png'
 import EasyVolunteering from '../Icons/EasyVolunteering'
-import Action from "../icons/Action";
-import TrustedOrganizations from '../icons/TrustedOrganizations'
+import Action from "../Icons/Action";
+import TrustedOrganizations from '../Icons/TrustedOrganizations'
 import frameone from '../assets/frameone.png'
 import frametwo from '../assets/frametwo.png'
 import framethree from '../assets/framethree.png'
