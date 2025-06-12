@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Loginpic from '../assets/login.png';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-
+import { IoHeartSharp } from "react-icons/io5";
+import { IoIosArrowBack } from "react-icons/io";
+import Voologo from '../assets/Voologo.png'
 function Login({ setIsLoggedIn,setorganiztionLayout }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -54,10 +56,20 @@ useEffect(()=>{
   return (
     <div className='w-screen h-screen grid md:grid-cols-2 gap-2'>
       <div className='flex justify-between items-start'>
-        <div className='flex flex-col mt-[5%] ml-[8%]'>
-          <span className='text-2xl lg:text-5xl text-one font-medium'>Login</span> 
-          <span className='text-[24px] lg:text-[50px] pt-5 lg:pt-10'>Welcome back</span>
-          <span className='text-[16px] lg:text-[24px] mt-1'>Log in to your account</span>
+        <div className='flex flex-col mt-[10%] ml-[8%]'>
+          <div className='flex items-center gap-3'>
+         {/* <button onClick={()=>navigate('/')} className='text-3xl md:*:text-5xl  text-one animate-pulse'><IoIosArrowBack/>    </button> */}
+
+          <span className='text-2xl lg:text-5xl text-one font-medium'>Welcome back</span> 
+          </div>
+          {/* <span className='text-[24px] lg:text-[50px] pt-5 lg:pt-10'>Welcome back</span> */}
+          <div className='flex items-center text-[24px] lg:text-[80px] pt-5 text-one '>
+
+        <button onClick={()=>navigate('/')}> 
+           <img src={Voologo} />
+        </button>
+          </div>
+          <span className='text-[16px] lg:text-[24px]  mt-1'>Log in to your account</span>
 
           <input 
             type="text"
