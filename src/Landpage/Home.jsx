@@ -7,10 +7,10 @@ import phone from '../assets/phone.png'
 import EasyVolunteering from '../Icons/EasyVolunteering'
 import Action from "../Icons/Action";
 import TrustedOrganizations from '../Icons/TrustedOrganizations'
-import frameone from '../assets/frameone.png'
-import frametwo from '../assets/frametwo.png'
-import framethree from '../assets/framethree.png'
-import framefour from '../assets/framefour.png'
+import frameone from '../assets/Frameone.png'
+import frametwo from '../assets/Frametwo.png'
+import framethree from '../assets/Framethree.png'
+import framefour from '../assets/Framefour.png'
 import man from '../assets/man.png'
 import { IoLogoApple } from "react-icons/io5";
 import Footer from "./Footer";
