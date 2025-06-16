@@ -117,6 +117,7 @@ const Requests = () => {
     });
   };
 
+  
   const reject = (id, userName) => {
     const token = localStorage.getItem('token');
 
@@ -239,15 +240,14 @@ const paginatedData = filteredByType.slice(
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left px-2">S/N</th>
-              <th className="w-[75px] h-[56px] text-[16px] border-b text-left">type</th>
-              <th className="w-[200px] h-[56px] text-[16px] border-b text-left">user</th>
-              <th className="w-[75px] h-[56px] text-[16px] border-b text-left">task</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">event</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">orgnization</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Accept</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Reject</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">status</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+              <th className="w-[75px] h-[56px] text-[16px] border-b text-left">Type</th>
+              <th className="w-[200px] h-[56px] text-[16px] border-b text-left">User</th>
+              <th className="w-[75px] h-[56px] text-[16px] border-b text-left">Task</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Event</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Orgnization</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
+              {/* <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Status</th> */}
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
 
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
             </tr>
@@ -283,27 +283,29 @@ const paginatedData = filteredByType.slice(
         {item?.orgnization?.name ?? "N/A"}
       </td>
 
-      <td className="w-[160px] text-[12px] align-middle">
-        <button
-          className='text-white bg-three px-2 py-1 rounded-full'
-          onClick={() => accept(item.id, item?.request_type)}
-        >
-          Accept
-        </button>
-      </td>
+     <td className="w-[160px] text-[12px] align-middle" >
+  <select
+    className="text-sm border px-2 py-1  bg-one text-white"
+    onChange={(e) => {
+      const value = e.target.value;
+      if (value === 'accept') {
+        accept(item.id, item?.request_type);
+      } else if (value === 'reject') {
+        reject(item.id, item?.request_type);
+      }
+    }}
+    defaultValue="select"
+  >
+    <option value="select"  >select</option>
+    <option value="accept">Accept</option>
+    <option value="reject">Reject</option>
+  </select>
+</td>
 
-      <td className="w-[160px] text-[12px] align-middle">
-        <button
-          className='text-white bg-three px-2 py-1 rounded-full'
-          onClick={() => reject(item.id, item?.request_type)}
-        >
-          Reject
-        </button>
-      </td>
 
-      <td className="w-[160px] text-[12px] align-middle text-three">
+      {/* <td className="w-[160px] text-[12px] align-middle text-three">
         <span className='bg-eight rounded-full px-2 py-1'>{item?.status ?? "N/A"}</span>
-      </td>
+      </td> */}
 
       <td className="w-[143px] text-[12px] align-middle px-1">
         <button

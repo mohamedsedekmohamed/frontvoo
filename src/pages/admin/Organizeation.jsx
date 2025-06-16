@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Pagination from '@mui/material/Pagination';
+import * as XLSX from "xlsx"; 
+import { FaDownload } from "react-icons/fa";
 
 const Organizeation = () => {
   const [data, setData] = useState([]);
@@ -110,6 +112,44 @@ const Organizeation = () => {
     "city.name": "City",
       
   };
+  const changestutes = (id, newStatus) => {
+  const token = localStorage.getItem('token');
+
+  axios.put(
+    `https://backndVoo.voo-hub.com/api/admin/user/status/${id}`,
+    { account_status: newStatus },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+  .then(() => {
+            setUpdate(!update);
+            toast.success("updated Status")
+  })
+ 
+};
+//  Export filtered data to Excel
+    const exportToExcel = () => {
+      const worksheet = XLSX.utils.json_to_sheet(
+        data.map((d, index) => ({
+          SL: index + 1,
+          Name: d.name || "-",
+          Email: d.email || "-",
+          Phone: d.phone || "-",
+          City: d.city?.name || "-",
+          Country: d.country?.name || "-",
+          Total_hours: d.total_hours || "-",
+          Total_events: d.total_events || "-",
+          Total_tasks: d.total_tasks || "-",
+          Account_status: d.account_status || "-",
+        }))
+      );
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "VooOrganizeation");
+      XLSX.writeFile(workbook, "VooOrganizeation.xlsx");
+};
   return (
  <div>
       <div className='flex justify-between items-center'>
@@ -122,6 +162,10 @@ const Organizeation = () => {
             />
             <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
           </div>
+          <button onClick={()=> exportToExcel()} className='p-2 bg-one text-white rounded-[10px] animate-pulse flex gap-2 items-center '>
+                    <span>Export To Excel</span>
+                    <i><FaDownload/></i>
+                  </button>
           <div className='flex gap-2'>
             <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
               <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />
@@ -156,11 +200,12 @@ const Organizeation = () => {
           <thead className="w-full">
             <tr className='bg-four w-[1012px] h-[56px]'>
               <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">organization</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">Organization</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Gmail</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">City</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
          </tr>
           </thead>
@@ -189,6 +234,27 @@ const Organizeation = () => {
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
     {item?.city?.name ?? "N/A"}
   </td>
+  
+<td className="w-[143px] text-[12px] align-middle  text-six">
+  <label className="inline-flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      className="sr-only peer"
+      checked={item.account_status === 'active'}
+      onChange={() => {
+        const newStatus = item.account_status === 'active' ? 'inactive' : 'active';
+        changestutes(item.id, newStatus);
+      }}
+    />
+    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition">
+      <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-5"></div>
+    </div>
+    <span className="ml-2 text-sm">
+      {item.account_status === 'active' ? 'Active' : 'Inactive'}
+    </span>
+  </label>
+</td>
+
   <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
   <button className='underline ' onClick={() => navigate('/admin/organizeationdatali', { state: { sendData: item.id } })}>
    Details

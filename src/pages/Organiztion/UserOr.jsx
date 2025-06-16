@@ -185,8 +185,8 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Gmail</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">City</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">orgnization</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
+        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Orgnization</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Status</th>
         <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
       </>

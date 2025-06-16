@@ -1,88 +1,82 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-const BarChart = () => {
+const BarChart = ({All}) => {
   const chartRef = useRef(null);
   const myChartRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = chartRef.current.getContext('2d');
-const labels = [
-  'January', 'February', 'March', 'April',
-  'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December'
-];
+ useEffect(() => {
+  if (!All) return; // ✅ تأكد أن All موجود
 
-const values = [500, 700, 800, 600, 900, 750, 500, 790, 400, 500, 600, 700];
+  const ctx = chartRef.current.getContext('2d');
 
-// حدد أعلى قيمة
-const maxValue = Math.max(...values);
+  const labels = [
+    'January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December'
+  ];
 
-// أنشئ ألوان حسب القيمة
-const backgroundColors = values.map(value =>
-  value === maxValue ? '#730FC9' : '#E8E8EA' // orange-500 و gray-900 من Tailwind
-);
+  const values = [
+    All.Jan ?? 0, All.Feb ?? 0, All.Mar ?? 0, All.Apr ?? 0,
+    All.May ?? 0, All.June ?? 0, All.July ?? 0, All.Aug ?? 0,
+    All.Sep ?? 0, All.Oct ?? 0, All.Nov ?? 0, All.Dec ?? 0
+  ];
 
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: '',
-      data: values,
-      backgroundColor: backgroundColors,
-      borderRadius: 6,
-      barThickness: 40
-    }
-  ]
-};
+  const maxValue = Math.max(...values);
 
+  const backgroundColors = values.map(value =>
+    value === maxValue ? '#730FC9' : '#E8E8EA'
+  );
 
-    myChartRef.current = new Chart(ctx, {
-      type: 'bar',
-      data: data,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            labels: {
-              font: {
-                size: 16
-              }
-            }
-          },
-          title: {
-            display: true,
-            text: 'Total Volunteers ',
-            font: {
-              size: 20
-            }
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: '',
+        data: values,
+        backgroundColor: backgroundColors,
+        borderRadius: 6,
+        barThickness: 40
+      }
+    ]
+  };
+
+  myChartRef.current = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Total Volunteers',
+          font: { size: 20 }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { size: 14 }
           }
         },
-        scales: {
-          x: {
-            ticks: {
-              font: {
-                size: 14
-              }
-            }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              font: {
-                size: 14
-              }
-            }
+        y: {
+          beginAtZero: true,
+          ticks: {
+            font: { size: 14 }
           }
         }
       }
-    });
+    }
+  });
 
-    return () => {
+  return () => {
+    if (myChartRef.current) {
       myChartRef.current.destroy();
-    };
-  }, []);
+    }
+  };
+}, [All]); // ✅ أضف All إلى قائمة الاعتماد
 
   return (
     <div className="w-[90%]  h-[300px] p-4 bg-white rounded-lg shadow-lg">

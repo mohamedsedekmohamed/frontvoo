@@ -7,9 +7,15 @@ import IconTasks from '../Icons/IconTasks';
 import { useTranslation } from 'react-i18next';
 import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
 import { FaPersonMilitaryToPerson } from "react-icons/fa6";
+import { IoMdHome } from "react-icons/io";
 
 const links = [
-
+{
+    to: "home",
+    name: "Home",
+    icon: <IoMdHome />,
+    iconActive: <IoMdHome />
+  },
   {
     to: "user",
     name: "Users",

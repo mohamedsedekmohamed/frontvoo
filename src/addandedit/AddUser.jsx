@@ -9,11 +9,13 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import SwitchButton from '../ui/SwitchButton'
 import Inputfiltter from '../ui/Inputfiltter';
 
 const AddUser = () => {
   const navigate = useNavigate();
+    const [status, setStatus] = useState('inactive');
+
   const location = useLocation();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,6 +62,7 @@ const AddUser = () => {
             setgender(user.gender || '');
             setEmail(user.email || '');
             setbirthdate(user.birth||'');
+            setStatus(user.account_status||'');
           }
         })
         .catch(error => {
@@ -124,6 +127,7 @@ const AddUser = () => {
       gender,
       bithdate:birthdate,
       email,
+      account_status:status
     };
 
     if (!edit) {
@@ -164,6 +168,7 @@ const AddUser = () => {
       });
 
     setbirthdate('');
+    setStatus("inactive")
     setName('');
     setPhone('');
     setCountry('');
@@ -264,7 +269,11 @@ const AddUser = () => {
             value={password}
             onChange={handleChange}
           />
+      <div className='flex justify-center items-end'>
+              <SwitchButton value={status} title='status' setValue={setStatus} />
       </div>
+      </div>
+
 
       <div className="flex mt-6">
         <button className='transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>

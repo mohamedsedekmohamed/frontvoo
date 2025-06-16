@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Pagination from '@mui/material/Pagination';
+import * as XLSX from "xlsx"; 
+import { FaDownload } from "react-icons/fa";
 
 const User = () => {
   const [data, setData] = useState([]);
@@ -114,8 +116,46 @@ const User = () => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
-  
-  
+const changestutes = (id, newStatus) => {
+  const token = localStorage.getItem('token');
+
+  axios.put(
+    `https://backndVoo.voo-hub.com/api/admin/organization/status/${id}`,
+    { account_status: newStatus },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+  .then(() => {
+            setUpdate(!update);
+            toast.success("updated Status")
+  })
+ 
+};
+
+  //  Export filtered data to Excel
+    const exportToExcel = () => {
+      const worksheet = XLSX.utils.json_to_sheet(
+        data.map((d, index) => ({
+          SL: index + 1,
+          Name: d.name || "-",
+          Email: d.email || "-",
+          Phone: d.phone || "-",
+          City: d.city?.name || "-",
+          country: d.country?.name || "-",
+          total_hours: d.total_hours || "-",
+          total_events: d.total_events || "-",
+          total_tasks: d.total_tasks || "-",
+          Account_status: d.account_status || "-",
+          
+        }))
+      );
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Voousers");
+      XLSX.writeFile(workbook, "Voousers.xlsx");
+};
 
   return (
     <div>
@@ -129,6 +169,10 @@ const User = () => {
           />
           <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
         </div>
+        <button onClick={()=> exportToExcel()} className='p-2 bg-one text-white rounded-[10px] animate-pulse flex gap-2 items-center '>
+          <span>Export To Excel</span>
+          <i><FaDownload/></i>
+        </button>
         <div className='flex gap-2'>
           <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
             <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />
@@ -213,10 +257,27 @@ const User = () => {
       <td className="w-[143px] text-[12px] align-middle px-3 font-medium">
         {item?.orgnization?.name ?? "N/A"}
       </td>
+<td className="w-[143px] text-[12px] align-middle  text-six">
+  <label className="inline-flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      className="sr-only peer"
+      checked={item.account_status === 'active'}
+      onChange={() => {
+        const newStatus = item.account_status === 'active' ? 'inactive' : 'active';
+        changestutes(item.id, newStatus);
+      }}
+    />
+    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition">
+      <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-5"></div>
+    </div>
+    <span className="ml-2 text-sm">
+      {item.account_status === 'active' ? 'Active' : 'Inactive'}
+    </span>
+  </label>
+</td>
 
-      <td className="w-[143px] text-[12px] align-middle px-3 text-six">
-        {item?.account_status ?? "N/A"}
-      </td>
+
 
       <td className="w-[143px] text-[12px] align-middle px-3">
         <div className="flex items-center">

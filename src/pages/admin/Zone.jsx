@@ -159,8 +159,8 @@ const Zone = () => {
                          <thead className="w-full">
                            <tr className='bg-four w-[1012px] h-[56px]'>
                              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-                             <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">zone</th>
-                             <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">city</th>
+                             <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Zone</th>
+                             <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">City</th>
                              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>
                          
                              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>

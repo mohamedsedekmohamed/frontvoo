@@ -238,19 +238,20 @@ const RequestsOr = () => {
                   <th className="w-[30px] h-[56px] text-[16px] border-b text-left px-2">
                   S/N                  </th>
                   <th className="w-[75px] h-[56px] text-[16px] border-b text-left">
-                    type
+                    Type
                   </th>
                   <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
-                    user
+                    User
                   </th>
                   <th className="w-[200] h-[56px] text-[16px] border-b text-left">
-                    task
+                    
+                    Task
+                  </th>
+                  <th className="w-[200px] h-[56px] text-[16px] border-b  text-oneborder-b text-center">
+                    Event
                   </th>
                   <th className="w-[200px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    event
-                  </th>
-                  <th className="w-[200px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    orgnization
+                    Orgnization
                   </th>
                   <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
                     Status

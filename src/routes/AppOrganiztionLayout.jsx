@@ -23,6 +23,7 @@ import Addtasksor from '../Addorganiztion/Addtasksor';
 // import Addorganization from '../Addorganiztion/Addorganization';
 import { useTranslation } from 'react-i18next';
 import '../translation/i18n'; 
+import Home from '../pages/Organiztion/HomeOr'
 const AppOrganiztionLayout = ({setorganiztionLayout,setIsLoggedIn}) => {
   // App.jsx
      const {  i18n } = useTranslation();
@@ -57,6 +58,7 @@ useEffect(() => {
        <Route path="operationTasksOr" element={<OperationTasksOr />} />
        <Route path="eventsdetails" element={<Eventsdetails />} />
        <Route path="operationOr" element={<OperationOr />} />
+       <Route path="Home" element={<Home />} />
        {/* <Route path="operation" element={<Operation />} /> */}
       
        <Route path="tasksdetails" element={<Tasksdetails />} />

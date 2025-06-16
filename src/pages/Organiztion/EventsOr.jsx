@@ -169,11 +169,11 @@ const EventsOr = () => {
     ) : (
       <>
       <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">event</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">date</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">time</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left"> operation</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Event</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Date</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Time</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Details</th>
+              <th className="w-[158px] h-[56px] text-[16px] border-b text-left"> Operation</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">location</th>
               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
       </>

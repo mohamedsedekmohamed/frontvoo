@@ -176,12 +176,12 @@ import Pagination from '@mui/material/Pagination';
                    <thead className="w-full">
                      <tr className='bg-four w-[1012px] h-[56px]'>
                        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-                       <th className="w-[200px] h-[56px] text-[16px] border-b text-left">user</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">orgnization</th>
+                       <th className="w-[200px] h-[56px] text-[16px] border-b text-left">User</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Orgnization</th>
                        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Accept</th>
                        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Reject</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">status</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">details</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Status</th>
+                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
          
                      </tr>
                    </thead>

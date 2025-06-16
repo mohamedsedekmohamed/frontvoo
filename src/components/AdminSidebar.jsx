@@ -76,12 +76,12 @@ const links = [
     iconActive: <FaPersonMilitaryToPerson />
   },
 
-    {
-      to: "settings",
-      name: "Settings",
-      icon: <FaCog />,
-      iconActive: <FaCog />
-    }
+    // {
+    //   to: "settings",
+    //   name: "Settings",
+    //   icon: <FaCog />,
+    //   iconActive: <FaCog />
+    // }
   
 ];
 const AdminSidebar = ({setIsOpen,isOpen}) => {

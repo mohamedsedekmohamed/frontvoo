@@ -212,10 +212,10 @@ const Pendingusers = () => {
                   S/N
                   </th>
                   <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
-                    user
+                    User
                   </th>
                   <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    orgnization
+                    Orgnization
                   </th>
                   <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
                     Accept
@@ -224,10 +224,10 @@ const Pendingusers = () => {
                     Reject
                   </th>
                   <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    status
+                    Status
                   </th>
                   <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    details
+                    Details
                   </th>
                 </>
               )}
