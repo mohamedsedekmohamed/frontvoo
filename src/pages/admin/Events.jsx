@@ -71,25 +71,37 @@ const Events = () => {
   const handleEdit = (id) => {
     navigate('/admin/addevents', { state: { sendData: id } });
   };
-  const filteredData = data.filter((item) => {
-    const query = searchQuery.toLowerCase();
+    const [selectedDate, setSelectedDate] = useState('');
 
-    if (selectedFilter === "Filter" || selectedFilter === "") {
-      return Object.values(item).some(value =>
-        typeof value === "object"
-          ? Object.values(value).some(sub => sub?.toString().toLowerCase().includes(query))
-          : value?.toString().toLowerCase().includes(query)
-      );
-    } else {
-      const keys = selectedFilter.split(".");
-      let value = item;
-      for (let key of keys) {
-        value = value?.[key];
-      }
+  const handleChangedata = (e) => {
+    setSelectedDate(e.target.value); // value هي بصيغة YYYY-MM-DD
+  };
 
-      return value?.toString().toLowerCase().includes(query);
+
+ const filteredData = data.filter((item) => {
+  const query = searchQuery.toLowerCase();
+
+  if (selectedDate && item.date !== selectedDate) {
+    return false;
+  }
+
+  if (selectedFilter === "Filter" || selectedFilter === "") {
+    return Object.values(item).some(value =>
+      typeof value === "object"
+        ? Object.values(value).some(sub => sub?.toString().toLowerCase().includes(query))
+        : value?.toString().toLowerCase().includes(query)
+    );
+  } else {
+    const keys = selectedFilter.split(".");
+    let value = item;
+    for (let key of keys) {
+      value = value?.[key];
     }
-  });
+
+    return value?.toString().toLowerCase().includes(query);
+  }
+});
+
   
   const cheose = ["Filter", "name","date","start_time","location"];
   const labelMap = {
@@ -121,6 +133,15 @@ const Events = () => {
              />
              <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
            </div>
+<div className="flex items-center gap-4 my-4">
+  <input
+    type="date"
+    value={selectedDate}
+    onChange={handleChangedata}
+    className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  />
+</div>
+
            <div className='flex gap-2'>
              <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
                <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />

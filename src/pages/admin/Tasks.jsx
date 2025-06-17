@@ -66,6 +66,13 @@ const Tasks = () => {
       }
     });
   };
+   const [selectedDate, setSelectedDate] = useState('');
+  
+    const handleChangedata = (e) => {
+      setSelectedDate(e.target.value); // value هي بصيغة YYYY-MM-DD
+    };
+  
+  
   const handleEdit = (id) => {
     navigate('/admin/addtasks', { state: { sendData: id } });
   };
@@ -118,6 +125,14 @@ const Tasks = () => {
               />
               <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
             </div>
+            <div className="flex items-center gap-4 my-4">
+  <input
+    type="date"
+    value={selectedDate}
+    onChange={handleChangedata}
+    className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  />
+</div>
             <div className='flex gap-2'>
               <button className='flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1'>
                 <img src={filter} className='text-white w-4 h-4 md:w-6 md:h-6' />
