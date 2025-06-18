@@ -96,6 +96,8 @@ const Addtasksor = () => {
 
     return () => clearTimeout(timeout);
   }, [location.state]);
+
+  
   const handleFileChange = (file) => {
     if (file) setimage(file);
   };

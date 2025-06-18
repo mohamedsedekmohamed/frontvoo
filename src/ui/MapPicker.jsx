@@ -223,7 +223,7 @@
         </div>
 
         {/* الإحداثيات اليدوية */}
-        <div className="p-5 bg-gray-50 rounded-b-xl border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 text-gray-700">
+        {/* <div className="p-5 bg-gray-50 rounded-b-xl border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 text-gray-700">
           <div className="flex-1 w-full">
             <label htmlFor="latitude" className="block text-sm font-semibold mb-1 text-gray-600">خط العرض:</label>
             <input
@@ -258,7 +258,7 @@
               className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-800 font-medium cursor-not-allowed"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     );
   };

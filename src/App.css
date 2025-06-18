@@ -99,3 +99,24 @@ table {
   width: 100%;
 }
 
+* تعيين عرض ثابت للأعمدة */
+table td, table th {
+  max-width: 130px;  /* تحديد عرض أقصى للعمود */
+  min-height: 60px;
+  max-height: fit-content;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* السماح بتفكيك النص إلى أكثر من سطر */
+  word-wrap: break-word;  /* السماح لكسر النصوص الطويلة */
+  word-break: break-all; /* كسر الكلمات إذا كانت طويلة جدًا */
+  padding: 10px;
+}
+table td:first-child,
+table th:first-child {
+  width: 40px; /* تحديد عرض ثابت لأول عمود */
+  padding: 3px; }
+table {
+  /* table-layout: fixed; منع الأعمدة من التمدد بشكل مفرط */
+  width: 100%;
+}
+

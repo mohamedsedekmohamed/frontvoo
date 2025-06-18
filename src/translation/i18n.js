@@ -15,6 +15,13 @@ i18n
     resources: {
       en: {
         translation: {
+          ActiveVolunteers:"Active Volunteers",
+          CurrentTasks:"Current Tasks",
+          CompletedTasks:"Completed Tasks",
+          UsersCount:"Users Count",
+          Topcities:"Top cities by request volume",
+          Topcountries:"Top countries",
+          Home:"Home",
           en: "Ar",
           Details: "Details",
           type: "Type",
@@ -131,10 +138,19 @@ i18n
           Suggestion: "Suggestion",
           read: "Read",
           googlemap: "Google map link",
+          TotalVolunteers:"Total Volunteers"
         },
       },
       ar: {
         translation: {
+         ActiveVolunteers:"متطوعون نشطون",
+          CurrentTasks:"المهام الحالية",
+          CompletedTasks:"المهام المكتملة",
+          UsersCount:"عدد المستخدمين",
+          Topcities:"أفضل المدن حسب حجم الطلبات",
+          Topcountries:"أعلي  الدول",
+          TotalVolunteers:"إجمالي المتطوعين",
+          Home:"الصفحة الرئسية",
           en: "En",
           Suggestion: "اقتراح",
           View: "عرض",

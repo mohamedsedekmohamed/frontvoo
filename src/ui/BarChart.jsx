@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import { useTranslation } from 'react-i18next';
 
 const BarChart = ({All}) => {
   const chartRef = useRef(null);
   const myChartRef = useRef(null);
+     const { t, i18n } = useTranslation();
 
  useEffect(() => {
   if (!All) return; // ✅ تأكد أن All موجود
@@ -51,7 +53,7 @@ const BarChart = ({All}) => {
         legend: { display: false },
         title: {
           display: true,
-          text: 'Total Volunteers',
+          text: t('TotalVolunteers'),
           font: { size: 20 }
         }
       },

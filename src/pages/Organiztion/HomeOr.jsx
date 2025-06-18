@@ -9,9 +9,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ImUsers } from "react-icons/im";
 import { FaHouseFlag } from "react-icons/fa6";
+import { useTranslation } from 'react-i18next';
 
 const HomeOr = () => {
 
+     const { t, i18n } = useTranslation();
 
   const [data, setData] = useState([]);
 
@@ -36,24 +38,24 @@ const HomeOr = () => {
   <div class="grid  grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-2 h-full mx-5">
     {/* one */}
 <div className='w-[23%} h-[159px] bg-threeteen  text-three flex flex-col  gap-6 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><FaUsers className='text-three'/></i><span>Active Volunteers    </span> </div>
+  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><FaUsers className='text-three'/></i><span>{t("ActiveVolunteers")}    </span> </div>
   <span className='text-2xl'>{data.users_volunters} </span>
 </div>
 {/* two */}
 <div className='w-[23%} h-[159px] bg-fourteen  text-one flex flex-col  gap-6 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl items-center'><i><FaTableCells active/></i><span>Current Tasks </span> </div>
+  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl items-center'><i><FaTableCells active/></i><span>{t("CurrentTasks")} </span> </div>
   <span className='text-2xl'> {data.current_tasks_count}</span>
 </div>
 
 {/* threr */}
 
 <div className='w-[23%} h-[159px] bg-threeteen text-three  text-one flex flex-col  gap-6 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><VscCheck active/></i><span>Completed Tasks  </span> </div>
+  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><VscCheck active/></i><span>{t("CompletedTasks")}  </span> </div>
   <span className='text-2xl'> {data.ended_tasks_count}</span>
 </div>
 {/* four */}
 <div className='w-[23%} h-[159px] bg-fourteen  text-one flex flex-col  gap-4 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[18px] lg:text-[20px]  items-center'><i><ImUsers /></i><span>Users Count   </span> </div>
+  <div className='flex gap-1  text-[16px] md:text-[18px] lg:text-[20px]  items-center'><i><ImUsers /></i><span>{t("UsersCount")}   </span> </div>
   <span className='text-2xl'> {data.users_count}</span>
 </div>
 </div>
@@ -65,7 +67,7 @@ const HomeOr = () => {
 <div className='bg-threeteen w-[95%] mt-10 mx-[10px] '>
   <div className='flex items-center text-three gap-1  text-[18px] md:text-2x1 lg:text-3xl'> 
 <i><FaLocationDot/> </i>
-<h2 className='p-3 text-three'>Top cities by request volume</h2>
+<h2 className='p-3 text-three'>{t("Topcities")}</h2>
   </div>
 </div>
  <div className="space-y-2 p-4 bg-white rounded shadow-md">
@@ -83,7 +85,7 @@ const HomeOr = () => {
   <div className='bg-threeteen w-[95%] mt-10 mx-[10px] '>
   <div className='flex items-center text-three gap-1  text-[18px] md:text-2x1 lg:text-3xl'> 
 <i><FaHouseFlag/> </i>
-<h2 className='p-3 text-three'>Top countries</h2>
+<h2 className='p-3 text-three'>{t("Topcountries")}</h2>
   </div>
 </div>
  <div className="space-y-2 p-4 bg-white rounded shadow-md">
