@@ -50,8 +50,11 @@ const AdduserOr = () => {
     if (name === 'email') setEmail(value);
     if (name === 'password') setPassword(value);
   };
+  
 
-  const validateForm = () => {
+  
+  const validateForm = () => {  
+
     let formErrors = {};
     if (!name) formErrors.name = t('NameRequired');
     if (!birthdate) formErrors.birthdate = t('BirthdateRequired');
