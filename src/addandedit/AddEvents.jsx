@@ -17,7 +17,10 @@ import 'react-time-picker/dist/TimePicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import MapPicker from '../ui/MapPicker'
+import FourPointsMap from '../ui/FourPointsMap';
 const AddEvents = () => {
+    const [points, setPoints] = useState([]);
+  
   const navigate = useNavigate();
   const location = useLocation();
   const [id, setid] = useState('');
@@ -128,6 +131,7 @@ const AddEvents = () => {
             setvolunteers(event.number_of_volunteers || '');
             setorganizers(event.number_of_organizers || '');
             setlocat(event.location || '');
+            setPoints(event.points || [])
             // const latLng = extractLatLng(event.google_maps_location);
             // setgoogle(latLng || ''); // هنا بنمرر الإحداثيات المستخرجة
             // setnamegoogle(event.google_maps_location || '');
@@ -219,7 +223,7 @@ if (locatio) {
 
   const validateForm = () => {
     let formErrors = {};
-
+if(points.length !== 4) formErrors.points=' Should select 4 points'
     if (!name) formErrors.name = 'Event name is required';
     if (!country) formErrors.country = 'Country is required';
     if (!city) formErrors.city = 'City is required';
@@ -266,6 +270,7 @@ if(!image &&!edit)formErrors.image="image is required"
       zone_id: zone,
       name,
       date,
+      points,
       start_time: start,
       end_time: end,
       number_of_volunteers: parseInt(volunteers),
@@ -298,8 +303,9 @@ if(imagetwo!==image)
     } else {
       axios
         .post('https://backndVoo.voo-hub.com/api/admin/event/add', eventData, { headers })
-        .then(() => {
+        .then((response) => {
           toast.success('Event added successfully');
+          console.log(response)
           setTimeout(() => navigate(-1), 2000);
         })
         .catch(() => toast.error('Failed to add event'));
@@ -314,6 +320,7 @@ setgoogle({
   lat: 30.033333,
   lng: 31.233334,
 });
+setPoints([])
     setvolunteers('');
     setorganizers('');
     setlocat('');
@@ -441,15 +448,15 @@ setgoogle({
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <div className="flex flex-col gap-3 items-start justify-end">
               <span className="text-[12px] font-bold text-one md:text-[16px]">Date</span>
-              <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]">
-                <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
+              <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px] z-100" >
+                <FaRegCalendarAlt className="absolute top-1/2  z-100 right-4 transform -translate-y-1/2 text-one " />
                 <DatePicker
                   selected={date}
                   onChange={handstartDate}
                   minDate={new Date()} // يمنع اختيار أي تاريخ قبل النهارده
                   placeholderText="Select date"
                   dateFormat="yyyy-MM-dd"
-                  className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
+                  className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1  z-100 border-two rounded-[8px] placeholder-seven pl-10"
                   showYearDropdown
                   scrollableYearDropdown
                   yearDropdownItemNumber={100}
@@ -484,8 +491,8 @@ setgoogle({
           </div>
         </div>
       </div>
-      <div className=" flex flex-col my-3 ">
-        <span className="text-3xl font-bold text-three ">Place</span>
+      <div className=" flex flex-col my-15">
+        <span className="text-3xl font-bold text-three my-5 ">Place</span>
         <div className="flex flex-wrap justify-center gap-6 mt-6 bg-eight p-5">
         {/* <GetLocationLink
             google={google} // تمرير الإحداثيات هنا
@@ -506,7 +513,10 @@ setgoogle({
           />
         </div>
       </div>
+      <div className='my-5'>
       <SwitchButton value={value} setValue={setvalue} />
+      </div>
+      <FourPointsMap points={points} setPoints={setPoints} />
       <div className="flex mt-6">
         <button
           className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
