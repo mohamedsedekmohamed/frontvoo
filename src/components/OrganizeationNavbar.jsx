@@ -38,14 +38,12 @@ useEffect(() => {
       setData(response.data.Orgnization);
     });
 }, []);
-    
-  
-    const handleLanguage = () => {
-      const newLang = i18n.language === 'ar' ? 'en' : 'ar';
-      i18n.changeLanguage(newLang);
-      localStorage.setItem('language', newLang);
+const handleLanguage = (event) => {
+  const newLang = event.target.value;
+  i18n.changeLanguage(newLang);
+  localStorage.setItem('language', newLang);
+};
 
-    }
   
     return (
       <div className="flex justify-between items-center">
@@ -67,11 +65,16 @@ useEffect(() => {
             <IoPersonCircleSharp className='text-2xl text-white' />
           </button>
   
-          <button onClick={handleLanguage} className='flex gap-1 items-center justify-center text-white'>
+          <select
+  onChange={handleLanguage}
+  value={i18n.language}
+  className="flex gap-1 items-center justify-center bg-one text-white"
+>
             <GrLanguage />
-            <span className='pb-1'> {t("en")}</span> 
+            <option className='pb-1' value='ar'>AR</option> 
+            <option className='pb-1 ' value='en'>EN</option> 
             <IoIosArrowDown />
-          </button>
+          </select>
   
           <i className='text-white text-2xl'><FaRegBell /></i>
         </div>

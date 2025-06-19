@@ -57,7 +57,7 @@ import IconDash from '../../ui/IconDash'
             <span className='text-nine text-[16px]'>Birthdate: {data?.birth ?? "N/A"}</span>
             <span className='text-nine text-[16px]'>Gender: {data?.gender ?? "N/A"}</span>
 <span className='text-nine text-[16px]'>
-  created : {data?.created_at ? new Date(data.created_at).toISOString().split('T')[0] : "N/A"}
+  join date : {data?.created_at ? new Date(data.created_at).toISOString().split('T')[0] : "N/A"}
 </span>
          </div>
          <div className='w-[50%]  flex flex-wrap '>

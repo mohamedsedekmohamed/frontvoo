@@ -18,12 +18,14 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useTranslation } from 'react-i18next';
 import MapPicker from '../ui/MapPicker'
+import FourPointsMap from '../ui/FourPointsMap';
 
 const Addeventsor = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
     const isArabic = i18n.language === 'ar';
+      const [points, setPoints] = useState([]);
   
   const [id, setid] = useState('');
   const [country, setCountry] = useState('');
@@ -60,6 +62,8 @@ const Addeventsor = () => {
     birthdate: '',
     benfit: '',
     requirment: '',
+        points:"",
+
   });
   
    const [google, setgoogle] = useState({
@@ -113,6 +117,8 @@ const Addeventsor = () => {
             // setgoogle(latLng || ''); // هنا بنمرر الإحداثيات المستخرجة
             // setnamegoogle(event.google_maps_location || '');
               const url = event.google_maps_location;
+                          setPoints(event.points || [])
+
 const locatio = extractLatLng(url);
 
 if (locatio) {
@@ -196,6 +202,7 @@ if (locatio) {
 
   const validateForm = () => {
     let formErrors = {};
+if(points.length !== 4) formErrors.points=' Should select 4 points'
 
     if (!name) formErrors.name = 'Event name is required';
     if (!country) formErrors.country = 'Country is required';
@@ -244,6 +251,7 @@ if(!image &&!edit)formErrors.image="image is required"
       name,
       date,
       start_time: start,
+      points,
       end_time: end,
       number_of_volunteers: parseInt(volunteers),
       number_of_organizers: parseInt(organizers),
@@ -291,7 +299,9 @@ setgoogle({
   lat: 30.033333,
   lng: 31.233334,
 });
+
     setimage(null);
+    setPoints([])
     setdescription('');
     setCountry('');
     setCity('');
@@ -480,8 +490,11 @@ setgoogle({
           />
         </div>
       </div>
+  <div className='my-5'>
       <SwitchButton value={value} setValue={setvalue} />
-      <div className="flex mt-6">
+      </div>
+      <FourPointsMap points={points} setPoints={setPoints} />
+            <div className="flex mt-6">
         <button
           className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
           onClick={handleSave}

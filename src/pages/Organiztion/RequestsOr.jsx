@@ -225,7 +225,7 @@ const RequestsOr = () => {
                   <th className="w-[180px] h-[56px] text-[16px] border-b text-oneborder-b text-left ">
                   النوع
                   </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">
+                  <th className="w-[250px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">
                                          المستخدم
 
                   </th>
@@ -240,10 +240,10 @@ const RequestsOr = () => {
                   <th className="w-[75px] h-[56px] text-[16px] border-b text-left">
                     Type
                   </th>
-                  <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
+                  <th className="w-[250px] h-[56px] text-[16px] border-b text-left">
                     User
                   </th>
-                  <th className="w-[200] h-[56px] text-[16px] border-b text-left">
+                  <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
                     
                     Task
                   </th>
@@ -329,7 +329,7 @@ const RequestsOr = () => {
           <td className="w-[150px] h-[56px] text-right ">
                   {item?.task?.name ?? "N/A"}
                 </td>
-                <td className="flex flex-col w-[143px] absolute top-1 left-10 h-[56px] p-1 gap-1 items-end">
+                <td className="flex flex-col w-[250px] absolute top-1 left-10 h-[56px] p-1 gap-1 items-end">
                 <span className="text-[12px]">
                     {item?.user?.name ?? "N/A"}
                   </span>
@@ -352,7 +352,7 @@ const RequestsOr = () => {
                 <td className="w-[75px] h-[56px] lg:text-[12px]  xl:text-[12px]">
                   {item?.request_type ?? "N/A"}
                 </td>
-                <td className="flex flex-col w-[200px] absolute top-1 h-[56px] p-1 gap-1">
+                <td className="flex flex-col w-[250px] absolute top-1 h-[56px] p-1 gap-1">
                   <span className="text-[12px]">
                     {item?.user?.name ?? "N/A"}
                   </span>
@@ -363,7 +363,7 @@ const RequestsOr = () => {
                 <td className="w-[250px] h-[56px] lg:text-[12px] xl:text-[14px]">
                   {item?.task?.name ?? "N/A"}
                 </td>
-                <td className="w-[250px] h-[56px] lg:text-[12px] xl:text-[14px]">
+                <td className="w-[200px] h-[56px]  lg:text-[12px] xl:text-[14px]">
                   {item?.event?.name ?? "N/A"}
                 </td>
                 <td className="w-[250px] h-[56px] lg:text-[12px] xl:text-[14px]">

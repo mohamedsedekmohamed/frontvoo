@@ -224,7 +224,7 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
             {item?.country?.name ?? "N/A"}
           </td>
           
-          <td className="w-[150px] h-[56px] text-end ">
+          <td className="w-[150px] h-[56px] text-[12px] text-end ">
             {item?.email ?? "N/A"}
           </td>
 
@@ -253,7 +253,7 @@ className='min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10'
               {item?.phone ?? "N/A"}
             </span>
           </td>
-          <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
+          <td className="w-[160px] h-[56px] lg:text-[12px] ">
             {item?.email ?? "N/A"}
           </td>
           <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">

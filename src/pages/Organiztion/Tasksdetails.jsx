@@ -84,7 +84,7 @@ const Tasksdetails = () => {
               </span>
             </div>
           </div>
-        );
+        );  
       case "tasks":
         return (
           <div className="bg-gray-50 p-4 rounded-lg shadow-md">

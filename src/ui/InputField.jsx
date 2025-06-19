@@ -5,7 +5,7 @@ const InputField = ({placeholder,value, onChange,name  ,email,disabled}) => {
   // تحديد أقصى عدد حروف بناءً على نوع الإدخال
   const maxLength =
     email === 'number' ? 20 :
-    email === 'email' ? 50 :
+    email === 'email' ? 45 :
     50;
 
    

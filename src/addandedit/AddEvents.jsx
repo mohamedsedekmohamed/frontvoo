@@ -81,6 +81,7 @@ const AddEvents = () => {
     birthdate: '',
     benfit: '',
     requirment: '',
+    points:""
   });
   // function extractLatLng(url) {
   //   if (!url) return null;

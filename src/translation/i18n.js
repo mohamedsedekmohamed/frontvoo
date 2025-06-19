@@ -27,7 +27,7 @@ i18n
           type: "Type",
           number: "Number",
           AllEvents: "All Events",
-          created:"created",
+          created:" join date",
           AllTasks: "All Tasks",
           volunteers: "Volunteers",
           Eventname: "Event name",
