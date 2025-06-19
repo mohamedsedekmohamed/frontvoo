@@ -15,6 +15,7 @@ i18n
     resources: {
       en: {
         translation: {
+          Currentattendees:"Current attendees",
           ActiveVolunteers:"Active Volunteers",
           CurrentTasks:"Current Tasks",
           CompletedTasks:"Completed Tasks",
@@ -143,6 +144,7 @@ i18n
       },
       ar: {
         translation: {
+          Currentattendees:"الحاضرين الحالين",
          ActiveVolunteers:"متطوعون نشطون",
           CurrentTasks:"المهام الحالية",
           CompletedTasks:"المهام المكتملة",

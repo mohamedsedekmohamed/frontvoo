@@ -13,6 +13,7 @@ import { HiClock } from "react-icons/hi2";
 const EventDetalis = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [userscount,setuserscount]=useState();
   const [data,setData]=useState('')
   const [activeTab, setActiveTab] = useState('info');
     useEffect(()=>{
@@ -24,7 +25,8 @@ const EventDetalis = () => {
           }
         })
           .then(response => {
-            setData(response.data??[]);
+            setData(response.data.event??[]);
+            setuserscount(response.data.users_count??0)
           })
           .catch(() => {
           });
@@ -44,8 +46,9 @@ const EventDetalis = () => {
           <span className='text-nine text-[16px]'>google maps : <a className='underline' href={data?.google_maps_location}>{data?.google_maps_location?? "N/A"}</a></span>
           <span className='text-nine text-[16px]'>Country: {data?.country?.name ?? "N/A"}</span>
           <span className='text-nine text-[16px]'>City: {data?.city?.name ?? "N/A"}</span>
-          <span className='text-nine text-[16px]'>description:{data?.description ?? "N/A"}</span>
-          <span className='text-nine text-[16px]'>status: {data?.status ?? "N/A"}</span>
+          <span className='text-nine text-[16px]'>Description:{data?.description ?? "N/A"}</span>
+          <span className='text-nine text-[16px]'>Status: {data?.status ?? "N/A"}</span>
+          <span className='text-nine text-[16px]'>Current attendees: {userscount ?? "N/A"}</span>
        </div>
     
     </div>

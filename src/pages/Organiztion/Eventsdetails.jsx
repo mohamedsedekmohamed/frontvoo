@@ -14,6 +14,8 @@ import { HiClock } from "react-icons/hi2";
 const Eventsdetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
+    const [userscount,setuserscount]=useState();
+  
   const [data,setData]=useState('')
   const [activeTab, setActiveTab] = useState('info');
     const { t, i18n } = useTranslation();
@@ -27,7 +29,9 @@ const Eventsdetails = () => {
           }
         })
           .then(response => {
-            setData(response.data??[]);
+            setData(response.data.event??[]);
+                        setuserscount(response.data.users_count)
+
           })
           .catch(() => {
           });
@@ -49,6 +53,8 @@ const Eventsdetails = () => {
           <span className='text-nine text-[16px]'>{t("City")}: {data?.city?.name ?? "N/A"}</span>
           <span className='text-nine text-[16px]'>{t("description")}: {data?.description ?? "N/A"}</span>
           <span className='text-nine text-[16px]'>{t("feel")}: {data?.status ?? "N/A"}</span>
+                    <span className='text-nine text-[16px]'>{t("Currentattendees")}: {userscount ?? "N/A"}</span>
+
        </div>
     
     </div>
