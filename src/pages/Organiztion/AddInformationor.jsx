@@ -110,10 +110,22 @@ if(checkflag!==flag)newUser.avatar_image=flag
             navigate(-1);
           }, 3000);
         })
-        .catch(() => {
-          toast.error("Failed network");
-        });
-
+         .catch((error) => {
+        const errors = error?.response?.data;
+      
+        if (errors && typeof errors === 'object') {
+          const firstKey = Object.keys(errors)[0]; 
+          const firstMessage = errors[firstKey]?.[0];
+      
+          if (firstMessage) {
+            toast.error(firstMessage);
+          } else {
+            toast.error("Something went wrong.");
+          }
+        } else {
+          toast.error("Something went wrong.");
+        }
+      });
    
 
     setName('');

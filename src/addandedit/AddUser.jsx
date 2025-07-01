@@ -41,7 +41,6 @@ const AddUser = () => {
   useEffect(() => {
     const { sendData } = location.state || {};
     if (sendData) {
-      console.log(sendData); 
       setid(sendData); 
       setEdit(true);
   
@@ -102,7 +101,7 @@ const AddUser = () => {
     if (!gender) formErrors.gender = 'Gender is required';
     if (!email.includes('@gmail.com')) formErrors.email = 'Email should contain @gmail.com';
     if (!edit && password.length < 8) {
-      formErrors.password = 'Password must be at least 6 characters';
+      formErrors.password = 'Password must be at least 8 characters';
     }
 
     Object.values(formErrors).forEach((error) => {
@@ -146,9 +145,22 @@ const AddUser = () => {
             navigate(-1);
           }, 3000);
         })
-        .catch(() => {
-          toast.error("Failed network");
-        });
+        .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+    });
       return;
     }
 
@@ -163,9 +175,22 @@ const AddUser = () => {
           navigate(-1);
         }, 3000);
       })
-      .catch(() => {
-        toast.error("Failed network");
-      });
+     .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+});
 
     setbirthdate('');
     setStatus("inactive")

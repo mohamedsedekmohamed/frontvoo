@@ -41,6 +41,8 @@ const Addeventsor = () => {
   // const [namegoogle, setnamegoogle] = useState('');
   const [description, setdescription] = useState('');
   const [image, setimage] = useState(null);
+   const [originalFlag, setOriginalFlag] = useState(null);
+  
   const [value, setvalue] = useState('inactive');
   const [city, setCity] = useState('');
   const [edit, setEdit] = useState(false);
@@ -138,6 +140,7 @@ if (locatio) {
               event.event_requirments?.map((r) => ({ text: r.requirment, status: r.status })) || []
             );
             setimage(event.image_link || null);
+            setOriginalFlag(event.image_link || null)
           }
         })
         .catch((error) => {
@@ -258,12 +261,13 @@ if(!image &&!edit)formErrors.image="image is required"
       location: locat,
       google_maps_location:`https://maps.google.com/?q=${google.lat},${google.lng}`,
       description,
-      image: image,
       status: value,
       benfit: benfit.map((item) => ({ benfit: item.text, status: item.status })),
       requirment: requirment.map((item) => ({ requirment: item.text, status: item.status })),
     };
-
+if (image !== originalFlag) {
+      eventData.image = image;
+    }
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -311,6 +315,7 @@ setgoogle({
     setrequirment([]);
     setEdit(false);
     setid('')
+    setOriginalFlag(null)
   };
 
   const handstartDate = (newData) => {

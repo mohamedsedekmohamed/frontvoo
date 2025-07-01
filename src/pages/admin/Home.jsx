@@ -60,7 +60,7 @@ const Home = () => {
 <div>
 <BarChart  All={data.user_year}/>
 </div>
-<div className='flex justify-start pl-2'>
+<div className='flex justify-start pl-2 flex-wrap'>
 <div className='flex flex-col'>
 <div className='bg-threeteen w-[95%] mt-10 mx-[10px] '>
   <div className='flex items-center text-three gap-1  text-[18px] md:text-2x1 lg:text-3xl'> 

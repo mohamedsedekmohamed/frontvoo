@@ -77,6 +77,7 @@ const TasksOr = () => {
       }
     });
   };
+  
   const handleEdit = (id) => {
     navigate("/organizeation/addtasksor", { state: { sendData: id } });
   };

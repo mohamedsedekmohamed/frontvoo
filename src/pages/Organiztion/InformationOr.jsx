@@ -88,6 +88,13 @@ const InformationOr = ({ setorganiztionLayout, setIsLoggedIn }) => {
           <div className='flex flex-col gap-2 my-2'>
             <span className='text-[20px] font-normal text-one'>{t("phonenuberinfor")}: {data.phone || "No phone"}</span>
             <span className='text-[20px] font-normal text-one'>{t("Gender")}: {data.gender || "No gender"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("total_hours")}: {data.total_hours || "No  total hours"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("Totalevents")}: {data.total_events || "No Total events"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("Totaltasks")}: {data.total_tasks || "No  Total tasks"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("Accountstatus")}: {data.account_status || "No Account status"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("year")}: {data.year || "No year"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("country")}: {data.country?.name || "No country"}</span>
+            <span className='text-[20px] font-normal text-one'>{t("city")}: {data.city?.name || "No city"}</span>
           </div>
         </div>
       </div>

@@ -31,11 +31,39 @@ const AdduserOr = () => {
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
+  const [id, setid] = useState('');
 
 
 
   useEffect(() => {
+const {sendData} =location.state||{};
+if(sendData){
+  setid(sendData);
+      setEdit(true);
+            const token = localStorage.getItem('token');
 
+         axios.get("https://backndVoo.voo-hub.com/api/ornization/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+        .then(response => {
+          const user = response.data.users.find(u => u.id === sendData);
+          console.log(user);
+          if (user) {
+            setName(user.name || '');
+            setPhone(user.phone || '');
+            setCountry(user.country_id || '');
+            setCity(user.city_id || '');
+            setgender(user.gender || '');
+            setEmail(user.email || '');
+            setbirthdate(user.birth||'');
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching user:", error);
+        });
+    }
     const timeout = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timeout);
   }, [location.state]);
@@ -80,29 +108,78 @@ const AdduserOr = () => {
     if (!validateForm()) return;
 
     const token = localStorage.getItem('token');
-    const newUser = {
+   const newUser = {
       name,
       phone,
       country_id: country,
       city_id: city,
       gender,
-      bithdate: birthdate,
+      bithdate:birthdate,
       email,
     };
-   newUser.password = password;
 
-    const url ='https://backndVoo.voo-hub.com/api/ornization/user/add';
+    if (!edit) {
+      newUser.password = password;
+    }
 
-    const request = edit ? axios.put : axios.post;
+ if (edit) {
+      axios.put(`https://backndVoo.voo-hub.com/api/ornization/user/update/${id}`, newUser, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(() => {
+          toast.success('User updated successfully');
+          setTimeout(() => {
+            navigate(-1);
+          }, 3000);
+        })
+        .catch((error) => {
+  const errors = error?.response?.data;
 
-    request(url, newUser, {
-      headers: { Authorization: `Bearer ${token}` }
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+    });
+      return;
+    }
+
+    axios.post('https://backndVoo.voo-hub.com/api/ornization/user/add', newUser, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then(() => {
-        toast.success(edit ? t('UserUpdated') : t('UserAdded'));
-        setTimeout(() => navigate(-1), 3000);
+        toast.success('User added successfully');
+        setTimeout(() => {
+          navigate(-1);
+        }, 3000);
       })
-      .catch(() => toast.error(t('NetworkFailed')));
+     .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+});
 
       setbirthdate('');
       setName('');

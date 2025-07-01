@@ -215,6 +215,7 @@ if(imagetwo!==image)
     setvolunteers('');
     setorgnization('');
     setimage(null);
+    setimagetwo(null)
     setdescription('');
     setvalue('inactive');
     settozone('');

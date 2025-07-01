@@ -78,8 +78,8 @@ import { IoLogoApple } from "react-icons/io5";
 
 
   {/* Bottom Bar */}
-  <div className=" border  mt-1 border-t bg-[#FFCE02] border-seven  pt-4 pl-5 text-[12px] text-seven">
-    © {new Date().getFullYear()} sea go. All rights reserved.
+  <div className=" border  mt-1 border-t bg-[#FFCE02] border-seven  font-medium py-6 pl-5 text-[12px] text-seven">
+    © {new Date().getFullYear()} Powered by Wegostation
   </div>
 </footer>
   )

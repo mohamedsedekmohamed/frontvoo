@@ -32,6 +32,7 @@ const Addtasksor = () => {
   const [start, setStart] = useState('');
   const [volunteers, setvolunteers] = useState('');
   const [image, setimage] = useState(null);
+ const [originalFlag, setOriginalFlag] = useState(null);
   const [value, setvalue] = useState('inactive');
   const [edit, setEdit] = useState(false);
   const [date, setDate] = useState('');
@@ -81,6 +82,7 @@ const Addtasksor = () => {
             setvolunteers(event.number_of_voo_needed || '');
             setdescription(event.description || '');
             setimage(event.image_link || null);
+            setOriginalFlag(event.image_link || null);
             setvalue(event.status || "")
             setorgnization(event.orgnization_id || "")
           }
@@ -194,14 +196,16 @@ const Addtasksor = () => {
       start_time: start,
       number_of_voo_needed: parseInt(volunteers),
       description,
-      image: image,
       status: value,
       location: locat,
       orgnization_id:orgnization,
       benfit: benfit.map((item) => ({ benfit: item.text, })),
       requirment: requirment.map((item) => ({ requirment: item.text})),
-    
+  
          };
+ if (image !== originalFlag) {
+      eventData.image = image;
+    }
 
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -231,9 +235,9 @@ const Addtasksor = () => {
     setStart('');
     setLocation('');
     setvolunteers('');
-  
     setorgnization('');
     setimage(null);
+    setOriginalFlag(null)
     setdescription('');
     setvalue('inactive');
     settozone('');
