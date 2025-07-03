@@ -19,6 +19,7 @@ const UserOr = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const [ageSortOrder, setAgeSortOrder] = useState("");
 
   useEffect(() => {
     setCurrentPage(1);
@@ -95,7 +96,7 @@ const UserOr = () => {
     if (selectedFilter === "Filter" || selectedFilter === "") {
       return Object.values(item).some((value) =>
         typeof value === "object"
-          ? Object.values(value).some((sub) =>
+          ? Object.values(value || {}).some((sub) =>
               sub?.toString().toLowerCase().includes(query)
             )
           : value?.toString().toLowerCase().includes(query)
@@ -135,22 +136,26 @@ const UserOr = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (ageSortOrder === "asc") return a.age - b.age;
+    if (ageSortOrder === "desc") return b.age - a.age;
+    return 0;
+  });
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
-
   const handleEdit = (id) => {
     navigate("/organizeation/adduser", { state: { sendData: id } });
   };
   const truncateText = (text, maxLength = 15) => {
-  if (!text) return "N/A";
-  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-};
+    if (!text) return "N/A";
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
   const truncateTextar = (text, maxLength = 15) => {
-  if (!text) return "N/A";
-  return text.length > maxLength ? "..."+ text.slice(0, maxLength)  : text;
-};
+    if (!text) return "N/A";
+    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
+  };
 
   return (
     <div>
@@ -164,6 +169,15 @@ const UserOr = () => {
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
+        <select
+          value={ageSortOrder}
+          onChange={(e) => setAgeSortOrder(e.target.value)}
+          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+        >
+          <option value="">Sort by Age</option>
+          <option value="asc">Age ↑</option>
+          <option value="desc">Age ↓</option>
+        </select>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
@@ -197,158 +211,156 @@ const UserOr = () => {
           </button>
         </div>
       </div>
-<div className="mt-10 block text-left overflow-x-auto">
-  <div className="min-w-[800px]">
-    <table className="w-full border-y border-x border-black">
-      <thead dir={isArabic ? "rtl" : "ltr"}>
-        <tr className="bg-four">
-          {isArabic ? (
-            <>
-              <th className="py-4 px-3">الإجراء</th>
-              <th className="py-4 px-3">الحالة</th>
-              <th className="py-4 px-3">المؤسسة</th>
-              <th className="py-4 px-3">تفاصيل</th>
-              <th className="py-4 px-3">المدينة</th>
-              <th className="py-4 px-3">الدولة</th>
-              <th className="py-4 px-3">الإيميل</th>
-              <th className="py-4 px-3">العمر</th>
-              <th className="py-4 px-3">المستخدم</th>
-              <th className="py-4 px-3">رقم</th>
-            </>
-          ) : (
-            <>
-              <th className="py-4 px-3">S/N</th>
-              <th className="py-4 px-3">User</th>
-              <th className="py-4 px-3">Age</th>
-              <th className="py-4 px-3">Gmail</th>
-              <th className="py-4 px-3">Country</th>
-              <th className="py-4 px-3">City</th>
-              <th className="py-4 px-3">Details</th>
-              <th className="py-4 px-3">Organization</th>
-              <th className="py-4 px-3">Status</th>
-              <th className="py-4 px-3">Action</th>
-            </>
-          )}
-        </tr>
-      </thead>
+      <div className="mt-10 block text-left overflow-x-auto">
+        <div className="min-w-[800px]">
+          <table className="w-full border-y border-x border-black">
+            <thead dir={isArabic ? "rtl" : "ltr"}>
+              <tr className="bg-four">
+                {isArabic ? (
+                  <>
+                    <th className="py-4 px-3">الإجراء</th>
+                    <th className="py-4 px-3">الحالة</th>
+                    <th className="py-4 px-3">المؤسسة</th>
+                    <th className="py-4 px-3">تفاصيل</th>
+                    <th className="py-4 px-3">المدينة</th>
+                    <th className="py-4 px-3">الدولة</th>
+                    <th className="py-4 px-3">الإيميل</th>
+                    <th className="py-4 px-3">العمر</th>
+                    <th className="py-4 px-3">المستخدم</th>
+                    <th className="py-4 px-3">رقم</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="py-4 px-3">S/N</th>
+                    <th className="py-4 px-3">User</th>
+                    <th className="py-4 px-3">Age</th>
+                    <th className="py-4 px-3">Gmail</th>
+                    <th className="py-4 px-3">Country</th>
+                    <th className="py-4 px-3">City</th>
+                    <th className="py-4 px-3">Details</th>
+                    <th className="py-4 px-3">Organization</th>
+                    <th className="py-4 px-3">Status</th>
+                    <th className="py-4 px-3">Action</th>
+                  </>
+                )}
+              </tr>
+            </thead>
 
-      <tbody dir={isArabic ? "rtl" : "ltr"}>
-        {paginatedData.map((item, index) => (
-          <tr
-            key={item.id}
-            className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-          >
-            {isArabic ? (
-              <>
-                <td className=" h-[56px] py-2 px-3">
-                  <RiDeleteBin6Line
-                    className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                    onClick={() => handleDelete(item.id, item.name)}
-                  />
-                </td>
-                <td className="py-2 px-3 text-green-600">
-                  {truncateTextar(item?.account_status) }
-                </td>
-                <td className="py-2 px-3">
-                  {truncateTextar(item?.orgnization?.name)}
-                </td>
-                <td className="py-2 px-3">
-                  <button
-                    className="underline"
-                    onClick={() =>
-                      navigate("/organizeation/userDetails", {
-                        state: { sendData: item.id },
-                      })
-                    }
-                  >
-                    التفاصيل
-                  </button>
-                </td>
-                <td className="py-2 px-3">
-                  {truncateTextar(item?.city?.name)}
-                </td>
-                <td className="py-2 px-3">
-                  {truncateTextar(item?.country?.name)}
-                </td>
-                <td className="py-2 px-3">
-                  {truncateTextar(item?.email)}
-                </td>
-                <td className="py-2 px-3">
-                  {truncateTextar(item?.age)}
-                </td>
-                <td className=" h-[56px] px-1 text-end">
-                  <div className="flex flex-col gap-1 items-end">
-                    <span className="text-[12px] font-normal">
-                      {truncateTextar(item?.name) }
-                    </span>
-                    <span className="text-[12px] font-normal">
-                      { truncateTextar(item?.phone)}
-                    </span>
-                  </div>
-                </td>
-                <td className="py-2 px-3">
-                  {(currentPage - 1) * rowsPerPage + index + 1}
-                </td>
-              </>
-            ) : (
-              <>
-                <td className="py-2 px-3">
-                  {(currentPage - 1) * rowsPerPage + index + 1}
-                </td>
-                <td className=" h-[56px] py-2 px-3">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[12px] font-normal">
-                      {truncateText(item?.name)}
-                    </span>
-                    <span className="text-[12px] font-normal">
-                      {truncateText(item?.phone)}
-                    </span>
-                  </div>
-                </td>
-                <td className=" h-[56px] text-[12px]">
-                  {truncateText(item?.age) }
-                </td>
-                <td className=" h-[56px] text-[12px]">
-                  {truncateText(item?.email) }
-                </td>
-                <td className=" h-[56px] text-[12px] px-1">
-                  {truncateText(item?.country?.name)}
-                </td>
-                <td className="h-[56px] text-[12px] px-1">
-                  {truncateText(item?.city?.name) }
-                </td>
-                <td className=" h-[56px] text-[12px] px-1">
-                  <button
-                    className="underline"
-                    onClick={() =>
-                      navigate("/organizeation/userDetails", {
-                        state: { sendData: item.id },
-                      })
-                    }
-                  >
-                    Details
-                  </button>
-                </td>
-                <td className=" h-[56px] text-[12px] font-medium px-1">
-                  {truncateText(item?.orgnization?.name)}
-                </td>
-                <td className=" h-[56px] text-[12px] text-six px-1">
-                  {item?.account_status ?? "N/A"}
-                </td>
-                <td className=" h-[56px] flex justify-start items-center px-1">
-                  <RiDeleteBin6Line
-                    className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-                    onClick={() => handleDelete(item.id, item.name)}
-                  />
-                </td>
-              </>
-            )}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
+            <tbody dir={isArabic ? "rtl" : "ltr"}>
+              {paginatedData.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
+                >
+                  {isArabic ? (
+                    <>
+                      <td className=" h-[56px] py-2 px-3">
+                        <RiDeleteBin6Line
+                          className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
+                          onClick={() => handleDelete(item.id, item.name)}
+                        />
+                      </td>
+                      <td className="py-2 px-3 text-green-600">
+                        {truncateTextar(item?.account_status)}
+                      </td>
+                      <td className="py-2 px-3">
+                        {truncateTextar(item?.orgnization?.name)}
+                      </td>
+                      <td className="py-2 px-3">
+                        <button
+                          className="underline"
+                          onClick={() =>
+                            navigate("/organizeation/userDetails", {
+                              state: { sendData: item.id },
+                            })
+                          }
+                        >
+                          التفاصيل
+                        </button>
+                      </td>
+                      <td className="py-2 px-3">
+                        {truncateTextar(item?.city?.name)}
+                      </td>
+                      <td className="py-2 px-3">
+                        {truncateTextar(item?.country?.name)}
+                      </td>
+                      <td className="py-2 px-3">
+                        {truncateTextar(item?.email)}
+                      </td>
+                      <td className="py-2 px-3">{truncateTextar(item?.age)}</td>
+                      <td className=" h-[56px] px-1 text-end">
+                        <div className="flex flex-col gap-1 items-end">
+                          <span className="text-[12px] font-normal">
+                            {truncateTextar(item?.name)}
+                          </span>
+                          <span className="text-[12px] font-normal">
+                            {truncateTextar(item?.phone)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-2 px-3">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="py-2 px-3">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+                      <td className=" h-[56px] py-2 px-3">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[12px] font-normal">
+                            {truncateText(item?.name)}
+                          </span>
+                          <span className="text-[12px] font-normal">
+                            {truncateText(item?.phone)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className=" h-[56px] text-[12px]">
+                        {truncateText(item?.age)}
+                      </td>
+                      <td className=" h-[56px] text-[12px]">
+                        {truncateText(item?.email)}
+                      </td>
+                      <td className=" h-[56px] text-[12px] px-1">
+                        {truncateText(item?.country?.name)}
+                      </td>
+                      <td className="h-[56px] text-[12px] px-1">
+                        {truncateText(item?.city?.name)}
+                      </td>
+                      <td className=" h-[56px] text-[12px] px-1">
+                        <button
+                          className="underline"
+                          onClick={() =>
+                            navigate("/organizeation/userDetails", {
+                              state: { sendData: item.id },
+                            })
+                          }
+                        >
+                          Details
+                        </button>
+                      </td>
+                      <td className=" h-[56px] text-[12px] font-medium px-1">
+                        {truncateText(item?.orgnization?.name)}
+                      </td>
+                      <td className=" h-[56px] text-[12px] text-six px-1">
+                        {item?.account_status ?? "N/A"}
+                      </td>
+                      <td className=" h-[56px] flex justify-start items-center px-1">
+                        <RiDeleteBin6Line
+                          className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+                          onClick={() => handleDelete(item.id, item.name)}
+                        />
+                      </td>
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div className="flex justify-center mt-4">
         <Pagination

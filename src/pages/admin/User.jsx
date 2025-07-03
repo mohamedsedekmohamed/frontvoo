@@ -18,7 +18,7 @@ const User = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
-
+const [ageSortOrder, setAgeSortOrder] = useState("");
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -78,26 +78,28 @@ const User = () => {
     navigate('/admin/addUser', { state: { sendData: id } });
   };
 
-  const filteredData = data.filter((item) => {
-    const query = searchQuery.toLowerCase();
-  
-    if (selectedFilter === "Filter" || selectedFilter === "") {
-      return Object.values(item).some(value =>
-        typeof value === "object"
-          ? Object.values(value).some(sub => sub?.toString().toLowerCase().includes(query))
-          : value?.toString().toLowerCase().includes(query)
-      );
-    } else {
-      const keys = selectedFilter.split(".");
-      let value = item;
-      for (let key of keys) {
-        value = value?.[key];
-      }
-  
-      return value?.toString().toLowerCase().includes(query);
+const filteredData = data.filter((item) => {
+  const query = searchQuery.toLowerCase();
+
+  if (selectedFilter === "Filter" || selectedFilter === "") {
+    return Object.values(item).some(value =>
+      typeof value === "object"
+        ? Object.values(value || {}).some(sub =>
+            sub?.toString().toLowerCase().includes(query)
+          )
+        : value?.toString().toLowerCase().includes(query)
+    );
+  } else {
+    const keys = selectedFilter.split(".");
+    let value = item;
+    for (let key of keys) {
+      value = value?.[key];
     }
-  });
-  
+
+    return value?.toString().toLowerCase().includes(query);
+  }
+});
+
   const cheose = ["Filter", "name","age", "email", "phone", "country.name", "city.name", "account_status"];
   const labelMap = {
     Filter: "Filter",
@@ -113,10 +115,16 @@ const User = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+ const sortedData = [...filteredData].sort((a, b) => {
+  if (ageSortOrder === "asc") return a.age - b.age;
+  if (ageSortOrder === "desc") return b.age - a.age;
+  return 0;
+});
+
+const paginatedData = sortedData.slice(
+  (currentPage - 1) * rowsPerPage,
+  currentPage * rowsPerPage
+);
 const changestutes = (id, newStatus) => {
   const token = localStorage.getItem('token');
 
@@ -174,6 +182,15 @@ const truncateText = (text, maxLength = 15) => {
           />
           <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
         </div>
+        <select
+  value={ageSortOrder}
+  onChange={(e) => setAgeSortOrder(e.target.value)}
+  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+>
+  <option value="">Sort by Age</option>
+  <option value="asc">Age ↑</option>
+  <option value="desc">Age ↓</option>
+</select>
         <button onClick={()=> exportToExcel()} className='p-2 bg-one text-white rounded-[10px] animate-pulse flex gap-2 items-center '>
           <span>Export To Excel</span>
           <i><FaDownload/></i>

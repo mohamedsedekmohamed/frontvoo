@@ -88,27 +88,27 @@ const Tasks = () => {
   const handleEdit = (id) => {
     navigate("/admin/addtasks", { state: { sendData: id } });
   };
-  const filteredData = data.filter((item) => {
-    const query = searchQuery.toLowerCase();
-
-    if (selectedFilter === "Filter" || selectedFilter === "") {
-      return Object.values(item).some((value) =>
-        typeof value === "object"
-          ? Object.values(value).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
-            )
-          : value?.toString().toLowerCase().includes(query)
-      );
-    } else {
-      const keys = selectedFilter.split(".");
-      let value = item;
-      for (let key of keys) {
-        value = value?.[key];
-      }
-
-      return value?.toString().toLowerCase().includes(query);
-    }
-  });
+ const filteredData = data.filter((item) => {
+   const query = searchQuery.toLowerCase();
+ 
+   if (selectedFilter === "Filter" || selectedFilter === "") {
+     return Object.values(item).some(value =>
+       typeof value === "object"
+         ? Object.values(value || {}).some(sub =>
+             sub?.toString().toLowerCase().includes(query)
+           )
+         : value?.toString().toLowerCase().includes(query)
+     );
+   } else {
+     const keys = selectedFilter.split(".");
+     let value = item;
+     for (let key of keys) {
+       value = value?.[key];
+     }
+ 
+     return value?.toString().toLowerCase().includes(query);
+   }
+ });
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;

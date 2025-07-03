@@ -15,6 +15,8 @@ const Requests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [active, setActive] = useState("task"); // task or event
   const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedIds, setSelectedIds] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,27 +84,28 @@ const Requests = () => {
     });
   };
 
-  const filteredData = data.filter((item) => {
-    const query = searchQuery.toLowerCase();
+ const filteredData = data.filter((item) => {
+  const query = searchQuery.toLowerCase();
 
-    if (selectedFilter === "Filter" || selectedFilter === "") {
-      return Object.values(item).some((value) =>
-        typeof value === "object"
-          ? Object.values(value).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
-            )
-          : value?.toString().toLowerCase().includes(query)
-      );
-    } else {
-      const keys = selectedFilter.split(".");
-      let value = item;
-      for (let key of keys) {
-        value = value?.[key];
-      }
-
-      return value?.toString().toLowerCase().includes(query);
+  if (selectedFilter === "Filter" || selectedFilter === "") {
+    return Object.values(item).some(value =>
+      typeof value === "object"
+        ? Object.values(value || {}).some(sub =>
+            sub?.toString().toLowerCase().includes(query)
+          )
+        : value?.toString().toLowerCase().includes(query)
+    );
+  } else {
+    const keys = selectedFilter.split(".");
+    let value = item;
+    for (let key of keys) {
+      value = value?.[key];
     }
-  });
+
+    return value?.toString().toLowerCase().includes(query);
+  }
+});
+
   const accept = (id, userName) => {
     const token = localStorage.getItem("token");
 
@@ -281,6 +284,20 @@ const Requests = () => {
                 <th className="py-4 px-3 ">Orgnization</th>
                 <th className="py-4 px-3 ">Action</th>
                 <th className="py-4 px-3">Details</th>
+                <th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
+
                 <th className="py-4 px-3">Action</th>
               </tr>
             </thead>
@@ -351,6 +368,19 @@ const Requests = () => {
                       Details
                     </button>
                   </td>
+<td className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.includes(item.id)}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(prev => [...prev, item.id]);
+      } else {
+        setSelectedIds(prev => prev.filter(id => id !== item.id));
+      }
+    }}
+  />
+</td>
 
                   <td className=" ">
                     <div className="flex items-center">
