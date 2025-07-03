@@ -98,11 +98,12 @@ const User = () => {
     }
   });
   
-  const cheose = ["Filter", "name", "email", "phone", "country.name", "city.name", "account_status"];
+  const cheose = ["Filter", "name","age", "email", "phone", "country.name", "city.name", "account_status"];
   const labelMap = {
     Filter: "Filter",
     name: "User",
     email: "Email",
+    age: "Age",
     phone: "Phone",
     "country.name": "Country",
     "city.name": "City",
@@ -156,6 +157,10 @@ const changestutes = (id, newStatus) => {
       XLSX.utils.book_append_sheet(workbook, worksheet, "Voousers");
       XLSX.writeFile(workbook, "Voousers.xlsx");
 };
+const truncateText = (text, maxLength = 15) => {
+  if (!text) return "N/A";
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
 
   return (
     <div>
@@ -203,100 +208,111 @@ const changestutes = (id, newStatus) => {
         </div>
       </div>
 
-      <div className="mt-10  block">
-        <table className="w-full border-y border-x border-black">
+<div className="mt-10 block text-left">
+  <div className="min-w-[800px]">
+            <table className="w-full border-y border-x border-black">
           <thead className="w-full">
-            <tr className='bg-four w-[1012px] h-[56px]'>
-              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left pl-3">User</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Gmail</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Country</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">City</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Orgnization</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Action</th>
+            <tr className='bg-four '>
+              <th className="py-4 px-3">S/N</th>
+              <th className="py-4 px-3">User</th>
+              <th className="py-4 px-3">Age</th>
+              <th className="py-4 px-3">Gmail</th>
+              <th className="py-4 px-3">Country</th>
+              <th className="py-4 px-3">City</th>
+              <th className="py-4 px-3">Details</th>
+              <th className="py-4 px-3">Orgnization</th>
+              <th className="py-4 px-3">join date</th>
+              <th className="py-4 px-3">Status</th>
+              <th className="py-4 px-3">Action</th>
             </tr>
           </thead>
       <tbody>
   {paginatedData.map((item, index) => (
-    <tr key={item.id} className='border-y border-x hover:border-3 relative hover:bg-four h-[56px]'>
 
-      <td className="w-[30px] text-[12px] text-left align-middle px-3 font-bold">
-        {(currentPage - 1) * rowsPerPage + index + 1}
-      </td>
+<tr key={item.id} className='border-y border-x hover:border-3 relative hover:bg-four h-[56px]'>
 
-      <td className="w-[143px] text-[12px] align-middle px-3">
-        <div className="flex flex-col justify-center">
-          <span>{item?.name ?? "N/A"}</span>
-          <span>{item?.phone ?? "N/A"}</span>
-        </div>
-      </td>
+  <td className="py-2 px-3 font-bold">
+    {(currentPage - 1) * rowsPerPage + index + 1}
+  </td>
 
-      <td className="w-[160px] text-[12px] align-middle px-3">
-        {item?.email ?? "N/A"}
-      </td>
-
-      <td className="w-[143px] text-[12px] align-middle px-3">
-        {item?.country?.name ?? "N/A"}
-      </td>
-
-      <td className="w-[143px] text-[12px] align-middle px-3">
-        {item?.city?.name ?? "N/A"}
-      </td>
-
-      <td className="w-[143px] text-[12px] align-middle px-3">
-        <button
-          className='underline'
-          onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}
-        >
-          Details
-        </button>
-      </td>
-
-      <td className="w-[143px] text-[12px] align-middle px-3 font-medium">
-        {item?.orgnization?.name ?? "N/A"}
-      </td>
-<td className="w-[143px] text-[12px] align-middle  text-six">
-  <label className="inline-flex items-center cursor-pointer">
-    <input
-      type="checkbox"
-      className="sr-only peer"
-      checked={item.account_status === 'active'}
-      onChange={() => {
-        const newStatus = item.account_status === 'active' ? 'inactive' : 'active';
-        changestutes(item.id, newStatus);
-      }}
-    />
-    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition">
-      <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-5"></div>
+  <td className="py-2 px-3 text-[12px]">
+    <div className="flex flex-col justify-center">
+      <span>{truncateText(item?.name)}</span>
+      <span>{truncateText(item?.phone)}</span>
     </div>
-    <span className="ml-2 text-sm">
-      {item.account_status === 'active' ? 'Active' : 'Inactive'}
-    </span>
-  </label>
-</td>
+  </td>
 
+  <td className="py-2 px-3">
+    {truncateText(item?.age)}
+  </td>
+  <td className="py-2 px-3">
+    {truncateText(item?.email)}
+  </td>
 
+  <td className="py-2 px-3">
+    {truncateText(item?.country?.name)}
+  </td>
 
-      <td className="w-[143px] text-[12px] align-middle px-3">
-        <div className="flex items-center">
-          <CiEdit
-            className="w-[24px] h-[24px] text-six cursor-pointer"
-            onClick={() => handleEdit(item.id)}
-          />
-          <RiDeleteBin6Line
-            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-            onClick={() => handleDelete(item.id, item.name)}
-          />
-        </div>
-      </td>
+  <td className="py-2 px-3">
+    {truncateText(item?.city?.name)}
+  </td>
 
-    </tr>
+  <td className="py-2 px-3">
+    <button
+      className='underline'
+      onClick={() => navigate('/admin/userdetails', { state: { sendData: item.id } })}
+    >
+      Details
+    </button>
+  </td>
+
+  <td className="py-2 px-3">
+    {truncateText(item?.orgnization?.name)}
+  </td>
+  <td className="py-2 px-3 ">
+{item?.created_at ? new Date(item.created_at).toISOString().split('T')[0] : "N/A"}  </td>
+
+  <td className="py-2 px-3 text-six">
+    <label className="inline-flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        className="sr-only peer"
+        checked={item.account_status === 'active'}
+        onChange={() => {
+          const newStatus = item.account_status === 'active' ? 'inactive' : 'active';
+          changestutes(item.id, newStatus);
+        }}
+      />
+      <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition">
+        <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-5"></div>
+      </div>
+      <span className="ml-2 text-sm">
+        {item.account_status === 'active' ? 'Active' : 'Inactive'}
+      </span>
+    </label>
+  </td>
+
+  <td className="py-2 px-3 text-[12px] align-middle">
+    <div className="flex items-center">
+      <CiEdit
+        className="w-[24px] h-[24px] text-six cursor-pointer"
+        onClick={() => handleEdit(item.id)}
+      />
+      <RiDeleteBin6Line
+        className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+        onClick={() => handleDelete(item.id, item.name)}
+      />
+    </div>
+  </td>
+
+</tr>
+
   ))}
 </tbody>
 
         </table>
+
+      </div>
       </div>
       <div className="flex justify-center mt-4">
   <Pagination

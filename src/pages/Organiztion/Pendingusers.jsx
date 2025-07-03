@@ -155,6 +155,15 @@ const Pendingusers = () => {
     "user.email": t("Email"),
     status: t("Status"),
   };
+
+  const truncateText = (text, maxLength = 15) => {
+    if (!text) return "N/A";
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
+  const truncateTextar = (text, maxLength = 15) => {
+    if (!text) return "N/A";
+    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
+  };
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -180,7 +189,7 @@ const Pendingusers = () => {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className='flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1'
+              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -192,43 +201,30 @@ const Pendingusers = () => {
         </div>
       </div>
 
-      <div className="mt-10  block">
-        <table className="w-full border-y border-x border-black">
-          <thead className="w-full">
-            <tr className="bg-four w-[1012px] text-one h-[56px]">
+    <div className="mt-10 block text-left overflow-x-auto">
+  <div className="min-w-[800px]">
+    <table className="w-full border-y border-x border-black">
+      <thead dir={isArabic ? "rtl" : "ltr"}>
+        <tr className="bg-four">
               {isArabic ? (
                 <>
-    <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">رقم</th>
-    <th className="w-[200px] h-[56px] text-[16px] border-b text-right pr-3">المستخدم</th>
-    <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">المؤسسة</th>
-    <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">القبول</th>
-    <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الرفض</th>
-    <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">الحالة</th>
-    <th className="w-[158px] h-[56px] text-[16px] border-b text-right pr-3">تفاصيل</th>
+                  <th className="py-4 px-3">رقم</th>
+                  <th className="py-4 px-3">المستخدم</th>
+                  <th className="py-4 px-3">المؤسسة</th>
+                  <th className="py-4 px-3">القبول</th>
+                  <th className="py-4 px-3">الرفض</th>
+                  <th className="py-4 px-3">الحالة</th>
+                  <th className="py-4 px-3">تفاصيل</th>
                 </>
               ) : (
                 <>
-                  <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">
-                  S/N
-                  </th>
-                  <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
-                    User
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    Orgnization
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    Accept
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    Reject
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    Status
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-left">
-                    Details
-                  </th>
+                  <th className="py-4 px-3">S/N</th>
+                  <th className="py-4 px-3">User</th>
+                  <th className="py-4 px-3">Orgnization</th>
+                  <th className="py-4 px-3">Accept</th>
+                  <th className="py-4 px-3">Reject</th>
+                  <th className="py-4 px-3">Status</th>
+                  <th className="py-4 px-3">Details</th>
                 </>
               )}
             </tr>
@@ -237,85 +233,83 @@ const Pendingusers = () => {
             {paginatedData.map((item, index) => (
               <tr
                 key={item.id}
-                className="border-y border-x hover:border-3  relative hover:bg-four"
+                className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
               >
                 {isArabic ? (
                   <>
-                     <td className="w-[30px] h-[56px] font-bold text-center">
-        {(currentPage - 1) * rowsPerPage + index + 1}
-      </td>
+                    <td className=" h-[56px] font-bold text-center">
+                      {(currentPage - 1) * rowsPerPage + index + 1}
+                    </td>
 
-      {/* المستخدم */}
-      <td className="w-[200px] h-[56px] p-2">
-        <div className="flex flex-col items-strat">
-          <span className="text-[12px]">{item?.user?.name ?? "N/A"}</span>
-          <span className="text-[10px]">{item?.user?.email ?? "N/A"}</span>
-        </div>
-      </td>
+                    <td className="py-2 px-3">
+                      <div className="flex flex-col ">
+                        <span className="text-[12px]">
+                          {truncateTextar(item?.user?.name)}
+                        </span>
+                        <span className="text-[10px]">
+                          {truncateTextar(item?.user?.email)}
+                        </span>
+                      </div>
+                    </td>
 
-      {/* المؤسسة */}
-      <td className="w-[158px] h-[56px] text-strat">
-        {item?.orgnization?.name ?? "N/A"}
-      </td>
+                    <td className="py-2 px-3">
+                      {truncateTextar(item?.orgnization?.name)}
+                    </td>
 
-      {/* القبول */}
-      <td className="w-[158px] h-[56px] text-strat">
-        <button
-          className="text-white bg-three px-2 py-1 rounded-full"
-          onClick={() => accept(item.id, item?.user?.name)}
-        >
-          قبول
-        </button>
-      </td>
+                    <td className="py-2 px-3">
+                      <button
+                        className="text-white bg-three px-2 py-1 rounded-full"
+                        onClick={() => accept(item.id, item?.user?.name)}
+                      >
+                        قبول
+                      </button>
+                    </td>
 
-      {/* الرفض */}
-      <td className="w-[158px] h-[56px] text-strat">
-        <button
-          className="text-white bg-three px-2 py-1 rounded-full"
-          onClick={() => reject(item.id, item?.user?.name)}
-        >
-          رفض
-        </button>
-      </td>
+                    <td className="py-2 px-3 h-[56px] text-strat">
+                      <button
+                        className="text-white bg-three px-2 py-1 rounded-full"
+                        onClick={() => reject(item.id, item?.user?.name)}
+                      >
+                        رفض
+                      </button>
+                    </td>
 
-      {/* الحالة */}
-      <td className="w-[158px] h-[56px] text-strat">
-        <span className="bg-eight text-one  rounded-full px-2 py-1">
-          {item?.status ?? "N/A"}
-        </span>
-      </td>
+                    <td className="py-2 px-3 h-[56px] text-strat">
+                      <span className="bg-eight text-one  rounded-full px-2 py-1">
+                        {item?.status ?? "N/A"}
+                      </span>
+                    </td>
 
-      {/* تفاصيل */}
-      <td className="w-[158px] h-[56px] text-strat">
-        <button
-          className="underline"
-          onClick={() =>
-            navigate("/organizeation/pendingusersDetaklis", {
-              state: { sendData: item.id },
-            })
-          }
-        >
-          تفاصيل
-        </button>
-      </td>
+                    <td className="py-2 px-3 h-[56px] text-strat">
+                      <button
+                        className="underline"
+                        onClick={() =>
+                          navigate("/organizeation/pendingusersDetaklis", {
+                            state: { sendData: item.id },
+                          })
+                        }
+                      >
+                        تفاصيل
+                      </button>
+                    </td>
                   </>
                 ) : (
                   <>
-                    <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
+                <td className="py-2 px-3">
                       {(currentPage - 1) * rowsPerPage + index + 1}
                     </td>
-                    <td className="flex flex-col w-[200px] absolute top-1 h-[56px] p-1 gap-1">
+                <td className="py-2 px-3">
                       <span className="text-[12px]">
-                        {item?.user?.name ?? "N/A"}
+                        {truncateText(item?.user?.name) }
                       </span>
                       <span className="text-[10px]">
-                        {item?.user?.email ?? "N/A"}
+                        {truncateText(item?.user?.email)}
                       </span>
                     </td>
-                    <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
-                      {item?.orgnization?.name ?? "N/A"}
+                <td className="py-2 px-3">
+                      {truncateText(item?.orgnization?.name)}
                     </td>
-                    <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
+                <td className="py-2 px-3">
                       <button
                         className="text-white bg-three px-2 py-1 rounded-full"
                         onClick={() => accept(item.id, item?.user?.name)}
@@ -323,7 +317,7 @@ const Pendingusers = () => {
                         Accept
                       </button>
                     </td>
-                    <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
+                <td className="py-2 px-3">
                       <button
                         className="text-white bg-three px-2 py-1 rounded-full"
                         onClick={() => reject(item.id, item?.user?.name)}
@@ -331,13 +325,13 @@ const Pendingusers = () => {
                         Reject
                       </button>
                     </td>
-                    <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px] text-three ">
+                <td className="py-2 px-3">
                       {" "}
                       <span className="bg-eight rounded-circle px-2 py-1">
                         {item?.status ?? "N/A"}
                       </span>
                     </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+                <td className="py-2 px-3">
                       <button
                         className="underline "
                         onClick={() =>
@@ -355,6 +349,7 @@ const Pendingusers = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
       <div className="flex justify-center mt-4">
         <Pagination

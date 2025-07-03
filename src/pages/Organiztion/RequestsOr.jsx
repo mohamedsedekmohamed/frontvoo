@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +14,6 @@ const RequestsOr = () => {
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
 
@@ -131,37 +129,14 @@ const RequestsOr = () => {
       });
   };
 
-  // const handleAttend = (id) => {
-  //     const token = localStorage.getItem('token');
-  //     axios.put(`https://backndVoo.voo-hub.com/api/orgnization/request/attend/${id}`, {}, {
-  //         headers: {
-  //             Authorization: `Bearer ${token}`,
-  //         }
-  //     })
-  //         .then(() => {
-  //             toast.success("Attendance updated successfully");
-  //             setUpdate(prev => !prev); // Force re-render to update the table
-  //         })
-  //         .catch(() => {
-  //             toast.error("Error updating attendance");
-  //         });
-  // };
-
-  // const handleLost = (id) => {
-  //     const token = localStorage.getItem('token');
-  //     axios.put(`https://backndVoo.voo-hub.com/api/orgnization/request/lost/${id}`, {}, {
-  //         headers: {
-  //             Authorization: `Bearer ${token}`,
-  //         }
-  //     })
-  //         .then(() => {
-  //             toast.success("Request marked as lost successfully");
-  //             setUpdate(prev => !prev); // Force re-render to update the table
-  //         })
-  //         .catch(() => {
-  //             toast.error("Error marking request as lost");
-  //         });
-  // };
+  const truncateText = (text, maxLength = 15) => {
+    if (!text) return "N/A";
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
+  const truncateTextar = (text, maxLength = 15) => {
+    if (!text) return "N/A";
+    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
+  };
 
   return (
     <div>
@@ -200,207 +175,165 @@ const RequestsOr = () => {
         </div>
       </div>
 
-      <div className="mt-10  block">
-        <table className="w-full border-y border-x border-black">
-          <thead className="w-full">
-          <tr className='bg-four w-[1012px] h-[56px] text-one'>
-          {isArabic ? (
-                <>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-center pr-3">
-                    الإجراء
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    الحالة
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    المؤسسة
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    الحدث
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    المهمه
-                  </th>
-              
-                  <th className="w-[180px] h-[56px] text-[16px] border-b text-oneborder-b text-left ">
-                  النوع
-                  </th>
-                  <th className="w-[250px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">
-                                         المستخدم
+      <div className="mt-10 block text-left overflow-x-auto">
+        <div className="min-w-[800px]">
+          <table className="w-full border-y border-x border-black">
+            <thead dir={isArabic ? "rtl" : "ltr"}>
+              <tr className="bg-four">
+                {isArabic ? (
+                  <>
+                    <th className="py-4 px-3">الإجراء</th>
+                    <th className="py-4 px-3">الحالة</th>
+                    <th className="py-4 px-3">المؤسسة</th>
+                    <th className="py-4 px-3">الحدث</th>
+                    <th className="py-4 px-3">المهمه</th>
 
-                  </th>
-                  <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">
-                    رقم
-                  </th>
-                </>
-              ) : (
-                <>
-                  <th className="w-[30px] h-[56px] text-[16px] border-b text-left px-2">
-                  S/N                  </th>
-                  <th className="w-[75px] h-[56px] text-[16px] border-b text-left">
-                    Type
-                  </th>
-                  <th className="w-[250px] h-[56px] text-[16px] border-b text-left">
-                    User
-                  </th>
-                  <th className="w-[200px] h-[56px] text-[16px] border-b text-left">
-                    
-                    Task
-                  </th>
-                  <th className="w-[200px] h-[56px] text-[16px] border-b  text-oneborder-b text-center">
-                    Event
-                  </th>
-                  <th className="w-[200px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Orgnization
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Status
-                  </th>
-                  <th className="w-[400px] h-[56px] text-[16px] border-b text-center">
-                    Actions
-                  </th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.map((item) => (
-              <tr
-                key={item.id}
-                className="border-y hover:border-3 relative hover:bg-four"
-              >
-            
-
-           
-                  {/* <button
-                                        className='text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-md text-[12px]'
-                                        onClick={() => handleAttend(item.id)}
-                                    >
-                                        Attend
-                                    </button>
-                                    <button
-                                        className='text-white bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded-md text-[12px]'
-                                        onClick={() => handleLost(item.id)}
-                                    >
-                                        Lost
-                                    </button> */}
+                    <th className="py-4 px-3">النوع</th>
+                    <th className="py-4 px-3">المستخدم</th>
+                    <th className="py-4 px-3">رقم</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="py-4 px-3">S/N </th>
+                    <th className="py-4 px-3">Type</th>
+                    <th className="py-4 px-3">User</th>
+                    <th className="py-4 px-3">Task</th>
+                    <th className="py-4 px-3">Event</th>
+                    <th className="py-4 px-3">Orgnization</th>
+                    <th className="py-4 px-3">Status</th>
+                    <th className="py-4 px-3">Actions</th>
+                  </>
+                )}
               </tr>
-            ))}
-          </tbody>
-          
-<tbody dir={isArabic ? "rtl" : "ltr"}>
-  {paginatedData.map((item, index) => (
-    <tr key={item.id} className='border-y border-x hover:border-3  relative hover:bg-four'>
-      {isArabic ? (
-        <>
-             <td className="w-[400px] h-[56px] flex items-center justify-around px-2">
-                  <select
-                    className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === "accept") {
-                        handleAccept(item.id);
-                      } else if (value === "reject") {
-                        handleReject(item.id);
-                      }
-                    }}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      أختر
-                    </option>
-                    <option value="accept">قبول</option>
-                    <option value="reject">رفض</option>
-                  </select>
-                  </td>
-          <td className="w-[143px] h-[56px] text-right px-1">  
-          <span className="bg-eight rounded-circle px-2 py-1 text-one">
-            {item?.status ?? "N/A"}
-            </span>
-          </td>
-          <td className="w-[143px] h-[56px] font-medium text-right px-1">
-            {item?.orgnization?.name ?? "N/A"}
-          </td>
-          <td className="w-[143px] h-[56px] text-right px-1">
-            {item?.event?.name ?? "N/A"}
-          </td>
-          
-        
-          <td className="w-[150px] h-[56px] text-right ">
-                  {item?.task?.name ?? "N/A"}
-                </td>
-                <td className="flex flex-col w-[250px] absolute top-1 left-10 h-[56px] p-1 gap-1 items-end">
-                <span className="text-[12px]">
-                    {item?.user?.name ?? "N/A"}
-                  </span>
-                  <span className="text-[10px]">
-                    {item?.user?.email ?? "N/A"}
-                  </span>
-                </td>
-                <td className="w-[280px] h-[56px]  lg:text-[12px] xl:text-[12px] items-center ">
-                  {item?.request_type ?? "N/A"}
-                </td>
-          <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
-          {(currentPage - 1) * rowsPerPage + index + 1}
-          </td>
-        </>
-      ) : (
-        <>
-       <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-                  {(currentPage - 1) * rowsPerPage + index + 1}
-                </td>
-                <td className="w-[75px] h-[56px] lg:text-[12px]  xl:text-[12px]">
-                  {item?.request_type ?? "N/A"}
-                </td>
-                <td className="flex flex-col w-[250px] absolute top-1 h-[56px] p-1 gap-1">
-                  <span className="text-[12px]">
-                    {item?.user?.name ?? "N/A"}
-                  </span>
-                  <span className="text-[10px]">
-                    {item?.user?.email ?? "N/A"}
-                  </span>
-                </td>
-                <td className="w-[250px] h-[56px] lg:text-[12px] xl:text-[14px]">
-                  {item?.task?.name ?? "N/A"}
-                </td>
-                <td className="w-[200px] h-[56px]  lg:text-[12px] xl:text-[14px]">
-                  {item?.event?.name ?? "N/A"}
-                </td>
-                <td className="w-[250px] h-[56px] lg:text-[12px] xl:text-[14px]">
-                  {item?.orgnization?.name ?? "N/A"}
-                </td>
-                <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px] text-three ">
-                  <span className="bg-eight rounded-circle px-2 py-1">
-                    {item?.status ?? "N/A"}
-                  </span>
-                </td>
-                <td className="w-[400px] h-[56px] flex items-center justify-around px-2">
-                  <select
-                    className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === "accept") {
-                        handleAccept(item.id);
-                      } else if (value === "reject") {
-                        handleReject(item.id);
-                      }
-                    }}
-                    defaultValue=""
-                  >
-                   <option value="" disabled>
-                      Select
-                    </option>
-                    <option value="accept">Accept</option>
-                    <option value="reject">Reject</option>
-                  </select>
-                  </td>
-        </>
-      )}
-    </tr>
-  ))}
-</tbody>
+            </thead>
+            <tbody>
+              {paginatedData.map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-y hover:border-3 relative hover:bg-four"
+                ></tr>
+              ))}
+            </tbody>
 
-        </table>
+            <tbody dir={isArabic ? "rtl" : "ltr"}>
+              {paginatedData.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className="border-y border-x hover:border-3  relative hover:bg-four"
+                >
+                  {isArabic ? (
+                    <>
+                      <td className=" h-[56px] flex items-center justify-end px-2">
+                        <select
+                          className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === "accept") {
+                              handleAccept(item.id);
+                            } else if (value === "reject") {
+                              handleReject(item.id);
+                            }
+                          }}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            أختر
+                          </option>
+                          <option value="accept">قبول</option>
+                          <option value="reject">رفض</option>
+                        </select>
+                      </td>
+                      <td className="py-4 px-3">
+                        <span className="bg-eight rounded-circle px-2 py-1 text-one">
+                          {item?.status ?? "N/A"}
+                        </span>
+                      </td>
+                      <td className="py-4 px-3">
+                        {truncateTextar(item?.orgnization?.name)}
+                      </td>
+                      <td className="py-4 px-3 h-[56px] ">
+                        {truncateTextar(item?.event?.name) }
+                      </td>
+
+                      <td className="py-4 px-3 h-[56px] ">
+                        {truncateTextar(item?.task?.name)}
+                      </td>
+                      <td className="py-4 px-3 ">
+                        <div className="flex gap-0.5 flex-col">
+                          <span className="text-[12px]">
+                            {truncateTextar(item?.user?.name) }
+                          </span>
+                          <span className="text-[10px]">
+                            {truncateTextar(item?.user?.email) }
+                          </span>
+                        </div>
+                      </td>
+                      <td className=" h-[56px]  lg:text-[12px] xl:text-[12px] items-center ">
+                        {truncateTextar(item?.request_type) }
+                      </td>
+                      <td className=" h-[56px] font-bold text-[12px] text-left px-3">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className=" h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+                      <td className="h-[56px] lg:text-[12px]  xl:text-[12px]">
+                        {truncateText(item?.request_type) }
+                      </td>
+                      <td className="py-2 px-3">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[12px]">
+                            {truncateText(item?.user?.name) }
+                          </span>
+                          <span className="text-[10px]">
+                            {truncateText(item?.user?.email)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className=" h-[56px] lg:text-[12px] xl:text-[14px]">
+                        {truncateText(item?.task?.name) }
+                      </td>
+                      <td className=" h-[56px]  lg:text-[12px] xl:text-[14px]">
+                        {truncateText(item?.event?.name) }
+                      </td>
+                      <td className="h-[56px] lg:text-[12px] xl:text-[14px]">
+                        {truncateText(item?.orgnization?.name)}
+                      </td>
+                      <td className=" h-[56px] lg:text-[12px] xl:text-[14px] text-three ">
+                        <span className="bg-eight rounded-circle px-2 py-1">
+                          {item?.status ?? "N/A"}
+                        </span>
+                      </td>
+                      <td className="h-[56px] flex items-center justify-start  px-2">
+                        <select
+                          className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === "accept") {
+                              handleAccept(item.id);
+                            } else if (value === "reject") {
+                              handleReject(item.id);
+                            }
+                          }}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            Select
+                          </option>
+                          <option value="accept">Accept</option>
+                          <option value="reject">Reject</option>
+                        </select>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className="flex justify-center mt-4">
         <Pagination

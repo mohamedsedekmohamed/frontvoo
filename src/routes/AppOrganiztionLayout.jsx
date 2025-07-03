@@ -24,6 +24,11 @@ import Addtasksor from '../Addorganiztion/Addtasksor';
 import { useTranslation } from 'react-i18next';
 import '../translation/i18n'; 
 import Home from '../pages/Organiztion/HomeOr'
+import AddProjector from '../Addorganiztion/AddProjector'
+import ProjectOr from '../pages/Organiztion/ProjectOr'
+import AddFeedsor from '../Addorganiztion/AddFeedsor'
+import Feedsor from '../pages/Organiztion/Feedsor'
+import Newnotificationor from '../pages/Organiztion/Newnotificationor';
 const AppOrganiztionLayout = ({setorganiztionLayout,setIsLoggedIn}) => {
   // App.jsx
      const {  i18n } = useTranslation();
@@ -68,6 +73,12 @@ useEffect(() => {
        <Route path="addeventsor" element={<Addeventsor />} />
        <Route path="addtasksor" element={<Addtasksor />} />
        {/* datalis */}
+       <Route path="projectOr" element={<ProjectOr />} />
+       <Route path="addProjector" element={<AddProjector />} />
+       <Route path="Feedsor" element={<Feedsor />} />
+       <Route path="AddFeedsor" element={<AddFeedsor />} />
+       {/*  */}
+       <Route path="newnotificationor" element={<Newnotificationor />} />
     </Route>
     
       </Routes>

@@ -150,6 +150,10 @@ const Organizeation = () => {
       XLSX.utils.book_append_sheet(workbook, worksheet, "VooOrganizeation");
       XLSX.writeFile(workbook, "VooOrganizeation.xlsx");
 };
+const truncateText = (text, maxLength = 15) => {
+  if (!text) return "N/A";
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
   return (
  <div>
       <div className='flex justify-between items-center'>
@@ -195,47 +199,50 @@ const Organizeation = () => {
                    </button>
           </div>
         </div>
-   <div className="mt-10  block">
-        <table className="w-full border-y border-x border-black">
+ 
+<div className="mt-10 block text-left">
+  <div className="min-w-[800px]">
+            <table className="w-full border-y border-x border-black">
           <thead className="w-full">
-            <tr className='bg-four w-[1012px] h-[56px]'>
-              <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">Organization</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Gmail</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Country</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">City</th>
-               <th className="w-[158px] h-[56px] text-[16px] border-b text-left">Status</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
-              <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
+            <tr className='bg-four '>
+              <th className="py-4 px-3">S/N</th>
+              <th className="py-4 px-3">Organization</th>
+              <th className="py-4 px-3">Gmail</th>
+              <th className="py-4 px-3">Country</th>
+              <th className="py-4 px-3">City</th>
+              <th className="py-4 px-3">join date</th>
+               <th className="py-4 px-3">Status</th>
+              <th className="py-4 px-3">Details</th>
+              <th className="py-4 px-3">Action</th>
          </tr>
           </thead>
           <tbody>
             {paginatedData.map((item, index) => (
               <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
-                <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
+                <td className=" font-bold lg:text-[12px] xl:text-[12px] py-2 px-3">
                 {(currentPage - 1) * rowsPerPage + index + 1}
                 </td>
-                <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
-    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-      {item?.name ?? "N/A"}
-    </span>
-    <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-      {item?.phone ?? "N/A"}
-    </span>
+  <td className="py-2 px-3 text-[12px]">
+  <div className="flex flex-col justify-center">
+      <span>{truncateText(item?.name)}</span>
+      <span>{truncateText(item?.phone)}</span>
+    </div>
+  </td>
+ <td className="py-2 px-3">
+    {truncateText(item?.email)}
   </td>
 
+  <td className="py-2 px-3">
+    {truncateText(item?.country?.name)}
+  </td>
 
-  <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[12px]">
-    {item?.email ?? "N/A"}
+  <td className="py-2 px-3">
+    {truncateText(item?.city?.name)}
   </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-    {item?.country?.name ?? "N/A"}
-  </td>
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-    {item?.city?.name ?? "N/A"}
-  </td>
-  
-<td className="w-[143px] text-[12px] align-middle  text-six">
+ <td className="py-2 px-3 ">
+{item?.created_at ? new Date(item.created_at).toISOString().split('T')[0] : "N/A"}  </td>
+
+  <td className="py-2 px-3 text-six">
   <label className="inline-flex items-center cursor-pointer">
     <input
       type="checkbox"
@@ -255,13 +262,13 @@ const Organizeation = () => {
   </label>
 </td>
 
-  <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+  <td className="py-2 px-3 text-[12px] align-middle">
   <button className='underline ' onClick={() => navigate('/admin/organizeationdatali', { state: { sendData: item.id } })}>
    Details
 </button>
 
     </td>
-                <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
+                <td className=" h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
                   <CiEdit
                     className="w-[24px] h-[24px] text-six cursor-pointer"
                     onClick={() => handleEdit(item.id)}
@@ -275,6 +282,7 @@ const Organizeation = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
           <div className="flex justify-center mt-4">
         <Pagination

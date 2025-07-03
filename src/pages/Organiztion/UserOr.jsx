@@ -115,6 +115,7 @@ const UserOr = () => {
     "Filter",
     "name",
     "email",
+    "age",
     "phone",
     "country.name",
     "city.name",
@@ -123,6 +124,7 @@ const UserOr = () => {
   const labelMap = {
     Filter: t("Filter"),
     name: t("User"),
+    age: t("age"),
     email: t("Email"),
     phone: t("Phone"),
     "country.name": t("Country"),
@@ -141,6 +143,15 @@ const UserOr = () => {
   const handleEdit = (id) => {
     navigate("/organizeation/adduser", { state: { sendData: id } });
   };
+  const truncateText = (text, maxLength = 15) => {
+  if (!text) return "N/A";
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
+  const truncateTextar = (text, maxLength = 15) => {
+  if (!text) return "N/A";
+  return text.length > maxLength ? "..."+ text.slice(0, maxLength)  : text;
+};
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -166,7 +177,7 @@ const UserOr = () => {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="flex justify-center w-20 text-[16px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -186,191 +197,159 @@ const UserOr = () => {
           </button>
         </div>
       </div>
+<div className="mt-10 block text-left overflow-x-auto">
+  <div className="min-w-[800px]">
+    <table className="w-full border-y border-x border-black">
+      <thead dir={isArabic ? "rtl" : "ltr"}>
+        <tr className="bg-four">
+          {isArabic ? (
+            <>
+              <th className="py-4 px-3">الإجراء</th>
+              <th className="py-4 px-3">الحالة</th>
+              <th className="py-4 px-3">المؤسسة</th>
+              <th className="py-4 px-3">تفاصيل</th>
+              <th className="py-4 px-3">المدينة</th>
+              <th className="py-4 px-3">الدولة</th>
+              <th className="py-4 px-3">الإيميل</th>
+              <th className="py-4 px-3">العمر</th>
+              <th className="py-4 px-3">المستخدم</th>
+              <th className="py-4 px-3">رقم</th>
+            </>
+          ) : (
+            <>
+              <th className="py-4 px-3">S/N</th>
+              <th className="py-4 px-3">User</th>
+              <th className="py-4 px-3">Age</th>
+              <th className="py-4 px-3">Gmail</th>
+              <th className="py-4 px-3">Country</th>
+              <th className="py-4 px-3">City</th>
+              <th className="py-4 px-3">Details</th>
+              <th className="py-4 px-3">Organization</th>
+              <th className="py-4 px-3">Status</th>
+              <th className="py-4 px-3">Action</th>
+            </>
+          )}
+        </tr>
+      </thead>
 
-      <div className="mt-10  block ">
-        <table className="w-full border-y border-x border-black">
-          <thead className="w-full" dir={isArabic ? "rtl" : "ltr"}>
-            <tr className="bg-four w-[1012px] h-[56px] text-one">
-              {isArabic ? (
-                <>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    الإجراء
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    الحالة
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    المؤسسة
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    تفاصيل
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    المدينة
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">
-                    الدولة
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">
-                    الإيميل
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">
-                    المستخدم
-                  </th>
-                  <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">
-                    رقم
-                  </th>
-                </>
-              ) : (
-                <>
-                  <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">
-                    S/N
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">
-                    User
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Gmail
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Country
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    City
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
+      <tbody dir={isArabic ? "rtl" : "ltr"}>
+        {paginatedData.map((item, index) => (
+          <tr
+            key={item.id}
+            className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
+          >
+            {isArabic ? (
+              <>
+                <td className=" h-[56px] py-2 px-3">
+                  <RiDeleteBin6Line
+                    className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
+                    onClick={() => handleDelete(item.id, item.name)}
+                  />
+                </td>
+                <td className="py-2 px-3 text-green-600">
+                  {truncateTextar(item?.account_status) }
+                </td>
+                <td className="py-2 px-3">
+                  {truncateTextar(item?.orgnization?.name)}
+                </td>
+                <td className="py-2 px-3">
+                  <button
+                    className="underline"
+                    onClick={() =>
+                      navigate("/organizeation/userDetails", {
+                        state: { sendData: item.id },
+                      })
+                    }
+                  >
+                    التفاصيل
+                  </button>
+                </td>
+                <td className="py-2 px-3">
+                  {truncateTextar(item?.city?.name)}
+                </td>
+                <td className="py-2 px-3">
+                  {truncateTextar(item?.country?.name)}
+                </td>
+                <td className="py-2 px-3">
+                  {truncateTextar(item?.email)}
+                </td>
+                <td className="py-2 px-3">
+                  {truncateTextar(item?.age)}
+                </td>
+                <td className=" h-[56px] px-1 text-end">
+                  <div className="flex flex-col gap-1 items-end">
+                    <span className="text-[12px] font-normal">
+                      {truncateTextar(item?.name) }
+                    </span>
+                    <span className="text-[12px] font-normal">
+                      { truncateTextar(item?.phone)}
+                    </span>
+                  </div>
+                </td>
+                <td className="py-2 px-3">
+                  {(currentPage - 1) * rowsPerPage + index + 1}
+                </td>
+              </>
+            ) : (
+              <>
+                <td className="py-2 px-3">
+                  {(currentPage - 1) * rowsPerPage + index + 1}
+                </td>
+                <td className=" h-[56px] py-2 px-3">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[12px] font-normal">
+                      {truncateText(item?.name)}
+                    </span>
+                    <span className="text-[12px] font-normal">
+                      {truncateText(item?.phone)}
+                    </span>
+                  </div>
+                </td>
+                <td className=" h-[56px] text-[12px]">
+                  {truncateText(item?.age) }
+                </td>
+                <td className=" h-[56px] text-[12px]">
+                  {truncateText(item?.email) }
+                </td>
+                <td className=" h-[56px] text-[12px] px-1">
+                  {truncateText(item?.country?.name)}
+                </td>
+                <td className="h-[56px] text-[12px] px-1">
+                  {truncateText(item?.city?.name) }
+                </td>
+                <td className=" h-[56px] text-[12px] px-1">
+                  <button
+                    className="underline"
+                    onClick={() =>
+                      navigate("/organizeation/userDetails", {
+                        state: { sendData: item.id },
+                      })
+                    }
+                  >
                     Details
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Orgnization
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Status
-                  </th>
-                  <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">
-                    Action
-                  </th>
-                </>
-              )}
-            </tr>
-          </thead>
+                  </button>
+                </td>
+                <td className=" h-[56px] text-[12px] font-medium px-1">
+                  {truncateText(item?.orgnization?.name)}
+                </td>
+                <td className=" h-[56px] text-[12px] text-six px-1">
+                  {item?.account_status ?? "N/A"}
+                </td>
+                <td className=" h-[56px] flex justify-start items-center px-1">
+                  <RiDeleteBin6Line
+                    className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+                    onClick={() => handleDelete(item.id, item.name)}
+                  />
+                </td>
+              </>
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-          <tbody dir={isArabic ? "rtl" : "ltr"}>
-            {paginatedData.map((item, index) => (
-              <tr
-                key={item.id}
-                className="border-y border-x hover:border-3  relative hover:bg-four"
-              >
-                {isArabic ? (
-                  <>
-                    <td className="w-[143px] h-[56px] flex justify-start px-5 items-center">
-                      <RiDeleteBin6Line
-                        className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                        onClick={() => handleDelete(item.id, item.name)}
-                      />
-                      {/* <CiEdit
-                        className="w-[24px] h-[24px] text-six cursor-pointer"
-                        onClick={() => handleEdit(item.id)}
-                      /> */}
-                    </td>
-                    <td className="w-[143px] h-[56px] text-six text-right px-1">
-                      {item?.account_status ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] font-medium text-right px-1">
-                      {item?.orgnization?.name ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] text-right px-1">
-                      <button
-                        className="underline"
-                        onClick={() =>
-                          navigate("/organizeation/userDetails", {
-                            state: { sendData: item.id },
-                          })
-                        }
-                      >
-                        التفاصيل
-                      </button>
-                    </td>
-                    <td className="w-[143px] h-[56px] text-right px-1">
-                      {item?.city?.name ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] text-right px-1">
-                      {item?.country?.name ?? "N/A"}
-                    </td>
-
-                    <td className="w-[150px] h-[56px] text-[12px] text-end ">
-                      {item?.email ?? "N/A"}
-                    </td>
-
-                    <td className="flex flex-col w-[143px] absolute top-1 left-10 h-[56px] p-1 gap-1 items-end">
-                      <span className="text-[12px] font-normal px-1">
-                        {item?.name ?? "N/A"}
-                      </span>
-                      <span className="text-[12px] font-normal px-1">
-                        {item?.phone ?? "N/A"}
-                      </span>
-                    </td>
-                    <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
-                    </td>
-                    <td className="flex flex-col w-[143px] absolute top-1 h-[56px] p-1 gap-1">
-                      <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-                        {item?.name ?? "N/A"}
-                      </span>
-                      <span className="lg:text-[12px] xl:text-[12px] font-normal px-1">
-                        {item?.phone ?? "N/A"}
-                      </span>
-                    </td>
-                    <td className="w-[160px] h-[56px] lg:text-[12px] ">
-                      {item?.email ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-                      {item?.country?.name ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[14px] px-1">
-                      {item?.city?.name ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
-                      <button
-                        className="underline "
-                        onClick={() =>
-                          navigate("/organizeation/userDetails", {
-                            state: { sendData: item.id },
-                          })
-                        }
-                      >
-                        Details
-                      </button>
-                    </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] font-medium px-1">
-                      {item?.orgnization?.name ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] text-six px-1">
-                      {item?.account_status ?? "N/A"}
-                    </td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-                      {/* <CiEdit
-                        className="w-[24px] h-[24px] text-six cursor-pointer"
-                        onClick={() => handleEdit(item.id)}
-                      /> */}
-                      <RiDeleteBin6Line
-                        className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-                        onClick={() => handleDelete(item.id, item.name)}
-                      />
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
       <div className="flex justify-center mt-4">
         <Pagination
           count={pageCount}

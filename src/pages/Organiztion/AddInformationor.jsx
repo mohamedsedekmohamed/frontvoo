@@ -105,7 +105,7 @@ if(checkflag!==flag)newUser.avatar_image=flag
         },
       })
         .then(() => {
-          toast.success('organizeation updated successfully');
+          toast.success('Organizeation updated successfully');
           setTimeout(() => {
             navigate(-1);
           }, 3000);

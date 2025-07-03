@@ -215,7 +215,7 @@ if(sendData){
       </div>
     );
   }
-
+ 
   return (
     <div dir={isArabic ? 'rtl' : 'ltr'}>
       <ToastContainer />

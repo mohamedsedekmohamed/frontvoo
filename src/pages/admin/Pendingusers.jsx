@@ -135,6 +135,10 @@ import Pagination from '@mui/material/Pagination';
           "user.email": "email",
           "status": "status",
         };
+          const truncateText = (text, maxLength = 15) => {
+    if (!text) return "N/A";
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
   return (
     <div><div className='flex justify-between items-center'>
             <div className='relative items-center'>
@@ -171,43 +175,47 @@ import Pagination from '@mui/material/Pagination';
             </div>
           </div>
           
-            <div className="mt-10  block">
-                 <table className="w-full border-y border-x border-black">
-                   <thead className="w-full">
-                     <tr className='bg-four w-[1012px] h-[56px]'>
-                       <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-                       <th className="w-[200px] h-[56px] text-[16px] border-b text-left">User</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Orgnization</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Accept</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Reject</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Status</th>
-                       <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
+            <div className="mt-10 block text-left">
+        <div className="min-w-[800px]">
+          <table className="w-full border-y border-x border-black">
+            <thead className="w-full">
+              <tr className="bg-four ">
+                       <th className="py-4 px-3">S/N</th>
+                       <th className="py-4 px-3">User</th>
+                       <th className="py-4 px-3">Orgnization</th>
+                       <th className="py-4 px-3">Accept</th>
+                       <th className="py-4 px-3">Reject</th>
+                       <th className="py-4 px-3">Status</th>
+                       <th className="py-4 px-3">Details</th>
          
                      </tr>
                    </thead>
                    <tbody>
                      {paginatedData.map((item, index) => (
-                       <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
-                         <td className="w-[30px] h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-                         {(currentPage - 1) * rowsPerPage + index + 1}
-                         </td>
+                      <tr
+                  key={item.id}
+                  className="border-y hover:border-3 relative hover:bg-four"
+                >
+                  <td className="py-4 px-3 font-bold">
+                    {(currentPage - 1) * rowsPerPage + index + 1}
+                  </td>
                          <td className="flex flex-col w-[200px] absolute top-1 h-[56px] p-1 gap-1">
                            <span className='text-[12px]'>
                              {item?.user?.name ?? "N/A"}
                            </span>
                            <span className='text-[10px]'>
-                             {item?.user?.email ?? "N/A"}
+                             {truncateText(item?.user?.email)}
                            </span>
                          </td>
-                         <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">{item?.orgnization?.name ?? "N/A"}</td>
-                         <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
+                         <td className="py-4 px-3">{truncateText(item?.orgnization?.name)}</td>
+                         <td className="h-[56px] lg:text-[12px] xl:text-[14px]">
                            <button className='text-white bg-three px-2 py-1 rounded-full' onClick={() => accept(item.id, item?.user?.name)}>Accept</button>
                          </td>
-                         <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px]">
+                         <td className="h-[56px] lg:text-[12px] xl:text-[14px]">
                            <button className='text-white bg-three px-2 py-1 rounded-full' onClick={() => reject(item.id, item?.user?.name)}>Reject</button>
                          </td>
-                         <td className="w-[160px] h-[56px] lg:text-[12px] xl:text-[14px] text-three "> <span className='bg-eight rounded-circle px-2 py-1'>{item?.status ?? "N/A"}</span></td>
-                         <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+                         <td className="h-[56px] lg:text-[12px] xl:text-[14px] text-three "> <span className='bg-eight rounded-circle px-2 py-1'>{item?.status ?? "N/A"}</span></td>
+                         <td className="h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
                            <button className='underline ' onClick={() => navigate('/admin/pendingusersDetaklis', { state: { sendData: item.id } })}>
                            details                           </button>
          
@@ -217,6 +225,7 @@ import Pagination from '@mui/material/Pagination';
                      ))}
                    </tbody>
                  </table>
+               </div>
                </div>
             <div className="flex justify-center mt-4">
                  <Pagination

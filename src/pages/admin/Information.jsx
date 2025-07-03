@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaCrown } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from 'react-router-dom';
+import { FaUserEdit } from "react-icons/fa";
 
 const Information = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -45,6 +46,9 @@ const Information = ({ setIsLoggedIn }) => {
         <button onClick={handleLogout} className='absolute top-4 right-3'>
           <CiLogout className="text-one text-3xl" />
         </button>
+          <button onClick={() => navigate('/admin/AddInformation')} className={`absolute top-16 right-3`}>
+                  <FaUserEdit className="text-one text-3xl" />
+                </button>
       </div>
 
       <div className='mt-5 w-full flex-wrap flex gap-2'>
@@ -60,7 +64,7 @@ const Information = ({ setIsLoggedIn }) => {
             <span className='text-[20px] font-normal text-one'>Phone Number: {data.phone || "No phone"}</span>
             <span className='text-[20px] font-normal text-one'>Birth Date: {data.birth || "No birthdate"}</span>
             <span className='text-[20px] font-normal text-one'>Gender: {data.gender || "No gender"}</span>
-          </div>
+             </div>
         </div>
       </div>
     </div>

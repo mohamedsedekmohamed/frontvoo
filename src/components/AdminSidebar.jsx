@@ -14,6 +14,10 @@ import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
 import { FaPersonMilitaryToPerson } from "react-icons/fa6";
 import { PiCityFill } from "react-icons/pi";
 import { FaTasks } from "react-icons/fa";
+import { MdDynamicFeed } from "react-icons/md";
+import { LuScrollText } from "react-icons/lu";
+import { AiFillNotification } from "react-icons/ai";
+
 const links = [
   {
     to: "home",
@@ -69,6 +73,27 @@ const links = [
     icon: <HiOutlineSignal />,
     iconActive: <HiOutlineSignal />
   },
+    {
+      to: "feeds",
+      name: "New Feeds",
+      icon: <MdDynamicFeed  />,
+      iconActive: <MdDynamicFeed variant/>
+  
+    },
+    {
+      to: "notification",
+      name: "Notification",
+      icon: <AiFillNotification  />,
+      iconActive: <AiFillNotification variant/>
+  
+    },
+    {
+      to: "policies",
+      name: "Policies ",
+      icon: <LuScrollText  />,
+      iconActive: <LuScrollText variant/>
+  
+    },
   {
     to: "pendingusers",
     name: "Pending users",
@@ -104,6 +129,9 @@ const AdminSidebar = ({setIsOpen,isOpen}) => {
       '/admin/addcity': '/admin/city',
       '/admin/addzone': '/admin/zone',
       '/admin/pendingusersDetaklis': '/admin/pendingusers',
+      '/admin/addfeeds': '/admin/feeds',
+      '/admin/addpolicies': '/admin/policies',
+      '/admin/addotification': '/admin/notification',
     };
   
     const newPath = customPaths[location.pathname] || location.pathname;

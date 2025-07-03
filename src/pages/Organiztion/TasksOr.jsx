@@ -132,7 +132,15 @@ const TasksOr = () => {
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
       );
-      
+       const truncateText = (text, maxLength = 15) => {
+  if (!text) return "N/A";
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
+  const truncateTextar = (text, maxLength = 15) => {
+  if (!text) return "N/A";
+  return text.length > maxLength ? "..."+ text.slice(0, maxLength)  : text;
+};
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -185,49 +193,50 @@ const TasksOr = () => {
           </button>
         </div>
       </div>
-      <div className="mt-10  block">
-        <table className="w-full border-y border-x border-black">
-          <thead className="w-full">
-          <tr className='bg-four w-[1012px] h-[56px] text-one'>
+   <div className="mt-10 block text-left overflow-x-auto">
+  <div className="min-w-[800px]">
+    <table className="w-full border-y border-x border-black">
+      <thead dir={isArabic ? "rtl" : "ltr"} >
+        <tr className="bg-four">
               
               {isArabic ? (
       <>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الإجراء</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right">العمليات</th>
+        <th className="py-4 px-3">الإجراء</th>
+        <th className="py-4 px-3">العمليات</th>
 
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">تفاصيل</th>
+        <th className="py-4 px-3">تفاصيل</th>
 
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الوقت</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-right pr-3">الوصف</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">الميعاد</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pr-3">المهمة</th>
-        <th className="w-[30px] h-[56px] text-[16px] border-b text-right p-2">رقم</th>
+        <th className="py-4 px-3">الوقت</th>
+        <th className="py-4 px-3">الوصف</th>
+        <th className="py-4 px-3">الميعاد</th>
+        <th className="py-4 px-3">المهمة</th>
+        <th className="py-4 px-3">رقم</th>
       </>
     ) : (
       <>
-        <th className="w-[30px] h-[56px] text-[16px] border-b text-left pl-3">S/N</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left pl-3">Task</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Time</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Description</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Date</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Details</th>
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Operation</th>
+        <th className="py-4 px-3">S/N</th>
+        <th className="py-4 px-3">Task</th>
+        <th className="py-4 px-3">Time</th>
+        <th className="py-4 px-3">Description</th>
+        <th className="py-4 px-3">Date</th>
+        <th className="py-4 px-3">Details</th>
+        <th className="py-4 px-3">Operation</th>
 
-        <th className="w-[158px] h-[56px] text-[16px] border-b text-oneborder-b text-left">Action</th>
+        <th className="py-4 px-3">Action</th>
       </>
     )}
             </tr>
           </thead>
           <tbody>
             {paginatedData.map((item, index) => (
-              <tr
-                key={item.id}
-                className="border-y hover:border-3 relative hover:bg-four"
-              >
+            <tr
+            key={item.id}
+            className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
+          >
            
   {isArabic ? (
     <>
-      <td className="w-[143px] h-[56px] flex justify-start px-5 items-center">
+                    <td className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
         <RiDeleteBin6Line
           className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
           onClick={() => handleDelete(item.id, item.name)}
@@ -237,13 +246,13 @@ const TasksOr = () => {
           onClick={() => handleEdit(item.id)}
         />
       </td>
-      <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+                <td className="py-2 px-3">
   <button className='underline ' onClick={() => navigate('/organizeation/operationTasksOr', { state: { sendData: item.id } })}>
   عملية 
 </button>
 
     </td>
-      <td className="w-[143px] h-[56px]  text-right px-1">
+                <td className="py-2 px-3">
         <button
           className="underline"
           onClick={() =>
@@ -255,40 +264,40 @@ const TasksOr = () => {
           التفاصيل
         </button>
       </td>
-      <td className="w-[160px] h-[56px] text-right   px-1">
-        {item?.start_time ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateTextar(item?.start_time) }
       </td>
-      <td className="w-[160px] h-[56px] text-right txet-[10px] px-1">
-        {item?.description ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateTextar(item?.description) }
       </td>
-      <td className="w-[160px] h-[56px] text-left px-1">
-        {item?.date ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateTextar(item?.date)}
       </td>
-      <td className="w-[160px] h-[56px] text-left px-1">
-        {item?.name ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateTextar(item?.name) }
       </td>
-      <td className="w-[30px] h-[56px] font-bold text-[12px] text-left px-3">
+                <td className="py-2 px-3">
       {(currentPage - 1) * rowsPerPage + index + 1}
       </td>
     </>
   ) : (
     <>
-      <td className="w-[30px] h-[56px] font-bold text-[12px] px-3">
+                <td className="py-2 px-3">
       {(currentPage - 1) * rowsPerPage + index + 1}
       </td>
-      <td className="w-[160px] h-[56px] px-1">
-        {item?.name ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateText(item?.name)}
       </td>
-      <td className="w-[160px] h-[56px] px-1">
-        {item?.start_time ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateText(item?.start_time)}
       </td>
-      <td className="w-[160px] h-[56px] txet-[10px]  px-1">
-        {item?.description ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateText(item?.description )}
       </td>
-      <td className="w-[160px] h-[56px] px-1">
-        {item?.date ?? "N/A"}
+                <td className="py-2 px-3">
+        {truncateText(item?.date) }
       </td>
-      <td className="w-[143px] h-[56px] px-1">
+                <td className="py-2 px-3">
         <button
           className="underline"
           onClick={() =>
@@ -300,13 +309,13 @@ const TasksOr = () => {
           Details
         </button>
       </td>
-      <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
+                <td className="py-2 px-3">
   <button className='underline ' onClick={() => navigate('/organizeation/operationTasksOr', { state: { sendData: item.id } })}>
   operation
 </button>
 
     </td>
-      <td className="w-[143px] h-[56px] flex justify-start items-center px-5">
+      <td className=" h-[56px] flex justify-start items-center px-5">
         <CiEdit
           className="w-[24px] h-[24px] text-six cursor-pointer"
           onClick={() => handleEdit(item.id)}
@@ -324,6 +333,7 @@ const TasksOr = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
       
        <div className="flex justify-center mt-4">

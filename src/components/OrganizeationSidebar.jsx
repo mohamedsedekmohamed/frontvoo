@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { VscGitPullRequestGoToChanges } from "react-icons/vsc";
 import { FaPersonMilitaryToPerson } from "react-icons/fa6";
 import { IoMdHome } from "react-icons/io";
+import { VscProject } from "react-icons/vsc";
+import { MdDynamicFeed } from "react-icons/md";
 
 const links = [
 {
@@ -43,6 +45,20 @@ const links = [
 
   },
   {
+    to: "projectOr",
+    name: "Project",
+    icon: <VscProject  />,
+    iconActive: <VscProject variant/>
+
+  },
+  {
+    to: "Feedsor",
+    name: "NewFeeds",
+    icon: <MdDynamicFeed  />,
+    iconActive: <MdDynamicFeed variant/>
+
+  },
+  {
    
        to: "pendingusers",
        name: "Pending",
@@ -71,6 +87,8 @@ const AdminSidebar = () => {
       '/organizeation/pendingusersDetaklis': '/organizeation/pendingusers',
       '/organizeation/OperationOr': '/organizeation/events',
       '/organizeation/operationTasksOr': '/organizeation/tasks',
+      '/organizeation/addProjector': '/organizeation/projectOr',
+      '/organizeation/AddFeedsor': '/organizeation/Feedsor',
     };
   
     const newPath = customPaths[location.pathname] || location.pathname;
