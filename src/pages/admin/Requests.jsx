@@ -206,6 +206,73 @@ const Requests = () => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
+  const handleBulkAction = (action) => {
+  const token = localStorage.getItem("token");
+  const label = action === "accept" ? "Accepted" : "Rejected";
+
+  Swal.fire({
+    title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const requests = selectedIds.map((id) =>
+        axios.put(
+          `https://backndVoo.voo-hub.com/api/admin/request/${action}/${id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+      );
+
+      Promise.all(requests)
+        .then(() => {
+          setUpdate((prev) => !prev);
+          setSelectedIds([]);
+          Swal.fire(`${label}!`, `All selected requests have been ${label.toLowerCase()}.`, "success");
+        })
+        .catch(() => {
+          Swal.fire("Error", "One or more requests failed.", "error");
+        });
+    }
+  });
+};
+
+const handleBulkDelete = () => {
+  const token = localStorage.getItem("token");
+
+  Swal.fire({
+    title: `Are you sure you want to delete ${selectedIds.length} requests?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const requests = selectedIds.map((id) =>
+        axios.delete(`https://backndVoo.voo-hub.com/api/admin/request/delete/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      );
+
+      Promise.all(requests)
+        .then(() => {
+          setUpdate((prev) => !prev);
+          setSelectedIds([]);
+          Swal.fire("Deleted!", "Selected requests have been deleted.", "success");
+        })
+        .catch(() => {
+          Swal.fire("Error", "Some deletions failed.", "error");
+        });
+    }
+  });
+};
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -271,11 +338,34 @@ const Requests = () => {
           </button>
         </div>
       </div>
+      {selectedIds.length > 0 && (
+  <div className="flex gap-2 mt-4">
+    <button
+      className="bg-one/60 text-white px-4 py-2 rounded"
+      onClick={() => handleBulkAction("accept")}
+    >
+      Accept Selected
+    </button>
+    <button
+      className="bg-one/70 text-white px-4 py-2 rounded"
+      onClick={() => handleBulkAction("reject")}
+    >
+      Reject Selected
+    </button>
+    <button
+      className="bg-one/80 text-white px-4 py-2 rounded"
+      onClick={() => handleBulkDelete()}
+    >
+      Delete Selected
+    </button>
+  </div>
+)}
       <div className="mt-10 block text-left">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
             <thead className="w-full">
               <tr className="bg-four w-[1012px] h-[56px]">
+
                 <th className="py-4 px-3">S/N</th>
                 <th className="py-4 px-3 ">Type</th>
                 <th className="py-4 px-3 ">User</th>
@@ -291,7 +381,20 @@ const Requests = () => {
     onChange={(e) => {
       if (e.target.checked) {
         setSelectedIds(paginatedData.map(item => item.id));
+      } else {<th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
       } else {
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
+
         setSelectedIds([]);
       }
     }}
@@ -392,6 +495,7 @@ const Requests = () => {
                       />
                     </div>
                   </td>
+                  
                 </tr>
               ))}
             </tbody>

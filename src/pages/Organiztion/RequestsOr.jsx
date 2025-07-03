@@ -8,6 +8,7 @@ import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import Pagination from "@mui/material/Pagination";
+import Swal from "sweetalert2";
 
 const RequestsOr = () => {
   const [data, setData] = useState([]);
@@ -16,6 +17,7 @@ const RequestsOr = () => {
   const [selectedFilter, setSelectedFilter] = useState("");
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -137,6 +139,42 @@ const RequestsOr = () => {
     if (!text) return "N/A";
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
+  const handleBulkAction = (action) => {
+  const token = localStorage.getItem("token");
+  const label = action === "accept" ? "Accepted" : "Rejected";
+
+  Swal.fire({
+    title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const requests = selectedIds.map((id) =>
+        axios.put(
+          `https://backndVoo.voo-hub.com/api/orgnization/request/${action}/${id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+      );
+
+      Promise.all(requests)
+        .then(() => {
+          setUpdate((prev) => !prev);
+          setSelectedIds([]);
+          Swal.fire(`${label}!`, `All selected requests have been ${label.toLowerCase()}.`, "success");
+        })
+        .catch(() => {
+          Swal.fire("Error", "One or more requests failed.", "error");
+        });
+    }
+  });
+};
+
 
   return (
     <div>
@@ -174,7 +212,23 @@ const RequestsOr = () => {
           </button>
         </div>
       </div>
-
+ {selectedIds.length > 0 && (
+  <div className="flex gap-2 mt-4">
+    <button
+      className="bg-one/60 text-white px-4 py-2 rounded"
+      onClick={() => handleBulkAction("accept")}
+    >
+      Accept Selected
+    </button>
+    <button
+      className="bg-one/70 text-white px-4 py-2 rounded"
+      onClick={() => handleBulkAction("reject")}
+    >
+      Reject Selected
+    </button>
+ 
+  </div>
+)}
       <div className="mt-10 block text-left overflow-x-auto">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
@@ -182,12 +236,38 @@ const RequestsOr = () => {
               <tr className="bg-four">
                 {isArabic ? (
                   <>
+
                     <th className="py-4 px-3">الإجراء</th>
+                         <th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {<th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
+
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
                     <th className="py-4 px-3">الحالة</th>
                     <th className="py-4 px-3">المؤسسة</th>
                     <th className="py-4 px-3">الحدث</th>
                     <th className="py-4 px-3">المهمه</th>
-
                     <th className="py-4 px-3">النوع</th>
                     <th className="py-4 px-3">المستخدم</th>
                     <th className="py-4 px-3">رقم</th>
@@ -201,6 +281,32 @@ const RequestsOr = () => {
                     <th className="py-4 px-3">Event</th>
                     <th className="py-4 px-3">Orgnization</th>
                     <th className="py-4 px-3">Status</th>
+                         <th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {<th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
+
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
                     <th className="py-4 px-3">Actions</th>
                   </>
                 )}
@@ -242,6 +348,19 @@ const RequestsOr = () => {
                           <option value="accept">قبول</option>
                           <option value="reject">رفض</option>
                         </select>
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds(prev => [...prev, item.id]);
+                            } else {
+                              setSelectedIds(prev => prev.filter(id => id !== item.id));
+                            }
+                          }}
+                        />
                       </td>
                       <td className="py-4 px-3">
                         <span className="bg-eight rounded-circle px-2 py-1 text-one">
@@ -306,6 +425,19 @@ const RequestsOr = () => {
                         <span className="bg-eight rounded-circle px-2 py-1">
                           {item?.status ?? "N/A"}
                         </span>
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds(prev => [...prev, item.id]);
+                            } else {
+                              setSelectedIds(prev => prev.filter(id => id !== item.id));
+                            }
+                          }}
+                        />
                       </td>
                       <td className="h-[56px] flex items-center justify-start  px-2">
                         <select
