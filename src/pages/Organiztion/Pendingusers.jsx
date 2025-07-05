@@ -18,6 +18,7 @@ const Pendingusers = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -164,6 +165,46 @@ const Pendingusers = () => {
     if (!text) return "N/A";
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
+
+  const handleBulkAction = (action) => {
+    const token = localStorage.getItem("token");
+    const label = action === "accept" ? "Accepted" : "Rejected";
+
+    Swal.fire({
+      title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const requests = selectedIds.map((id) =>
+          axios.put(
+            `https://backndVoo.voo-hub.com/api/orgnization/bnyadm/${action}/${id}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+        );
+
+        Promise.all(requests)
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              `${label}!`,
+              `All selected requests have been ${label.toLowerCase()}.`,
+              "success"
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "One or more requests failed.", "error");
+          });
+      }
+    });
+  };
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -200,156 +241,275 @@ const Pendingusers = () => {
           </button>
         </div>
       </div>
-
-    <div className="mt-10 block text-left overflow-x-auto">
-  <div className="min-w-[800px]">
-    <table className="w-full border-y border-x border-black">
-      <thead dir={isArabic ? "rtl" : "ltr"}>
-        <tr className="bg-four">
-              {isArabic ? (
-                <>
-                  <th className="py-4 px-3">رقم</th>
-                  <th className="py-4 px-3">المستخدم</th>
-                  <th className="py-4 px-3">المؤسسة</th>
-                  <th className="py-4 px-3">القبول</th>
-                  <th className="py-4 px-3">الرفض</th>
-                  <th className="py-4 px-3">الحالة</th>
-                  <th className="py-4 px-3">تفاصيل</th>
-                </>
-              ) : (
-                <>
-                  <th className="py-4 px-3">S/N</th>
-                  <th className="py-4 px-3">User</th>
-                  <th className="py-4 px-3">Orgnization</th>
-                  <th className="py-4 px-3">Accept</th>
-                  <th className="py-4 px-3">Reject</th>
-                  <th className="py-4 px-3">Status</th>
-                  <th className="py-4 px-3">Details</th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody dir={isArabic ? "rtl" : "ltr"}>
-            {paginatedData.map((item, index) => (
-              <tr
-                key={item.id}
-                className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-              >
+      {selectedIds.length > 0 && (
+        <div className="flex gap-2 mt-4">
+          <button
+            className="bg-one/60 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("accept")}
+          >
+            {t("AcceptSelected")}
+          </button>
+          <button
+            className="bg-one/70 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("reject")}
+          >
+            {t("RejectSelected")}
+          </button>
+        </div>
+      )}
+      <div className="mt-10 block text-left overflow-x-auto">
+        <div className="min-w-[800px]">
+          <table className="w-full border-y border-x border-black">
+            <thead dir={isArabic ? "rtl" : "ltr"}>
+              <tr className="bg-four">
                 {isArabic ? (
                   <>
-                    <td className=" h-[56px] font-bold text-center">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
-                    </td>
-
-                    <td className="py-2 px-3">
-                      <div className="flex flex-col ">
-                        <span className="text-[12px]">
-                          {truncateTextar(item?.user?.name)}
-                        </span>
-                        <span className="text-[10px]">
-                          {truncateTextar(item?.user?.email)}
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="py-2 px-3">
-                      {truncateTextar(item?.orgnization?.name)}
-                    </td>
-
-                    <td className="py-2 px-3">
-                      <button
-                        className="text-white bg-three px-2 py-1 rounded-full"
-                        onClick={() => accept(item.id, item?.user?.name)}
-                      >
-                        قبول
-                      </button>
-                    </td>
-
-                    <td className="py-2 px-3 h-[56px] text-strat">
-                      <button
-                        className="text-white bg-three px-2 py-1 rounded-full"
-                        onClick={() => reject(item.id, item?.user?.name)}
-                      >
-                        رفض
-                      </button>
-                    </td>
-
-                    <td className="py-2 px-3 h-[56px] text-strat">
-                      <span className="bg-eight text-one  rounded-full px-2 py-1">
-                        {item?.status ?? "N/A"}
-                      </span>
-                    </td>
-
-                    <td className="py-2 px-3 h-[56px] text-strat">
-                      <button
-                        className="underline"
-                        onClick={() =>
-                          navigate("/organizeation/pendingusersDetaklis", {
-                            state: { sendData: item.id },
-                          })
+                    <th className="py-4 px-1">رقم</th>
+                    <th className="py-4 px-3">المستخدم</th>
+                    <th className="py-4 px-3">المؤسسة</th>
+                    <th className="py-4 px-3">القبول</th>
+                    <th className="py-4 px-3">الرفض</th>
+                    <th className="py-4 px-3">الحالة</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
                         }
-                      >
-                        تفاصيل
-                      </button>
-                    </td>
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
+
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
+                    <th className="py-4 px-3">تفاصيل</th>
                   </>
                 ) : (
                   <>
-                <td className="py-2 px-3">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
-                    </td>
-                <td className="py-2 px-3">
-                      <span className="text-[12px]">
-                        {truncateText(item?.user?.name) }
-                      </span>
-                      <span className="text-[10px]">
-                        {truncateText(item?.user?.email)}
-                      </span>
-                    </td>
-                <td className="py-2 px-3">
-                      {truncateText(item?.orgnization?.name)}
-                    </td>
-                <td className="py-2 px-3">
-                      <button
-                        className="text-white bg-three px-2 py-1 rounded-full"
-                        onClick={() => accept(item.id, item?.user?.name)}
-                      >
-                        Accept
-                      </button>
-                    </td>
-                <td className="py-2 px-3">
-                      <button
-                        className="text-white bg-three px-2 py-1 rounded-full"
-                        onClick={() => reject(item.id, item?.user?.name)}
-                      >
-                        Reject
-                      </button>
-                    </td>
-                <td className="py-2 px-3">
-                      {" "}
-                      <span className="bg-eight rounded-circle px-2 py-1">
-                        {item?.status ?? "N/A"}
-                      </span>
-                    </td>
-                <td className="py-2 px-3">
-                      <button
-                        className="underline "
-                        onClick={() =>
-                          navigate("/organizeation/pendingusersDetaklis", {
-                            state: { sendData: item.id },
-                          })
+                    <th className="py-4 px-1">S/N</th>
+                    <th className="py-4 px-3">User</th>
+                    <th className="py-4 px-3">Orgnization</th>
+                    <th className="py-4 px-3">Accept</th>
+                    <th className="py-4 px-3">Reject</th>
+                    <th className="py-4 px-3">Status</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
                         }
-                      >
-                        Details
-                      </button>
-                    </td>
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
+
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
+                    <th className="py-4 px-3">Details</th>
                   </>
                 )}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody dir={isArabic ? "rtl" : "ltr"}>
+              {paginatedData.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
+                >
+                  {isArabic ? (
+                    <>
+                      <td className=" h-[56px] font-bold px-1 ">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+
+                      <td className="py-2 px-3">
+                        <div className="flex flex-col ">
+                          <span className="text-[12px]">
+                            {truncateTextar(item?.user?.name)}
+                          </span>
+                          <span className="text-[10px]">
+                            {truncateTextar(item?.user?.email)}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="py-2 px-3">
+                        {truncateTextar(item?.orgnization?.name)}
+                      </td>
+
+                      <td className="py-2 px-3">
+                        <button
+                          className="text-white bg-three px-2 py-1 rounded-full"
+                          onClick={() => accept(item.id, item?.user?.name)}
+                        >
+                          قبول
+                        </button>
+                      </td>
+
+                      <td className="py-2 px-3 h-[56px] text-strat">
+                        <button
+                          className="text-white bg-three px-2 py-1 rounded-full"
+                          onClick={() => reject(item.id, item?.user?.name)}
+                        >
+                          رفض
+                        </button>
+                      </td>
+
+                      <td className="py-2 px-3 h-[56px] text-strat">
+                        <span className="bg-eight text-one  rounded-full px-2 py-1">
+                          {item?.status ?? "N/A"}
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [...prev, item.id]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== item.id)
+                              );
+                            }
+                          }}
+                        />
+                      </td>
+                      <td className="py-2 px-3 h-[56px] text-strat">
+                        <button
+                          className="underline"
+                          onClick={() =>
+                            navigate("/organizeation/pendingusersDetaklis", {
+                              state: { sendData: item.id },
+                            })
+                          }
+                        >
+                          تفاصيل
+                        </button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="py-2 px-3">
+                        {(currentPage - 1) * rowsPerPage + index + 1}
+                      </td>
+                      <td className="py-2 px-3">
+                        <span className="text-[12px]">
+                          {truncateText(item?.user?.name)}
+                        </span>
+                        <span className="text-[10px]">
+                          {truncateText(item?.user?.email)}
+                        </span>
+                      </td>
+                      <td className="py-2 px-3">
+                        {truncateText(item?.orgnization?.name)}
+                      </td>
+                      <td className="py-2 px-3">
+                        <button
+                          className="text-white bg-three px-2 py-1 rounded-full"
+                          onClick={() => accept(item.id, item?.user?.name)}
+                        >
+                          Accept
+                        </button>
+                      </td>
+                      <td className="py-2 px-3">
+                        <button
+                          className="text-white bg-three px-2 py-1 rounded-full"
+                          onClick={() => reject(item.id, item?.user?.name)}
+                        >
+                          Reject
+                        </button>
+                      </td>
+                      <td className="py-2 px-3">
+                        {" "}
+                        <span className="bg-eight rounded-circle px-2 py-1">
+                          {item?.status ?? "N/A"}
+                        </span>
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [...prev, item.id]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== item.id)
+                              );
+                            }
+                          }}
+                        />
+                      </td>
+                      <td className="py-2 px-3">
+                        <button
+                          className="underline "
+                          onClick={() =>
+                            navigate("/organizeation/pendingusersDetaklis", {
+                              state: { sendData: item.id },
+                            })
+                          }
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className="flex justify-center mt-4">
         <Pagination

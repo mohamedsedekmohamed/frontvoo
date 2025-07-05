@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,10 @@ const User = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
-const [ageSortOrder, setAgeSortOrder] = useState("");
+  
+    const [selectedIds, setSelectedIds] = useState([]);
+const [sortKey, setSortKey] = useState('');
+const [sortOrder, setSortOrder] = useState('');
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -33,7 +36,6 @@ const [ageSortOrder, setAgeSortOrder] = useState("");
     })
       .then(response => {
         setData(response.data.users);
-        console.log(response.data.users);
       })
       .catch(() => {
         toast.error("Error fetching data");
@@ -100,7 +102,7 @@ const filteredData = data.filter((item) => {
   }
 });
 
-  const cheose = ["Filter", "name","age", "email", "phone", "country.name", "city.name", "account_status"];
+  const cheose = ["Filter", "name","age", "email", "phone", "country.name", "city.name", ];
   const labelMap = {
     Filter: "Filter",
     name: "User",
@@ -109,22 +111,9 @@ const filteredData = data.filter((item) => {
     phone: "Phone",
     "country.name": "Country",
     "city.name": "City",
-    "account_status": "status",
   };
   
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
-  const pageCount = Math.ceil(filteredData.length / rowsPerPage);
- const sortedData = [...filteredData].sort((a, b) => {
-  if (ageSortOrder === "asc") return a.age - b.age;
-  if (ageSortOrder === "desc") return b.age - a.age;
-  return 0;
-});
-
-const paginatedData = sortedData.slice(
-  (currentPage - 1) * rowsPerPage,
-  currentPage * rowsPerPage
-);
+  
 const changestutes = (id, newStatus) => {
   const token = localStorage.getItem('token');
 
@@ -169,6 +158,99 @@ const truncateText = (text, maxLength = 15) => {
   if (!text) return "N/A";
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
+const handleBulkDelete = () => {
+  if (selectedIds.length === 0) return;
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This action will delete selected users!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete them!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const token = localStorage.getItem("token");
+      Promise.all(
+        selectedIds.map((user) =>
+          axios.delete(`https://backndVoo.voo-hub.com/api/admin/user/delete/${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        )
+      )
+        .then(() => {
+          toast.success("Selected users deleted successfully");
+          setSelectedIds([]);
+          setUpdate((prev) => !prev);
+        })
+        .catch(() => toast.error("Error deleting some users"));
+    }
+  });
+};
+
+const handleBulkStatusChange = () => {
+  if (selectedIds.length === 0) return;
+
+  const token = localStorage.getItem("token");
+
+  Promise.all(
+    selectedIds.map((user) =>
+      axios.put(
+        `https://backndVoo.voo-hub.com/api/admin/organization/status/${user.id}`,
+        {
+          account_status: user.status === "active" ? "inactive" : "active",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+    )
+  )
+    .then(() => {
+      toast.success("Status updated for selected users");
+      setSelectedIds([]);
+      setUpdate((prev) => !prev);
+    })
+    .catch(() => toast.error("Error updating status for some users"));
+};
+const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+  const sortedData = useMemo(() => {
+  let sortableData = [...filteredData];  
+
+  if (sortKey === "no" &&  sortOrder === "no") {
+    
+    return sortableData; 
+  }
+
+  return sortableData.sort((a, b) => {
+    const aValue = a[sortKey];
+    const bValue = b[sortKey];
+
+    if (sortKey === 'age') {
+      return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+
+    if (sortKey === 'created_at') {
+      return sortOrder === 'asc'
+        ? new Date(aValue) - new Date(bValue)
+        : new Date(bValue) - new Date(aValue);
+    }
+
+    
+    return 0; 
+  });
+}, [filteredData, sortKey, sortOrder]);
+
+
+const paginatedData = sortedData.slice(
+  (currentPage - 1) * rowsPerPage,
+  currentPage * rowsPerPage
+);
 
   return (
     <div>
@@ -182,15 +264,22 @@ const truncateText = (text, maxLength = 15) => {
           />
           <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
         </div>
-        <select
-  value={ageSortOrder}
-  onChange={(e) => setAgeSortOrder(e.target.value)}
+   <select
+  value={sortKey}
+  onChange={(e) => {
+    const [key, order] = e.target.value.split(':');
+    setSortKey(key);
+    setSortOrder(order);
+  }}
   className="text-[14px] h-9 border border-one rounded-[8px] px-2"
 >
-  <option value="">Sort by Age</option>
-  <option value="asc">Age ↑</option>
-  <option value="desc">Age ↓</option>
+  <option value="no:no">Sort By</option>
+  <option value="age:asc">Age ↑</option>
+  <option value="age:desc">Age ↓</option>
+  <option value="created_at:asc">Join Date ↑</option>
+  <option value="created_at:desc">Join Date ↓</option>
 </select>
+
         <button onClick={()=> exportToExcel()} className='p-2 bg-one text-white rounded-[10px] animate-pulse flex gap-2 items-center '>
           <span>Export To Excel</span>
           <i><FaDownload/></i>
@@ -224,7 +313,22 @@ const truncateText = (text, maxLength = 15) => {
           </button>
         </div>
       </div>
-
+  {selectedIds.length > 0 && (
+  <div className="flex gap-2 mt-4">
+    <button
+      className="bg-one/60 text-white px-4 py-2 rounded"
+      onClick={handleBulkStatusChange}
+    >
+      Change Status
+    </button>
+    <button
+      className="bg-one/60 text-white px-4 py-2 rounded"
+      onClick={handleBulkDelete}
+    >
+      Delete All
+    </button>
+  </div>
+)}
 <div className="mt-10 block text-left">
   <div className="min-w-[800px]">
             <table className="w-full border-y border-x border-black">
@@ -240,6 +344,27 @@ const truncateText = (text, maxLength = 15) => {
               <th className="py-4 px-3">Orgnization</th>
               <th className="py-4 px-3">join date</th>
               <th className="py-4 px-3">Status</th>
+                      <th className="py-4 px-3">
+<input
+  type="checkbox"
+  checked={
+    selectedIds.length === paginatedData.length && paginatedData.length > 0
+  }
+  onChange={(e) => {
+    if (e.target.checked) {
+      setSelectedIds(
+        paginatedData.map((item) => ({
+          id: item.id,
+          status: item.account_status,
+        }))
+      );
+    } else {
+      setSelectedIds([]);
+    }
+  }}
+/>
+
+</th>
               <th className="py-4 px-3">Action</th>
             </tr>
           </thead>
@@ -308,6 +433,19 @@ const truncateText = (text, maxLength = 15) => {
       </span>
     </label>
   </td>
+<td className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.some(user => user.id === item.id)}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(prev => [...prev, { id: item.id, status: item.account_status }]);
+      } else {
+        setSelectedIds(prev => prev.filter(user => user.id !== item.id));
+      }
+    }}
+  />
+</td>
 
   <td className="py-2 px-3 text-[12px] align-middle">
     <div className="flex items-center">

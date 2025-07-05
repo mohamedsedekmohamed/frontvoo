@@ -181,10 +181,16 @@ i18n
   Noeventsfound: "No events found.",
   Notasksfound: "No tasks found.",
   VolunteersNeeded: "Volunteers Needed",
+  DeleteSelected:"Delete Selected",
+  AcceptSelected: "Accept Selected",
+  RejectSelected:"Reject Selected",
         },
       },
       ar: {
         translation: {
+          RejectSelected: "المرفوضين",
+          AcceptSelected: "المقبولين",
+          DeleteSelected:"حذف المحدد",
           VolunteersNeeded: "المتطوعين المطلوبين",
           Noeventsfound: "لا توجد فعاليات.",
           Notasksfound: "لا توجد مهام.",

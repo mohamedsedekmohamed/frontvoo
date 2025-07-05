@@ -19,6 +19,7 @@ const EventsOr = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -89,27 +90,27 @@ const EventsOr = () => {
     setSelectedDate(e.target.value); // value هي بصيغة YYYY-MM-DD
   };
 
-const filteredData = data.filter((item) => {
-  const query = searchQuery.toLowerCase();
+  const filteredData = data.filter((item) => {
+    const query = searchQuery.toLowerCase();
 
-  if (selectedFilter === "Filter" || selectedFilter === "") {
-    return Object.values(item).some(value =>
-      typeof value === "object"
-        ? Object.values(value || {}).some(sub =>
-            sub?.toString().toLowerCase().includes(query)
-          )
-        : value?.toString().toLowerCase().includes(query)
-    );
-  } else {
-    const keys = selectedFilter.split(".");
-    let value = item;
-    for (let key of keys) {
-      value = value?.[key];
+    if (selectedFilter === "Filter" || selectedFilter === "") {
+      return Object.values(item).some((value) =>
+        typeof value === "object"
+          ? Object.values(value || {}).some((sub) =>
+              sub?.toString().toLowerCase().includes(query)
+            )
+          : value?.toString().toLowerCase().includes(query)
+      );
+    } else {
+      const keys = selectedFilter.split(".");
+      let value = item;
+      for (let key of keys) {
+        value = value?.[key];
+      }
+
+      return value?.toString().toLowerCase().includes(query);
     }
-
-    return value?.toString().toLowerCase().includes(query);
-  }
-});
+  });
   const cheose = ["Filter", "name", "date", "start_time", "location"];
   const labelMap = {
     Filter: t("Filter"),
@@ -137,6 +138,43 @@ const filteredData = data.filter((item) => {
   const truncateTextar = (text, maxLength = 15) => {
     if (!text) return "N/A";
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
+  };
+  const handleBulkDelete = () => {
+    const token = localStorage.getItem("token");
+
+    Swal.fire({
+      title: `Are you sure you want to delete ${selectedIds.length} event?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const requests = selectedIds.map((id) =>
+          axios.delete(
+            `https://backndVoo.voo-hub.com/api/ornization/event/delete/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+        );
+
+        Promise.all(requests)
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              "Deleted!",
+              "Selected event have been deleted.",
+              "success"
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "Some deletions failed.", "error");
+          });
+      }
+    });
   };
   return (
     <div>
@@ -191,6 +229,16 @@ const filteredData = data.filter((item) => {
           </button>
         </div>
       </div>
+      {selectedIds.length > 0 && (
+        <div className="flex gap-2 mt-4">
+          <button
+            className="bg-one/80 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkDelete()}
+          >
+         {t("DeleteSelected")}
+          </button>
+        </div>
+      )}
       <div className="mt-10 block text-left overflow-x-auto">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
@@ -199,6 +247,43 @@ const filteredData = data.filter((item) => {
                 {isArabic ? (
                   <>
                     <th className="py-4 px-3">الإجراء</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
+
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                     <th className="py-4 px-3">المكان</th>
                     <th className="py-4 px-3">العمليات</th>
                     <th className="py-4 px-3">تفاصيل</th>
@@ -216,6 +301,43 @@ const filteredData = data.filter((item) => {
                     <th className="py-4 px-3">Details</th>
                     <th className="py-4 px-3"> Operation</th>
                     <th className="py-4 px-3">location</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
+
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                     <th className="py-4 px-3">Action</th>
                   </>
                 )}
@@ -239,6 +361,21 @@ const filteredData = data.filter((item) => {
                         <RiDeleteBin6Line
                           className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
                           onClick={() => handleDelete(item.id, item.name)}
+                        />
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [...prev, item.id]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== item.id)
+                              );
+                            }
+                          }}
                         />
                       </td>
 
@@ -320,6 +457,21 @@ const filteredData = data.filter((item) => {
                       </td>
                       <td className="py-2 px-3">
                         {truncateText(item?.location)}
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [...prev, item.id]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== item.id)
+                              );
+                            }
+                          }}
+                        />
                       </td>
 
                       <td className=" h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">

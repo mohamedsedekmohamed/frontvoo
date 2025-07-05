@@ -15,6 +15,7 @@ import Pagination from '@mui/material/Pagination';
       const [searchQuery, setSearchQuery] = useState('');
       const [selectedFilter, setSelectedFilter] = useState('');
         const navigate = useNavigate();
+        const [selectedIds, setSelectedIds] = useState([]);
       
         useEffect(() => {
           setCurrentPage(1);
@@ -139,6 +140,45 @@ import Pagination from '@mui/material/Pagination';
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
+    const handleBulkAction = (action) => {
+    const token = localStorage.getItem("token");
+    const label = action === "accept" ? "Accepted" : "Rejected";
+
+    Swal.fire({
+      title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const requests = selectedIds.map((id) =>
+          axios.put(
+            `https://backndVoo.voo-hub.com/api/admin/bnyadm/${action}/${id}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+        );
+
+        Promise.all(requests)
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              `${label}!`,
+              `All selected requests have been ${label.toLowerCase()}.`,
+              "success"
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "One or more requests failed.", "error");
+          });
+      }
+    });
+  };
   return (
     <div><div className='flex justify-between items-center'>
             <div className='relative items-center'>
@@ -174,7 +214,22 @@ import Pagination from '@mui/material/Pagination';
               </button>
             </div>
           </div>
-          
+           {selectedIds.length > 0 && (
+        <div className="flex gap-2 mt-4">
+          <button
+            className="bg-one/60 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("accept")}
+          >
+            Accept Selected
+          </button>
+          <button
+            className="bg-one/70 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("reject")}
+          >
+            Reject Selected
+          </button>
+        </div>
+      )}
             <div className="mt-10 block text-left">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
@@ -186,6 +241,43 @@ import Pagination from '@mui/material/Pagination';
                        <th className="py-4 px-3">Accept</th>
                        <th className="py-4 px-3">Reject</th>
                        <th className="py-4 px-3">Status</th>
+                       <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
+
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                        <th className="py-4 px-3">Details</th>
          
                      </tr>
@@ -214,7 +306,45 @@ import Pagination from '@mui/material/Pagination';
                          <td className="h-[56px] lg:text-[12px] xl:text-[14px]">
                            <button className='text-white bg-three px-2 py-1 rounded-full' onClick={() => reject(item.id, item?.user?.name)}>Reject</button>
                          </td>
+                         
                          <td className="h-[56px] lg:text-[12px] xl:text-[14px] text-three "> <span className='bg-eight rounded-circle px-2 py-1'>{item?.status ?? "N/A"}</span></td>
+                       <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
+
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                          <td className="h-[56px] lg:text-[12px] xl:text-[16px]  px-1">
                            <button className='underline ' onClick={() => navigate('/admin/pendingusersDetaklis', { state: { sendData: item.id } })}>
                            details                           </button>

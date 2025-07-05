@@ -218,13 +218,13 @@ const RequestsOr = () => {
       className="bg-one/60 text-white px-4 py-2 rounded"
       onClick={() => handleBulkAction("accept")}
     >
-      Accept Selected
+      {t("AcceptSelected")}
     </button>
     <button
       className="bg-one/70 text-white px-4 py-2 rounded"
       onClick={() => handleBulkAction("reject")}
     >
-      Reject Selected
+      {t("RejectSelected")}
     </button>
  
   </div>

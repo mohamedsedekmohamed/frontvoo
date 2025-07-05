@@ -20,6 +20,7 @@ const UserOr = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [ageSortOrder, setAgeSortOrder] = useState("");
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -156,6 +157,39 @@ const UserOr = () => {
     if (!text) return "N/A";
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action will delete selected users!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete them!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const token = localStorage.getItem("token");
+        Promise.all(
+          selectedIds.map((user) =>
+            axios.delete(
+              `https://backndVoo.voo-hub.com/api/ornization/user/delete/${user.id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+          )
+        )
+          .then(() => {
+            toast.success("Selected users deleted successfully");
+            setSelectedIds([]);
+            setUpdate((prev) => !prev);
+          })
+          .catch(() => toast.error("Error deleting some users"));
+      }
+    });
+  };
 
   return (
     <div>
@@ -211,6 +245,16 @@ const UserOr = () => {
           </button>
         </div>
       </div>
+      {selectedIds.length > 0 && (
+        <div className="flex gap-2 mt-4">
+          <button
+            className="bg-one/60 text-white px-4 py-2 rounded"
+            onClick={handleBulkDelete}
+          >
+         {t("DeleteSelected")}
+          </button>
+        </div>
+      )}
       <div className="mt-10 block text-left overflow-x-auto">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
@@ -219,6 +263,27 @@ const UserOr = () => {
                 {isArabic ? (
                   <>
                     <th className="py-4 px-3">الإجراء</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => ({
+                                id: item.id,
+                                status: item.account_status,
+                              }))
+                            );
+                          } else {
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                     <th className="py-4 px-3">الحالة</th>
                     <th className="py-4 px-3">المؤسسة</th>
                     <th className="py-4 px-3">تفاصيل</th>
@@ -240,6 +305,27 @@ const UserOr = () => {
                     <th className="py-4 px-3">Details</th>
                     <th className="py-4 px-3">Organization</th>
                     <th className="py-4 px-3">Status</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => ({
+                                id: item.id,
+                                status: item.account_status,
+                              }))
+                            );
+                          } else {
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                     <th className="py-4 px-3">Action</th>
                   </>
                 )}
@@ -258,6 +344,26 @@ const UserOr = () => {
                         <RiDeleteBin6Line
                           className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
                           onClick={() => handleDelete(item.id, item.name)}
+                        />
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.some(
+                            (user) => user.id === item.id
+                          )}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [
+                                ...prev,
+                                { id: item.id, status: item.account_status },
+                              ]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((user) => user.id !== item.id)
+                              );
+                            }
+                          }}
                         />
                       </td>
                       <td className="py-2 px-3 text-green-600">
@@ -346,6 +452,26 @@ const UserOr = () => {
                       </td>
                       <td className=" h-[56px] text-[12px] text-six px-1">
                         {item?.account_status ?? "N/A"}
+                      </td>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.some(
+                            (user) => user.id === item.id
+                          )}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [
+                                ...prev,
+                                { id: item.id, status: item.account_status },
+                              ]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((user) => user.id !== item.id)
+                              );
+                            }
+                          }}
+                        />
                       </td>
                       <td className=" h-[56px] flex justify-start items-center px-1">
                         <RiDeleteBin6Line

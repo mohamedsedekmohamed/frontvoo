@@ -16,6 +16,7 @@ const Events = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -131,6 +132,36 @@ const filteredData = data.filter((item) => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
+  const handleBulkDelete = () => {
+  const token = localStorage.getItem("token");
+
+  Swal.fire({
+    title: `Are you sure you want to delete ${selectedIds.length} event?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const requests = selectedIds.map((id) =>
+        axios.delete(`https://backndVoo.voo-hub.com/api/admin/event/delete/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      );
+
+      Promise.all(requests)
+        .then(() => {
+          setUpdate((prev) => !prev);
+          setSelectedIds([]);
+          Swal.fire("Deleted!", "Selected event have been deleted.", "success");
+        })
+        .catch(() => {
+          Swal.fire("Error", "Some deletions failed.", "error");
+        });
+    }
+  });
+};
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -185,6 +216,18 @@ const filteredData = data.filter((item) => {
           </button>
         </div>
       </div>
+            {selectedIds.length > 0 && (
+  <div className="flex gap-2 mt-4">
+  
+    <button
+      className="bg-one/80 text-white px-4 py-2 rounded"
+      onClick={() => handleBulkDelete()}
+    >
+      Delete Selected
+
+    </button>
+  </div>
+)}
       <div className="mt-10 block text-left">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
@@ -197,6 +240,32 @@ const filteredData = data.filter((item) => {
                 <th className="py-4 px-3">Details</th>
                 <th className="py-4 px-3">Operation</th>
                 <th className="py-4 px-3">location</th>
+                 <th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {<th className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(paginatedData.map(item => item.id));
+      } else {
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
+
+        setSelectedIds([]);
+      }
+    }}
+  />
+</th>
                 <th className="py-4 px-3">Action</th>
               </tr>
             </thead>
@@ -241,6 +310,20 @@ const filteredData = data.filter((item) => {
                     </button>
                   </td>
                   <td className="py-4 px-3">{truncateText(item?.location)}</td>
+                  <td className="py-4 px-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(item.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds(prev => [...prev, item.id]);
+                        } else {
+                          setSelectedIds(prev => prev.filter(id => id !== item.id));
+                        }
+                      }}
+                    />
+                  </td>
+                  
                   <td className="py-4 px-3 text-[12px] align-middle">
                     <div className="flex items-center">
                       <CiEdit

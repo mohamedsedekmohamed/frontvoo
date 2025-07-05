@@ -313,7 +313,7 @@ const Addtasksor = () => {
                   onChange={handstartDate}
                   placeholderText={t("SelectDate")}
                   dateFormat="yyyy-MM-dd"
-                  className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
+                  className={`w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven ${isArabic? 'pr-10' : ' pl-10'}`}
                   showYearDropdown
                   scrollableYearDropdown
                   yearDropdownItemNumber={100}

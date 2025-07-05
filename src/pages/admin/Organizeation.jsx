@@ -18,6 +18,7 @@ const Organizeation = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
+    const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -156,6 +157,65 @@ const truncateText = (text, maxLength = 15) => {
   if (!text) return "N/A";
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
+
+const handleBulkDelete = () => {
+  if (selectedIds.length === 0) return;
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This action will delete selected users!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete them!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const token = localStorage.getItem("token");
+      Promise.all(
+        selectedIds.map((user) =>
+          axios.delete(`https://backndVoo.voo-hub.com/api/admin/organization/delete/${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        )
+      )
+        .then(() => {
+          toast.success("Selected organization deleted successfully");
+          setSelectedIds([]);
+          setUpdate((prev) => !prev);
+        })
+        .catch(() => toast.error("Error deleting some users"));
+    }
+  });
+};
+
+const handleBulkStatusChange = () => {
+  if (selectedIds.length === 0) return;
+
+  const token = localStorage.getItem("token");
+
+  Promise.all(
+    selectedIds.map((user) =>
+      axios.put(
+        `https://backndVoo.voo-hub.com/api/admin/user/status/${user.id}`,
+        {
+          account_status: user.status === "active" ? "inactive" : "active",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+    )
+  )
+    .then(() => {
+      toast.success("Status updated for selected organization");
+      setSelectedIds([]);
+      setUpdate((prev) => !prev);
+    })
+    .catch(() => toast.error("Error updating status for some organization"));
+};
   return (
  <div>
       <div className='flex justify-between items-center'>
@@ -201,7 +261,22 @@ const truncateText = (text, maxLength = 15) => {
                    </button>
           </div>
         </div>
- 
+   {selectedIds.length > 0 && (
+  <div className="flex gap-2 mt-4">
+    <button
+      className="bg-one/60 text-white px-4 py-2 rounded"
+      onClick={handleBulkStatusChange}
+    >
+      Change Status
+    </button>
+    <button
+      className="bg-one/60 text-white px-4 py-2 rounded"
+      onClick={handleBulkDelete}
+    >
+      Delete All
+    </button>
+  </div>
+)}
 <div className="mt-10 block text-left">
   <div className="min-w-[800px]">
             <table className="w-full border-y border-x border-black">
@@ -214,6 +289,27 @@ const truncateText = (text, maxLength = 15) => {
               <th className="py-4 px-3">City</th>
               <th className="py-4 px-3">join date</th>
                <th className="py-4 px-3">Status</th>
+                                  <th className="py-4 px-3">
+<input
+  type="checkbox"
+  checked={
+    selectedIds.length === paginatedData.length && paginatedData.length > 0
+  }
+  onChange={(e) => {
+    if (e.target.checked) {
+      setSelectedIds(
+        paginatedData.map((item) => ({
+          id: item.id,
+          status: item.account_status,
+        }))
+      );
+    } else {
+      setSelectedIds([]);
+    }
+  }}
+/>
+
+</th>
               <th className="py-4 px-3">Details</th>
               <th className="py-4 px-3">Action</th>
          </tr>
@@ -262,6 +358,19 @@ const truncateText = (text, maxLength = 15) => {
       {item.account_status === 'active' ? 'Active' : 'Inactive'}
     </span>
   </label>
+</td>
+<td className="py-4 px-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.some(user => user.id === item.id)}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds(prev => [...prev, { id: item.id, status: item.account_status }]);
+      } else {
+        setSelectedIds(prev => prev.filter(user => user.id !== item.id));
+      }
+    }}
+  />
 </td>
 
   <td className="py-2 px-3 text-[12px] align-middle">
