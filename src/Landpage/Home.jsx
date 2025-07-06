@@ -73,18 +73,53 @@ Find volunteering opportunities that fit your passion and schedule. Let's go thr
      >
 Download VOO and get started today.  </span>
 </div>
-    <div className="flex justify-center lg:justify-start w-full gap-2 Lg:gap-5 mt-2 lg:mt-6" data-aos="zoom-in-up">
-    <button 
-  onClick={() => window.open("https://apps.apple.com/eg/app/voo-volunteering/id6746558761", "_blank")}
-  className="text-base sm:text-lg w-[165px] md:w-[200px] h-[60px] lg:h-[72px] bg-landone rounded-[12px] text-white transition hover:bg-gradient-to-b from-landsix to-landone hover:scale-95"
+   <div
+  className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 w-full mt-4"
+  data-aos="zoom-in-up"
 >
-  Download App Store
-</button>
-
-      <button  onClick={() => window.open("https://play.google.com/store/apps/details?id=com.wego.voo", "_blank")}
-       className="text-base sm:text-lg  w-[165px] md:w-[200px]  h-[60px] lg:h-[72px] border border-landone rounded-[12px] text-landone transition hover:scale-95">
-Download Google Play      </button>
+  {/* Apple Button */}
+  <button
+    onClick={() =>
+      window.open("https://apps.apple.com/eg/app/voo-volunteering/id6746558761", "_blank")
+    }
+    className="flex items-center gap-4 w-full max-w-[300px] bg-landone text-white rounded-xl px-4 py-3"
+  >
+    <IoLogoApple className="text-5xl" />
+    <div className="flex flex-col text-left">
+      <p className="text-sm lg:text-base">Download on the</p>
+      <p className="text-lg lg:text-xl font-semibold">App Store</p>
     </div>
+  </button>
+
+  {/* Google Play Button */}
+  <button
+    onClick={() =>
+      window.open("https://play.google.com/store/apps/details?id=com.wego.voo", "_blank")
+    }
+    className="flex items-center gap-4 w-full max-w-[300px] bg-landone text-white rounded-xl px-4 py-3"
+  >
+    {/* Google Play SVG */}
+    <div className="w-10 h-10">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 49 57"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M22.8779 27.2439L0.209045 51.8472C0.211175 51.8515 0.211174 51.858 0.213303 51.8624C0.909529 54.5339 3.29415 56.5 6.1259 56.5C7.25859 56.5 8.32103 56.1865 9.2323 55.6378L9.30469 55.5943L34.8202 40.5384L22.8779 27.2439Z" fill="#EA4335"/>
+        <path d="M45.8105 23.0545L45.7892 23.0393L34.7731 16.5096L22.3624 27.8032L34.8178 40.5359L45.7743 34.0715C47.6947 33.009 48.9999 30.9384 48.9999 28.5521C48.9999 26.1789 47.7139 24.1192 45.8105 23.0545Z" fill="#FBBC04"/>
+        <path d="M0.208655 5.15084C0.0723904 5.66467 0 6.20464 0 6.76202V50.2379C0 50.7953 0.0723904 51.3353 0.210784 51.8469L23.6568 27.8729L0.208655 5.15084Z" fill="#4285F4"/>
+        <path d="M23.0452 28.5L34.7767 16.5054L9.29105 1.39507C8.36488 0.826796 7.28329 0.500206 6.12717 0.500206C3.29543 0.500206 0.906544 2.47064 0.210319 5.14434C0.210319 5.14651 0.208191 5.14869 0.208191 5.15087L23.0452 28.5Z" fill="#34A853"/>
+      </svg>
+    </div>
+    <div className="flex flex-col text-left">
+      <p className="text-sm lg:text-base">Download on the</p>
+      <p className="text-lg lg:text-xl font-semibold">Google Play</p>
+    </div>
+  </button>
+</div>
+
   </div>
 
   <div className="flex-1 hidden md:flex  justify-center relative   lg:mt-10" data-aos="zoom-out-right">
@@ -338,33 +373,53 @@ Download Google Play      </button>
   <span className="font-normal text-landone text-[32px] lg:text-[64px]">Ready to Make a Real Impact?</span>
   <span className="font-normal text-landsix  text-[15px] lg:text-[24px]">Join thousands already volunteering with VOO. Let's go through and be
 part of the change. Download now and make a difference.</span>
-<div className="flex flex-wrap justify-center w-full gap-2 Lg:gap-5 mt-2 lg:mt-6" data-aos="zoom-in-up">
-  
-  <button className="flex gap-3 min-w-[250px] bg-landone rounded-[12px] items-center text-white p-3">
-<i><IoLogoApple className=" text-5xl"/></i>
-<button  onClick={() => window.open("https://apps.apple.com/eg/app/voo-volunteering/id6746558761", "_blank")}
- className="flex flex-col items-center justify-center">
-  <p className=" text-2xl lg:text-3xl">Download on the</p>
-  <p className="text-[20px] lg:text-2xl">Google Play</p>
-</button>
+<div
+  className="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6 w-full mt-4"
+  data-aos="zoom-in-up"
+>
+  {/* Apple Button */}
+  <button
+    onClick={() =>
+      window.open("https://apps.apple.com/eg/app/voo-volunteering/id6746558761", "_blank")
+    }
+    className="flex items-center gap-4 w-full max-w-[300px] bg-landone text-white rounded-xl px-4 py-3"
+  >
+    <IoLogoApple className="text-5xl" />
+    <div className="flex flex-col text-left">
+      <p className="text-sm lg:text-base">Download on the</p>
+      <p className="text-lg lg:text-xl font-semibold">App Store</p>
+    </div>
   </button>
 
-   <button className="flex gap-3 min-w-[250px] bg-landone rounded-[12px] items-center text-white p-3">
-<svg width="49" height="57" viewBox="0 0 49 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22.8779 27.2439L0.209045 51.8472C0.211175 51.8515 0.211174 51.858 0.213303 51.8624C0.909529 54.5339 3.29415 56.5 6.1259 56.5C7.25859 56.5 8.32103 56.1865 9.2323 55.6378L9.30469 55.5943L34.8202 40.5384L22.8779 27.2439Z" fill="#EA4335"/>
-<path d="M45.8105 23.0545L45.7892 23.0393L34.7731 16.5096L22.3624 27.8032L34.8178 40.5359L45.7743 34.0715C47.6947 33.009 48.9999 30.9384 48.9999 28.5521C48.9999 26.1789 47.7139 24.1192 45.8105 23.0545Z" fill="#FBBC04"/>
-<path d="M0.208655 5.15084C0.0723904 5.66467 0 6.20464 0 6.76202V50.2379C0 50.7953 0.0723904 51.3353 0.210784 51.8469L23.6568 27.8729L0.208655 5.15084Z" fill="#4285F4"/>
-<path d="M23.0452 28.5L34.7767 16.5054L9.29105 1.39507C8.36488 0.826796 7.28329 0.500206 6.12717 0.500206C3.29543 0.500206 0.906544 2.47064 0.210319 5.14434C0.210319 5.14651 0.208191 5.14869 0.208191 5.15087L23.0452 28.5Z" fill="#34A853"/>
-</svg>
-<button  
- onClick={() => window.open("https://play.google.com/store/apps/details?id=com.wego.voo", "_blank")}
- className="flex flex-col items-center justify-center">
-  <p className="text-2xl lg:text-3xl">Download on the</p>
-  <p className="text-[20px] lg:text-2xl ">App Store</p>
-</button>
+  {/* Google Play Button */}
+  <button
+    onClick={() =>
+      window.open("https://play.google.com/store/apps/details?id=com.wego.voo", "_blank")
+    }
+    className="flex items-center gap-4 w-full max-w-[300px] bg-landone text-white rounded-xl px-4 py-3"
+  >
+    {/* Google Play SVG */}
+    <div className="w-10 h-10">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 49 57"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M22.8779 27.2439L0.209045 51.8472C0.211175 51.8515 0.211174 51.858 0.213303 51.8624C0.909529 54.5339 3.29415 56.5 6.1259 56.5C7.25859 56.5 8.32103 56.1865 9.2323 55.6378L9.30469 55.5943L34.8202 40.5384L22.8779 27.2439Z" fill="#EA4335"/>
+        <path d="M45.8105 23.0545L45.7892 23.0393L34.7731 16.5096L22.3624 27.8032L34.8178 40.5359L45.7743 34.0715C47.6947 33.009 48.9999 30.9384 48.9999 28.5521C48.9999 26.1789 47.7139 24.1192 45.8105 23.0545Z" fill="#FBBC04"/>
+        <path d="M0.208655 5.15084C0.0723904 5.66467 0 6.20464 0 6.76202V50.2379C0 50.7953 0.0723904 51.3353 0.210784 51.8469L23.6568 27.8729L0.208655 5.15084Z" fill="#4285F4"/>
+        <path d="M23.0452 28.5L34.7767 16.5054L9.29105 1.39507C8.36488 0.826796 7.28329 0.500206 6.12717 0.500206C3.29543 0.500206 0.906544 2.47064 0.210319 5.14434C0.210319 5.14651 0.208191 5.14869 0.208191 5.15087L23.0452 28.5Z" fill="#34A853"/>
+      </svg>
+    </div>
+    <div className="flex flex-col text-left">
+      <p className="text-sm lg:text-base">Download on the</p>
+      <p className="text-lg lg:text-xl font-semibold">Google Play</p>
+    </div>
   </button>
-
 </div>
+
 </div>
 </div>
 
