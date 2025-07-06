@@ -17,8 +17,8 @@ const ProjectOr = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
-const { t, i18n } = useTranslation();
-const isArabic = i18n.language === "ar";
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
 
   useEffect(() => {
     setCurrentPage(1);
@@ -83,28 +83,27 @@ const isArabic = i18n.language === "ar";
   const handleEdit = (id) => {
     navigate("/organizeation/addprojector", { state: { sendData: id } });
   };
-const filteredData = data.filter((item) => {
-  const query = searchQuery.toLowerCase();
+  const filteredData = data.filter((item) => {
+    const query = searchQuery.toLowerCase();
 
-  if (selectedFilter === "Filter" || selectedFilter === "") {
-    return Object.values(item).some(value =>
-      typeof value === "object"
-        ? Object.values(value || {}).some(sub =>
-            sub?.toString().toLowerCase().includes(query)
-          )
-        : value?.toString().toLowerCase().includes(query)
-    );
-  } else {
-    const keys = selectedFilter.split(".");
-    let value = item;
-    for (let key of keys) {
-      value = value?.[key];
+    if (selectedFilter === "Filter" || selectedFilter === "") {
+      return Object.values(item).some((value) =>
+        typeof value === "object"
+          ? Object.values(value || {}).some((sub) =>
+              sub?.toString().toLowerCase().includes(query)
+            )
+          : value?.toString().toLowerCase().includes(query)
+      );
+    } else {
+      const keys = selectedFilter.split(".");
+      let value = item;
+      for (let key of keys) {
+        value = value?.[key];
+      }
+
+      return value?.toString().toLowerCase().includes(query);
     }
-
-    return value?.toString().toLowerCase().includes(query);
-  }
-});
-
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -113,7 +112,7 @@ const filteredData = data.filter((item) => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
-  const cheose = ["Filter", "name","description"];
+  const cheose = ["Filter", "name", "description"];
   const labelMap = {
     Filter: t("Filter"),
     name: t("name"),
@@ -122,7 +121,7 @@ const filteredData = data.filter((item) => {
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
-const truncateText = (text, maxLength = 15) => {
+  const truncateText = (text, maxLength = 15) => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
@@ -177,86 +176,62 @@ const truncateText = (text, maxLength = 15) => {
         </div>
       </div>
 
-       <div className="mt-10 block text-left overflow-x-auto">
-           <div className="min-w-[800px]">
-             <table className="w-full border-y border-x border-black">
-               <thead dir={isArabic ? "rtl" : "ltr"}>
-                 <tr className="bg-four">
-                   {isArabic ? (
-                     <>
-                       <th className="py-4 px-3">الإجراء</th>
-                       <th className="py-4 px-3">وصف</th>
-                       <th className="py-4 px-3">الأسم</th>
-                       <th className="py-4 px-3">رقم</th>
-                     </>
-                   ) : (
-                     <>
-                       <th className="py-4 px-3">S/N</th>
-                       <th className="py-4 px-3">Name</th>
-                       <th className="py-4 px-3">Description</th>
-                       <th className="py-4 px-3">Action</th>
-                     </>
-                   )}
-                 </tr>
-               </thead>
-               <tbody dir={isArabic ? "rtl" : "ltr"}>
-                 {paginatedData.map((item, index) => (
-                   <tr
-                     key={item.id}
-                     className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                   >
-                     {isArabic ? (
-                       <>
-                         <td className="  px-2 flex justify-end gap-2">
-                           <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                             <RiDeleteBin6Line
-                               className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                               onClick={() => handleDelete(item.id, item.content)}
-                             />
-                             <CiEdit
-                               className="w-[24px] h-[24px] text-six cursor-pointer"
-                               onClick={() => handleEdit(item.id)}
-                             />
-                           </div>
-                         </td>
-                     
-                       
-                         <td className="  px-2">{truncateTextar(item.description)}</td>
-                         <td className="  px-2">{truncateTextar(item.name)}</td>
-   
-                         <td className="  px-2">
-                           {index + 1 + (currentPage - 1) * rowsPerPage}
-                         </td>
-                       </>
-                     ) : (
-                       <>
-                         <td className="  px-2">
-                           {index + 1 + (currentPage - 1) * rowsPerPage}
-                         </td>
-                         <td className="  px-2">{truncateText(item.name)}</td>
-                         <td className="  px-2">{truncateText(item.description)}</td>
-                     
-                         <td className="  px-2 flex justify-start gap-2">
-                           <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                             <RiDeleteBin6Line
-                               className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                               onClick={() => handleDelete(item.id, item.content)}
-                             />
-                             <CiEdit
-                               className="w-[24px] h-[24px] text-six cursor-pointer"
-                               onClick={() => handleEdit(item.id)}
-                             />
-                           </div>
-                         </td>
-                       </>
-                     )}
-                   </tr>
-                 ))}
-               </tbody>
-             </table>
-           </div>
-         </div>
-   
+      <div className="mt-10 block text-left overflow-x-auto">
+        <div className="min-w-[800px]">
+          <table className="w-full border-y border-x border-black">
+            <thead dir={isArabic ? "rtl" : "ltr"}>
+              <tr className="bg-four">
+                {isArabic ? (
+                  <>
+                    <th className="py-4 px-3">رقم</th>
+                    <th className="py-4 px-3">الأسم</th>
+                    <th className="py-4 px-3">وصف</th>
+                    <th className="py-4 px-3">الإجراء</th>
+                  </>
+                ) : (
+                  <>
+                    <th className="py-4 px-3">S/N</th>
+                    <th className="py-4 px-3">Name</th>
+                    <th className="py-4 px-3">Description</th>
+                    <th className="py-4 px-3">Action</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody dir={isArabic ? "rtl" : "ltr"}>
+              {paginatedData.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
+                >
+                  
+                      <td className="  px-2">
+                        {index + 1 + (currentPage - 1) * rowsPerPage}
+                      </td>
+                      <td className="  px-2">{truncateText(item.name)}</td>
+                      <td className="  px-2">
+                        {truncateText(item.description)}
+                      </td>
+
+                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-end":"justify-start"} flex  items-center px-1 `}>
+                        <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
+                          <RiDeleteBin6Line
+                            className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
+                            onClick={() => handleDelete(item.id, item.content)}
+                          />
+                          <CiEdit
+                            className="w-[24px] h-[24px] text-six cursor-pointer"
+                            onClick={() => handleEdit(item.id)}
+                          />
+                        </div>
+                      </td>
+                   
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div className="flex justify-center mt-4">
         <Pagination

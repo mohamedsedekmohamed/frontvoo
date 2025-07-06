@@ -48,9 +48,8 @@ const AdminNavbar = ({ isOpen, setIsOpen }) => {
         });
     };
 
-    fetchCount(); // أول مرة
-    const interval = setInterval(fetchCount, 30000); // كل 30 ثانية
-
+    fetchCount();
+    const interval = setInterval(fetchCount, 30000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -58,7 +57,7 @@ const AdminNavbar = ({ isOpen, setIsOpen }) => {
     <div className="w-full flex justify-between items-center relative">
       <div className='flex items-center gap-0.5'>
         {data.avatar_image_link ? (
-          <img src={data.avatar_image_link} className='w-4 md:w-10 h-4 rounded-full' />
+          <img src={data.avatar_image_link} className='w-4 md:w-10 md:h-10 h-4 rounded-full' />
         ) : (
           <span className='w-4 md:w-10 h-4 md:h-10 bg-gray-200 rounded-full' />
         )}

@@ -193,10 +193,12 @@ i18n
         Agedown: "Age ↓",
         JoinDateup: "Join Date ↑",
         JoinDatedown: "Join Date ↓",
+        age: "Age",
         },
       },
       ar: {
         translation: {
+          age: "العمر",
           JoinDatedown: "تاريخ الانضمام ↓",
           JoinDateup: "تاريخ الانضمام ↑",
           Agedown: "العمر ↓",

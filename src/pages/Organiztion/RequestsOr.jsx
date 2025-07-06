@@ -287,7 +287,14 @@ const RequestsOr = () => {
               <tr className="bg-four">
                 {isArabic ? (
                   <>
-                    <th className="py-4 px-3">الإجراء</th>
+                    <th className="py-4 px-3">رقم</th>
+                    <th className="py-4 px-3">النوع</th>
+                    <th className="py-4 px-3">المستخدم</th>
+                    <th className="py-4 px-3">المهمه/الحدث</th>
+                    <th className="py-4 px-3">التاريخ</th>
+                    <th className="py-4 px-3">الوقت</th>
+                    <th className="py-4 px-3">المؤسسة</th>
+                    <th className="py-4 px-3">الحالة</th>
                     <th className="py-4 px-3">
                       <input
                         type="checkbox"
@@ -325,14 +332,7 @@ const RequestsOr = () => {
                         }}
                       />
                     </th>
-                    <th className="py-4 px-3">الحالة</th>
-                    <th className="py-4 px-3">المؤسسة</th>
-                    <th className="py-4 px-3">المهمه/الحدث</th>
-                    <th className="py-4 px-3">التاريخ</th>
-                    <th className="py-4 px-3">الوقت</th>
-                    <th className="py-4 px-3">النوع</th>
-                    <th className="py-4 px-3">المستخدم</th>
-                    <th className="py-4 px-3">رقم</th>
+                    <th className="py-4 px-3">الإجراء</th>
                   </>
                 ) : (
                   <>
@@ -401,96 +401,7 @@ const RequestsOr = () => {
                   key={item.id}
                   className="border-y border-x hover:border-3  relative hover:bg-four"
                 >
-                  {isArabic ? (
-                    <>
-                      <td className=" h-[56px] flex items-center justify-end px-2">
-                        <select
-                          className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "accept") {
-                              handleAccept(item.id);
-                            } else if (value === "reject") {
-                              handleReject(item.id);
-                            }
-                          }}
-                          defaultValue=""
-                        >
-                          <option value="" disabled>
-                            أختر
-                          </option>
-                          <option value="accept">قبول</option>
-                          <option value="reject">رفض</option>
-                        </select>
-                      </td>
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              );
-                            }
-                          }}
-                        />
-                      </td>
-                      <td className="py-4 px-3">
-                        <span className="bg-eight rounded-circle px-2 py-1 text-one">
-                          {item?.status ?? "N/A"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-3">
-                        {truncateTextar(item?.orgnization?.name)}
-                      </td>
-                      {item?.event?.name ? (
-                        <>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.event?.name)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.event?.date)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.event?.start_time)}
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.task?.name)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.task?.date)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.task?.start_time)}
-                          </td>
-                        </>
-                      )}
-
-                      <td className="py-4 px-3 ">
-                        <div className="flex gap-0.5 flex-col">
-                          <span className="text-[12px]">
-                            {truncateTextar(item?.user?.name)}
-                          </span>
-                          <span className="text-[10px]">
-                            {truncateTextar(item?.user?.email)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className=" h-[56px]  lg:text-[12px] xl:text-[12px] items-center ">
-                        {truncateTextar(item?.request_type)}
-                      </td>
-                      <td className=" h-[56px] font-bold text-[12px] text-left px-3">
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </td>
-                    </>
-                  ) : (
-                    <>
+                 
                       <td className=" h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
                         {(currentPage - 1) * rowsPerPage + index + 1}
                       </td>
@@ -555,7 +466,7 @@ const RequestsOr = () => {
                           }}
                         />
                       </td>
-                      <td className="h-[56px] flex items-center justify-start  px-2">
+                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-center":"justify-start"} flex  items-center px-1 `}>
                         <select
                           className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
                           onChange={(e) => {
@@ -575,8 +486,7 @@ const RequestsOr = () => {
                           <option value="reject">Reject</option>
                         </select>
                       </td>
-                    </>
-                  )}
+              
                 </tr>
               ))}
             </tbody>

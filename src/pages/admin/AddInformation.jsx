@@ -150,7 +150,7 @@ if(checkflag!==flag)newUser.avatar_image=flag
   return (
     <div>
       <ToastContainer/>
-      <AddAll name={  "Edit organizeation"} navGo={-1} />
+      <AddAll name={ "Edit Admin"} navGo={-1} />
 
       <div className="flex flex-wrap gap-6 mt-6">
         <InputField

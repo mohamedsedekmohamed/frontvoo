@@ -62,7 +62,7 @@ const Information = ({ setIsLoggedIn }) => {
 
           <div className='flex flex-col gap-2 my-2'>
             <span className='text-[20px] font-normal text-one'>Phone Number: {data.phone || "No phone"}</span>
-            <span className='text-[20px] font-normal text-one'>Birth Date: {data.birth || "No birthdate"}</span>
+            {/* <span className='text-[20px] font-normal text-one'>Birth Date: {data.birth || "No birthdate"}</span> */}
             <span className='text-[20px] font-normal text-one'>Gender: {data.gender || "No gender"}</span>
              </div>
         </div>

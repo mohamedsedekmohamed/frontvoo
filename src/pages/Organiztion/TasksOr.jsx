@@ -20,8 +20,8 @@ const TasksOr = () => {
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState([]);
-const [sortKey, setSortKey] = useState('');
-const [sortOrder, setSortOrder] = useState('');
+  const [sortKey, setSortKey] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
@@ -126,32 +126,32 @@ const [sortOrder, setSortOrder] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
- const sortedData = useMemo(() => {
-    let sortableData = [...filteredData]; 
-  
+  const sortedData = useMemo(() => {
+    let sortableData = [...filteredData];
+
     if (!sortKey || !sortOrder) {
       return sortableData;
     }
-  
+
     return sortableData.sort((a, b) => {
-      if (sortKey === 'date') {
-        return sortOrder === 'asc'
+      if (sortKey === "date") {
+        return sortOrder === "asc"
           ? new Date(a.date) - new Date(b.date)
           : new Date(b.date) - new Date(a.date);
       }
-  
-      if (sortKey === 'start_time') {
+
+      if (sortKey === "start_time") {
         const aDateTime = new Date(`${a.date}T${a.start_time}`);
         const bDateTime = new Date(`${b.date}T${b.start_time}`);
-        return sortOrder === 'asc'
+        return sortOrder === "asc"
           ? aDateTime - bDateTime
           : bDateTime - aDateTime;
       }
-  
+
       return 0;
     });
   }, [filteredData, sortKey, sortOrder]);
-    
+
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
@@ -221,21 +221,21 @@ const [sortOrder, setSortOrder] = useState('');
             className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-      <select
-  value={`${sortKey}:${sortOrder}`}
-  onChange={(e) => {
-    const [key, order] = e.target.value.split(':');
-    setSortKey(key || '');
-    setSortOrder(order || '');
-  }}
-  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
->
-  <option value="">{t("SortBy")}</option>
+        <select
+          value={`${sortKey}:${sortOrder}`}
+          onChange={(e) => {
+            const [key, order] = e.target.value.split(":");
+            setSortKey(key || "");
+            setSortOrder(order || "");
+          }}
+          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+        >
+          <option value="">{t("SortBy")}</option>
           <option value="start_time:asc">{t("StartTimeup")}</option>
           <option value="start_time:desc">{t("StartTimedown")}</option>
           <option value="date:asc">{t("Dateup")}</option>
           <option value="date:desc">{t("Datedown")}</option>
-</select>
+        </select>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
@@ -286,7 +286,13 @@ const [sortOrder, setSortOrder] = useState('');
               <tr className="bg-four">
                 {isArabic ? (
                   <>
-                    <th className="py-4 px-3">الإجراء</th>
+                    <th className="py-4 px-3">رقم</th>
+                    <th className="py-4 px-3">المهمة</th>
+                    <th className="py-4 px-3">الميعاد</th>
+                    <th className="py-4 px-3">الوصف</th>
+                    <th className="py-4 px-3">الوقت</th>
+                    <th className="py-4 px-3">تفاصيل</th>
+                    <th className="py-4 px-3">العمليات</th>
                     <th className="py-4 px-3">
                       <input
                         type="checkbox"
@@ -324,13 +330,7 @@ const [sortOrder, setSortOrder] = useState('');
                         }}
                       />
                     </th>
-                    <th className="py-4 px-3">العمليات</th>
-                    <th className="py-4 px-3">تفاصيل</th>
-                    <th className="py-4 px-3">الوقت</th>
-                    <th className="py-4 px-3">الوصف</th>
-                    <th className="py-4 px-3">الميعاد</th>
-                    <th className="py-4 px-3">المهمة</th>
-                    <th className="py-4 px-3">رقم</th>
+                    <th className="py-4 px-3">الإجراء</th>
                   </>
                 ) : (
                   <>
@@ -378,7 +378,7 @@ const [sortOrder, setSortOrder] = useState('');
                         }}
                       />
                     </th>
-                    <th className="py-4 px-3">Action</th>
+                    <th className="py-4 px-3 ">Action</th>
                   </>
                 )}
               </tr>
@@ -389,75 +389,9 @@ const [sortOrder, setSortOrder] = useState('');
                   key={item.id}
                   className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
                 >
-                  {isArabic ? (
-                    <>
-                      <td className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                        <RiDeleteBin6Line
-                          className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                          onClick={() => handleDelete(item.id, item.name)}
-                        />
-                        <CiEdit
-                          className="w-[24px] h-[24px] text-six cursor-pointer"
-                          onClick={() => handleEdit(item.id)}
-                        />
-                      </td>
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              );
-                            }
-                          }}
-                        />
-                      </td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="underline "
-                          onClick={() =>
-                            navigate("/organizeation/operationTasksOr", {
-                              state: { sendData: item.id },
-                            })
-                          }
-                        >
-                          عملية
-                        </button>
-                      </td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="underline"
-                          onClick={() =>
-                            navigate("/organizeation/tasksdetails", {
-                              state: { sendData: item.id },
-                            })
-                          }
-                        >
-                          التفاصيل
-                        </button>
-                      </td>
-                      <td className="py-2 px-3">
-                        {truncateTextar(item?.start_time)}
-                      </td>
-                      <td className="py-2 px-3">
-                        {truncateTextar(item?.description)}
-                      </td>
-                      <td className="py-2 px-3">
-                        {truncateTextar(item?.date)}
-                      </td>
-                      <td className="py-2 px-3">
-                        {truncateTextar(item?.name)}
-                      </td>
-                      <td className="py-2 px-3">
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </td>
-                    </>
-                  ) : (
-                    <>
+                  
+                          
+                   
                       <td className="py-2 px-3">
                         {(currentPage - 1) * rowsPerPage + index + 1}
                       </td>
@@ -508,7 +442,7 @@ const [sortOrder, setSortOrder] = useState('');
                           }}
                         />
                       </td>
-                      <td className=" h-[56px] flex justify-start items-center px-5">
+                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-center":"justify-start"} flex  items-center px-1 `}>
                         <CiEdit
                           className="w-[24px] h-[24px] text-six cursor-pointer"
                           onClick={() => handleEdit(item.id)}
@@ -518,8 +452,7 @@ const [sortOrder, setSortOrder] = useState('');
                           onClick={() => handleDelete(item.id, item.name)}
                         />
                       </td>
-                    </>
-                  )}
+                  
                 </tr>
               ))}
             </tbody>

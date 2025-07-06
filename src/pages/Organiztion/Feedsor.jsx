@@ -20,7 +20,7 @@ const Feedsor = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [selectedVideo, setSelectedVideo] = useState(null);
-const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -185,11 +185,11 @@ const [selectedImage, setSelectedImage] = useState(null);
               <tr className="bg-four">
                 {isArabic ? (
                   <>
-                    <th className="py-4 px-3">الإجراء</th>
-                    <th className="py-4 px-3">الفديو</th>
-                    <th className="py-4 px-3">الصورة</th>
-                    <th className="py-4 px-3">المحتوي</th>
                     <th className="py-4 px-3">رقم</th>
+                    <th className="py-4 px-3">المحتوي</th>
+                    <th className="py-4 px-3">الصورة</th>
+                    <th className="py-4 px-3">الفديو</th>
+                    <th className="py-4 px-3">الإجراء</th>
                   </>
                 ) : (
                   <>
@@ -208,110 +208,65 @@ const [selectedImage, setSelectedImage] = useState(null);
                   key={item.id}
                   className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
                 >
-                  {isArabic ? (
-                    <>
-                      <td className="  px-2 flex justify-end gap-2">
-                        <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                          <RiDeleteBin6Line
-                            className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                            onClick={() => handleDelete(item.id, item.content)}
-                          />
-                          <CiEdit
-                            className="w-[24px] h-[24px] text-six cursor-pointer"
-                            onClick={() => handleEdit(item.id)}
-                          />
-                        </div>
-                      </td>
-                      <td className="  px-2">
-                        <div className=" flex justify-end">
-                          <video
-                            className="w-20 h-12 object-cover cursor-pointer"
-                            onClick={() =>
-                              setSelectedVideo(item.video_link || item.video)
-                            }
-                          >
-                            <source
-                              src={item.video_link || item.video}
-                              type="video/mp4"
-                            />
-                            {isArabic
-                              ? "المتصفح لا يدعم الفيديو"
-                              : "Your browser does not support the video tag"}
-                          </video>
-                        </div>
-                      </td>
-                      <td className="px-2">
-                        <div className=" flex justify-end">
+                  <td className="  px-2">
+                    {index + 1 + (currentPage - 1) * rowsPerPage}
+                  </td>
+                  <td className="  px-2">{item.content || "No Content"}</td>
+                  <td className="  px-2">
+                    <div
+                      className={`w-full h-full flex ${
+                        isArabic ? "justify-end" : "justify-start"
+                      } items-center`}
+                    >
                       <img
-  src={
-    item.image_link == null
-      ? `data:image/png;base64,${item.image_link}`
-      : item.image_link
-  }
-  className="w-20 h-12 object-cover cursor-pointer"
-  onClick={() => setSelectedImage(item.image_link)}
-/>
-
-                        </div>
-                      </td>
-                      <td className="  px-2">{item.content || "بدون محتوى"}</td>
-
-                      <td className="  px-2">
-                        {index + 1 + (currentPage - 1) * rowsPerPage}
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="  px-2">
-                        {index + 1 + (currentPage - 1) * rowsPerPage}
-                      </td>
-                      <td className="  px-2">{item.content || "No Content"}</td>
-                      <td className="  px-2">
-                      <img
-  src={
-    item.image_link == null
-      ? `data:image/png;base64,${item.image_link}`
-      : item.image_link
-  }
-  className="w-20 h-12 object-cover cursor-pointer"
-  onClick={() => setSelectedImage(item.image_link)}
-/>
-
-                      </td>
-                      <td className="  px-2">
-                        {item.video ? (
-                          <video
-                            className="w-20 h-12 object-cover cursor-pointer"
-                            onClick={() =>
-                              setSelectedVideo(item.video_link || item.video)
-                            }
-                          >
-                            <source
-                              src={item.video_link || item.video}
-                              type="video/mp4"
-                            />
-                            {isArabic
-                              ? "المتصفح لا يدعم الفيديو"
-                              : "Your browser does not support the video tag"}
-                          </video>
-                        ) : (
-                          <span>None</span>
-                        )}
-                      </td>
-                      <td className="  px-2 flex justify-start gap-2">
-                        <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                          <RiDeleteBin6Line
-                            className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                            onClick={() => handleDelete(item.id, item.content)}
-                          />
-                          <CiEdit
-                            className="w-[24px] h-[24px] text-six cursor-pointer"
-                            onClick={() => handleEdit(item.id)}
-                          />
-                        </div>
-                      </td>
-                    </>
-                  )}
+                        src={
+                          item.image_link == null
+                            ? `data:image/png;base64,${item.image_link}`
+                            : item.image_link
+                        }
+                        className="w-20 h-12 object-cover cursor-pointer"
+                        onClick={() => setSelectedImage(item.image_link)}
+                      />
+                    </div>
+                  </td>
+                  <td className=" px-2">
+                    <div
+                      className={`w-full h-full flex ${
+                        isArabic ? "justify-end" : "justify-start"
+                      } items-center`}
+                    >
+                      <video
+                        className="w-20 h-12 object-cover cursor-pointer"
+                        onClick={() =>
+                          setSelectedVideo(item.video_link || item.video)
+                        }
+                      >
+                        <source
+                          src={item.video_link || item.video}
+                          type="video/mp4"
+                        />
+                        {isArabic
+                          ? "المتصفح لا يدعم الفيديو"
+                          : "Your browser does not support the video tag"}
+                      </video>
+                    </div>
+                  </td>
+                  <td
+                    className={` h-[56px] lg:text-[12px] xl:text-[16px] ${
+                      isArabic ? "justify-end" : "justify-start"
+                    } flex  items-center px-1 `}
+                  >
+                    <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
+                      <RiDeleteBin6Line
+                        className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
+                        onClick={() => handleDelete(item.id, item.content)}
+                      />
+                      <CiEdit
+                        className="w-[24px] h-[24px] text-six cursor-pointer"
+                        onClick={() => handleEdit(item.id)}
+                      />
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -345,36 +300,36 @@ const [selectedImage, setSelectedImage] = useState(null);
             />
             <button
               onClick={() => setSelectedVideo(null)}
-        className="absolute top-2 right-2 text-one text-6xl"
+              className="absolute top-2 right-2 text-one text-6xl"
             >
               ✕
             </button>
           </div>
         </div>
       )}
-{selectedImage && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-    onClick={() => setSelectedImage(null)}
-  >
-    <div
-      className="bg-black p-2 rounded relative w-[90%] md:w-[70%] lg:w-[50%]"
-      onClick={(e) => e.stopPropagation()} // يمنع الإغلاق عند الضغط داخل الصورة
-    >
-      <img
-        src={selectedImage}
-        alt="Full Size"
-        className="w-full h-auto rounded"
-      />
-      <button
-        onClick={() => setSelectedImage(null)}
-        className="absolute top-2 right-2 text-one text-6xl"
-      >
-        ✕
-      </button>
-    </div>
-  </div>
-)}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className="bg-black p-2 rounded relative w-[90%] md:w-[70%] lg:w-[50%]"
+            onClick={(e) => e.stopPropagation()} // يمنع الإغلاق عند الضغط داخل الصورة
+          >
+            <img
+              src={selectedImage}
+              alt="Full Size"
+              className="w-full h-auto rounded"
+            />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-2 right-2 text-one text-6xl"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
     </div>
