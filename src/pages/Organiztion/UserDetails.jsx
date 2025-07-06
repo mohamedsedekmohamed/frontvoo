@@ -251,6 +251,7 @@ const UserDetails = () => {
     })
       .then(response => {
         setData(response.data?.user ?? []);
+        console.log(response.data?.user);
       })
       .catch(() => {});
   }, [location.state]);

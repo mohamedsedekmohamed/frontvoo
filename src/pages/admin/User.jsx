@@ -18,7 +18,7 @@ const User = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
-  
+
     const [selectedIds, setSelectedIds] = useState([]);
 const [sortKey, setSortKey] = useState('');
 const [sortOrder, setSortOrder] = useState('');
@@ -219,12 +219,11 @@ const handleBulkStatusChange = () => {
 const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const sortedData = useMemo(() => {
-  let sortableData = [...filteredData];  
+const sortedData = useMemo(() => {
+  let sortableData = [...filteredData]; 
 
-  if (sortKey === "no" &&  sortOrder === "no") {
-    
-    return sortableData; 
+  if (!sortKey || !sortOrder) {
+    return sortableData;
   }
 
   return sortableData.sort((a, b) => {
@@ -241,8 +240,7 @@ const [currentPage, setCurrentPage] = useState(1);
         : new Date(bValue) - new Date(aValue);
     }
 
-    
-    return 0; 
+    return 0;
   });
 }, [filteredData, sortKey, sortOrder]);
 
@@ -264,16 +262,16 @@ const paginatedData = sortedData.slice(
           />
           <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
         </div>
-   <select
-  value={sortKey}
+<select
+  value={`${sortKey}:${sortOrder}`}
   onChange={(e) => {
     const [key, order] = e.target.value.split(':');
-    setSortKey(key);
-    setSortOrder(order);
+    setSortKey(key || '');
+    setSortOrder(order || '');
   }}
   className="text-[14px] h-9 border border-one rounded-[8px] px-2"
 >
-  <option value="no:no">Sort By</option>
+  <option value="">Sort By</option>
   <option value="age:asc">Age ↑</option>
   <option value="age:desc">Age ↓</option>
   <option value="created_at:asc">Join Date ↑</option>

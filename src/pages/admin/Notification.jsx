@@ -117,10 +117,11 @@ const Notification = () => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
-  const cheose = ["Filter", "notification"];
+  const cheose = ["Filter", "notification","title"];
   const labelMap = {
     Filter: "Filter",
     notification: "notification",
+    title: "title",
   };
   const [selectedViewers, setSelectedViewers] = useState([]);
 const [showModal, setShowModal] = useState(false);
@@ -192,6 +193,7 @@ const [showModal, setShowModal] = useState(false);
             <thead className="w-full">
               <tr className="bg-four ">
                 <th className="py-4 px-3">S/N</th>
+                <th className="py-4 px-3">title</th>
                 <th className="py-4 px-3">Name</th>
                 <th className="py-4 px-3">view</th>
                 <th className="py-4 px-3">Action</th>
@@ -207,6 +209,7 @@ const [showModal, setShowModal] = useState(false);
                     <td className="py-2 px-3 font-bold">
                       {(currentPage - 1) * rowsPerPage + index + 1}
                     </td>
+                    <td className="py-4 px-3">{truncateText(item?.title)}</td>
                     <td className="py-4 px-3">{truncateText(item?.notification)}</td>
 <td className="py-4 px-3">
   <button

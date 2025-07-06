@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import filter from "../../assets/filter.svg";
@@ -18,7 +18,8 @@ const RequestsOr = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [selectedIds, setSelectedIds] = useState([]);
-
+  const [sortKey, setSortKey] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -44,26 +45,26 @@ const RequestsOr = () => {
   };
 
   const filteredData = data.filter((item) => {
-  const query = searchQuery.toLowerCase();
+    const query = searchQuery.toLowerCase();
 
-  if (selectedFilter === "Filter" || selectedFilter === "") {
-    return Object.values(item).some(value =>
-      typeof value === "object"
-        ? Object.values(value || {}).some(sub =>
-            sub?.toString().toLowerCase().includes(query)
-          )
-        : value?.toString().toLowerCase().includes(query)
-    );
-  } else {
-    const keys = selectedFilter.split(".");
-    let value = item;
-    for (let key of keys) {
-      value = value?.[key];
+    if (selectedFilter === "Filter" || selectedFilter === "") {
+      return Object.values(item).some((value) =>
+        typeof value === "object"
+          ? Object.values(value || {}).some((sub) =>
+              sub?.toString().toLowerCase().includes(query)
+            )
+          : value?.toString().toLowerCase().includes(query)
+      );
+    } else {
+      const keys = selectedFilter.split(".");
+      let value = item;
+      for (let key of keys) {
+        value = value?.[key];
+      }
+
+      return value?.toString().toLowerCase().includes(query);
     }
-
-    return value?.toString().toLowerCase().includes(query);
-  }
-});
+  });
 
   const cheose = [
     "Filter",
@@ -84,7 +85,40 @@ const RequestsOr = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
+  const sortedData = useMemo(() => {
+    let sortableData = [...filteredData];
+
+    if (!sortKey || !sortOrder) {
+      return sortableData;
+    }
+
+    return sortableData.sort((a, b) => {
+      const aSource = a.request_type === "event" ? a.event : a.task;
+      const bSource = b.request_type === "event" ? b.event : b.task;
+
+      if (!aSource || !bSource) return 0;
+
+      // sort by date
+      if (sortKey === "date") {
+        return sortOrder === "asc"
+          ? new Date(aSource.date) - new Date(bSource.date)
+          : new Date(bSource.date) - new Date(aSource.date);
+      }
+
+      // sort by start_time (with date)
+      if (sortKey === "start_time") {
+        const aDateTime = new Date(`${aSource.date}T${aSource.start_time}`);
+        const bDateTime = new Date(`${bSource.date}T${bSource.start_time}`);
+        return sortOrder === "asc"
+          ? aDateTime - bDateTime
+          : bDateTime - aDateTime;
+      }
+
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder]);
+
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -140,41 +174,44 @@ const RequestsOr = () => {
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
   const handleBulkAction = (action) => {
-  const token = localStorage.getItem("token");
-  const label = action === "accept" ? "Accepted" : "Rejected";
+    const token = localStorage.getItem("token");
+    const label = action === "accept" ? "Accepted" : "Rejected";
 
-  Swal.fire({
-    title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const requests = selectedIds.map((id) =>
-        axios.put(
-          `https://backndVoo.voo-hub.com/api/orgnization/request/${action}/${id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-      );
+    Swal.fire({
+      title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const requests = selectedIds.map((id) =>
+          axios.put(
+            `https://backndVoo.voo-hub.com/api/orgnization/request/${action}/${id}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+        );
 
-      Promise.all(requests)
-        .then(() => {
-          setUpdate((prev) => !prev);
-          setSelectedIds([]);
-          Swal.fire(`${label}!`, `All selected requests have been ${label.toLowerCase()}.`, "success");
-        })
-        .catch(() => {
-          Swal.fire("Error", "One or more requests failed.", "error");
-        });
-    }
-  });
-};
-
+        Promise.all(requests)
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              `${label}!`,
+              `All selected requests have been ${label.toLowerCase()}.`,
+              "success"
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "One or more requests failed.", "error");
+          });
+      }
+    });
+  };
 
   return (
     <div>
@@ -188,6 +225,21 @@ const RequestsOr = () => {
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
+        <select
+          value={`${sortKey}:${sortOrder}`}
+          onChange={(e) => {
+            const [key, order] = e.target.value.split(":");
+            setSortKey(key || "");
+            setSortOrder(order || "");
+          }}
+          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+        >
+          <option value="">{t("SortBy")}</option>
+          <option value="start_time:asc">{t("StartTimeup")}</option>
+          <option value="start_time:desc">{t("StartTimedown")}</option>
+          <option value="date:asc">{t("Dateup")}</option>
+          <option value="date:desc">{t("Datedown")}</option>
+        </select>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
@@ -212,23 +264,22 @@ const RequestsOr = () => {
           </button>
         </div>
       </div>
- {selectedIds.length > 0 && (
-  <div className="flex gap-2 mt-4">
-    <button
-      className="bg-one/60 text-white px-4 py-2 rounded"
-      onClick={() => handleBulkAction("accept")}
-    >
-      {t("AcceptSelected")}
-    </button>
-    <button
-      className="bg-one/70 text-white px-4 py-2 rounded"
-      onClick={() => handleBulkAction("reject")}
-    >
-      {t("RejectSelected")}
-    </button>
- 
-  </div>
-)}
+      {selectedIds.length > 0 && (
+        <div className="flex gap-2 mt-4">
+          <button
+            className="bg-one/60 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("accept")}
+          >
+            {t("AcceptSelected")}
+          </button>
+          <button
+            className="bg-one/70 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("reject")}
+          >
+            {t("RejectSelected")}
+          </button>
+        </div>
+      )}
       <div className="mt-10 block text-left overflow-x-auto">
         <div className="min-w-[800px]">
           <table className="w-full border-y border-x border-black">
@@ -236,38 +287,49 @@ const RequestsOr = () => {
               <tr className="bg-four">
                 {isArabic ? (
                   <>
-
                     <th className="py-4 px-3">الإجراء</th>
-                         <th className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(paginatedData.map(item => item.id));
-      } else {<th className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(paginatedData.map(item => item.id));
-      } else {
-        setSelectedIds([]);
-      }
-    }}
-  />
-</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
 
-        setSelectedIds([]);
-      }
-    }}
-  />
-</th>
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                     <th className="py-4 px-3">الحالة</th>
                     <th className="py-4 px-3">المؤسسة</th>
-                    <th className="py-4 px-3">الحدث</th>
-                    <th className="py-4 px-3">المهمه</th>
+                    <th className="py-4 px-3">المهمه/الحدث</th>
+                    <th className="py-4 px-3">التاريخ</th>
+                    <th className="py-4 px-3">الوقت</th>
                     <th className="py-4 px-3">النوع</th>
                     <th className="py-4 px-3">المستخدم</th>
                     <th className="py-4 px-3">رقم</th>
@@ -277,36 +339,48 @@ const RequestsOr = () => {
                     <th className="py-4 px-3">S/N </th>
                     <th className="py-4 px-3">Type</th>
                     <th className="py-4 px-3">User</th>
-                    <th className="py-4 px-3">Task</th>
-                    <th className="py-4 px-3">Event</th>
+                    <th className="py-4 px-3">Event/Task</th>
+                    <th className="py-4 px-3">Date</th>
+                    <th className="py-4 px-3">Time</th>
                     <th className="py-4 px-3">Orgnization</th>
                     <th className="py-4 px-3">Status</th>
-                         <th className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(paginatedData.map(item => item.id));
-      } else {<th className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(paginatedData.map(item => item.id));
-      } else {
-        setSelectedIds([]);
-      }
-    }}
-  />
-</th>
+                    <th className="py-4 px-3">
+                      <input
+                        type="checkbox"
+                        checked={
+                          selectedIds.length === paginatedData.length &&
+                          paginatedData.length > 0
+                        }
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(
+                              paginatedData.map((item) => item.id)
+                            );
+                          } else {
+                            <th className="py-4 px-3">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedIds.length === paginatedData.length &&
+                                  paginatedData.length > 0
+                                }
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedIds(
+                                      paginatedData.map((item) => item.id)
+                                    );
+                                  } else {
+                                    setSelectedIds([]);
+                                  }
+                                }}
+                              />
+                            </th>;
 
-        setSelectedIds([]);
-      }
-    }}
-  />
-</th>
+                            setSelectedIds([]);
+                          }
+                        }}
+                      />
+                    </th>
                     <th className="py-4 px-3">Actions</th>
                   </>
                 )}
@@ -355,9 +429,11 @@ const RequestsOr = () => {
                           checked={selectedIds.includes(item.id)}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedIds(prev => [...prev, item.id]);
+                              setSelectedIds((prev) => [...prev, item.id]);
                             } else {
-                              setSelectedIds(prev => prev.filter(id => id !== item.id));
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== item.id)
+                              );
                             }
                           }}
                         />
@@ -370,25 +446,44 @@ const RequestsOr = () => {
                       <td className="py-4 px-3">
                         {truncateTextar(item?.orgnization?.name)}
                       </td>
-                      <td className="py-4 px-3 h-[56px] ">
-                        {truncateTextar(item?.event?.name) }
-                      </td>
+                      {item?.event?.name ? (
+                        <>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.event?.name)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.event?.date)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.event?.start_time)}
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.task?.name)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.task?.date)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.task?.start_time)}
+                          </td>
+                        </>
+                      )}
 
-                      <td className="py-4 px-3 h-[56px] ">
-                        {truncateTextar(item?.task?.name)}
-                      </td>
                       <td className="py-4 px-3 ">
                         <div className="flex gap-0.5 flex-col">
                           <span className="text-[12px]">
-                            {truncateTextar(item?.user?.name) }
+                            {truncateTextar(item?.user?.name)}
                           </span>
                           <span className="text-[10px]">
-                            {truncateTextar(item?.user?.email) }
+                            {truncateTextar(item?.user?.email)}
                           </span>
                         </div>
                       </td>
                       <td className=" h-[56px]  lg:text-[12px] xl:text-[12px] items-center ">
-                        {truncateTextar(item?.request_type) }
+                        {truncateTextar(item?.request_type)}
                       </td>
                       <td className=" h-[56px] font-bold text-[12px] text-left px-3">
                         {(currentPage - 1) * rowsPerPage + index + 1}
@@ -400,24 +495,43 @@ const RequestsOr = () => {
                         {(currentPage - 1) * rowsPerPage + index + 1}
                       </td>
                       <td className="h-[56px] lg:text-[12px]  xl:text-[12px]">
-                        {truncateText(item?.request_type) }
+                        {truncateText(item?.request_type)}
                       </td>
                       <td className="py-2 px-3">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-[12px]">
-                            {truncateText(item?.user?.name) }
+                            {truncateText(item?.user?.name)}
                           </span>
                           <span className="text-[10px]">
                             {truncateText(item?.user?.email)}
                           </span>
                         </div>
                       </td>
-                      <td className=" h-[56px] lg:text-[12px] xl:text-[14px]">
-                        {truncateText(item?.task?.name) }
-                      </td>
-                      <td className=" h-[56px]  lg:text-[12px] xl:text-[14px]">
-                        {truncateText(item?.event?.name) }
-                      </td>
+                      {item?.event?.name ? (
+                        <>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.event?.name)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.event?.date)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.event?.start_time)}
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.task?.name)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.task?.date)}
+                          </td>
+                          <td className="py-4 px-3 h-[56px] ">
+                            {truncateTextar(item?.task?.start_time)}
+                          </td>
+                        </>
+                      )}
                       <td className="h-[56px] lg:text-[12px] xl:text-[14px]">
                         {truncateText(item?.orgnization?.name)}
                       </td>
@@ -432,9 +546,11 @@ const RequestsOr = () => {
                           checked={selectedIds.includes(item.id)}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedIds(prev => [...prev, item.id]);
+                              setSelectedIds((prev) => [...prev, item.id]);
                             } else {
-                              setSelectedIds(prev => prev.filter(id => id !== item.id));
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== item.id)
+                              );
                             }
                           }}
                         />

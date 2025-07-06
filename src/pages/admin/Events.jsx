@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,8 @@ const Events = () => {
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState([]);
-
+const [sortKey, setSortKey] = useState('');
+const [sortOrder, setSortOrder] = useState('');
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -124,7 +125,29 @@ const filteredData = data.filter((item) => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
+  const sortedData = useMemo(() => {
+    let sortableData = [...filteredData]; 
+  
+    if (!sortKey || !sortOrder) {
+      return sortableData;
+    }
+  
+    return sortableData.sort((a, b) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+  
+  
+      if (sortKey === 'date') {
+        return sortOrder === 'asc'
+          ? new Date(aValue) - new Date(bValue)
+          : new Date(bValue) - new Date(aValue);
+      }
+  
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder]);
+  
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -182,7 +205,21 @@ const filteredData = data.filter((item) => {
             className="px-3 py-2border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
+        
+<select
+  value={`${sortKey}:${sortOrder}`}
+  onChange={(e) => {
+    const [key, order] = e.target.value.split(':');
+    setSortKey(key || '');
+    setSortOrder(order || '');
+  }}
+  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+>
+  <option value="">Sort By</option>
 
+  <option value="date:asc"> Date ↑</option>
+  <option value="date:desc"> Date ↓</option>
+</select>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
@@ -204,7 +241,9 @@ const filteredData = data.filter((item) => {
                 </option>
               ))}
             </select>
+            
           </button>
+          
           <button
             onClick={() => navigate("/admin/addevents")}
             className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"

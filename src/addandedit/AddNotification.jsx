@@ -12,9 +12,11 @@ const AddNotification = () => {
     const [edit, setEdit] = useState(false);
      const [loading, setLoading] = useState(true);
      const[notification,setNotification]=useState("")
+     const[title,setTitle]=useState("")
      const[users,setUsers]=useState([])
        const [errors, setErrors] = useState({
          notification: '',
+         title: '',
        });
 
         useEffect(() => {
@@ -31,6 +33,7 @@ const AddNotification = () => {
        .then(response => {
   const notif = response.data.notification;
   setNotification(notif.notification);
+  setTitle(notif.title);
   setUsers((notif.users || []).map(user => user.id)); 
 })
 
@@ -47,6 +50,7 @@ const AddNotification = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'notification') setNotification(value);
+    if (name === 'title') setTitle(value);
   };
     const validateForm = () => {
       let formErrors = {};
@@ -73,11 +77,10 @@ const AddNotification = () => {
 
     const newUseer = {
 notification,
-users
+users,
+title
     };
-    if(newUseer){
-      console.log(newUseer)
-    }
+   
 
  
     if (edit) {
@@ -136,6 +139,12 @@ users
       <ToastContainer/>
       <AddAll name={edit ? "Edit Notification" : "Add Notification"} navGo={-1} />
        <div className="flex flex-wrap gap-6 mt-6">
+        <InputField
+          placeholder="Title"
+          name="title"
+          value={title}
+          onChange={handleChange}
+        />
         <InputField
           placeholder="Notification"
           name="notification"

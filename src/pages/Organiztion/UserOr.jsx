@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,8 @@ const UserOr = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
-  const [ageSortOrder, setAgeSortOrder] = useState("");
+  const [sortKey, setSortKey] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
@@ -137,11 +138,31 @@ const UserOr = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (ageSortOrder === "asc") return a.age - b.age;
-    if (ageSortOrder === "desc") return b.age - a.age;
-    return 0;
-  });
+  const sortedData = useMemo(() => {
+    let sortableData = [...filteredData];
+
+    if (!sortKey || !sortOrder) {
+      return sortableData;
+    }
+
+    return sortableData.sort((a, b) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+
+      if (sortKey === "age") {
+        return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+      }
+
+      if (sortKey === "created_at") {
+        return sortOrder === "asc"
+          ? new Date(aValue) - new Date(bValue)
+          : new Date(bValue) - new Date(aValue);
+      }
+
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder]);
+
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
@@ -204,13 +225,19 @@ const UserOr = () => {
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
         <select
-          value={ageSortOrder}
-          onChange={(e) => setAgeSortOrder(e.target.value)}
+          value={`${sortKey}:${sortOrder}`}
+          onChange={(e) => {
+            const [key, order] = e.target.value.split(":");
+            setSortKey(key || "");
+            setSortOrder(order || "");
+          }}
           className="text-[14px] h-9 border border-one rounded-[8px] px-2"
         >
-          <option value="">Sort by Age</option>
-          <option value="asc">Age ↑</option>
-          <option value="desc">Age ↓</option>
+          <option value="">{t("SortBy")}</option>
+          <option value="age:asc">{t("Ageup")}</option>
+          <option value="age:desc">{t("Agedown")}</option>
+          <option value="created_at:asc">{t("JoinDateup")}</option>
+          <option value="created_at:desc">{t("JoinDatedown")}</option>
         </select>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
@@ -251,7 +278,7 @@ const UserOr = () => {
             className="bg-one/60 text-white px-4 py-2 rounded"
             onClick={handleBulkDelete}
           >
-         {t("DeleteSelected")}
+            {t("DeleteSelected")}
           </button>
         </div>
       )}
@@ -291,6 +318,7 @@ const UserOr = () => {
                     <th className="py-4 px-3">الدولة</th>
                     <th className="py-4 px-3">الإيميل</th>
                     <th className="py-4 px-3">العمر</th>
+                    <th className="py-4 px-3">يوم التسجيل</th>
                     <th className="py-4 px-3">المستخدم</th>
                     <th className="py-4 px-3">رقم</th>
                   </>
@@ -304,6 +332,7 @@ const UserOr = () => {
                     <th className="py-4 px-3">City</th>
                     <th className="py-4 px-3">Details</th>
                     <th className="py-4 px-3">Organization</th>
+                    <th className="py-4 px-3">join date</th>
                     <th className="py-4 px-3">Status</th>
                     <th className="py-4 px-3">
                       <input
@@ -369,6 +398,7 @@ const UserOr = () => {
                       <td className="py-2 px-3 text-green-600">
                         {truncateTextar(item?.account_status)}
                       </td>
+
                       <td className="py-2 px-3">
                         {truncateTextar(item?.orgnization?.name)}
                       </td>
@@ -394,6 +424,14 @@ const UserOr = () => {
                         {truncateTextar(item?.email)}
                       </td>
                       <td className="py-2 px-3">{truncateTextar(item?.age)}</td>
+                      <td className="py-2 px-3 ">
+                        {item?.created_at
+                          ? new Date(item.created_at)
+                              .toISOString()
+                              .split("T")[0]
+                          : "N/A"}{" "}
+                      </td>
+
                       <td className=" h-[56px] px-1 text-end">
                         <div className="flex flex-col gap-1 items-end">
                           <span className="text-[12px] font-normal">
@@ -450,6 +488,14 @@ const UserOr = () => {
                       <td className=" h-[56px] text-[12px] font-medium px-1">
                         {truncateText(item?.orgnization?.name)}
                       </td>
+                      <td className="py-2 px-3 ">
+                        {item?.created_at
+                          ? new Date(item.created_at)
+                              .toISOString()
+                              .split("T")[0]
+                          : "N/A"}{" "}
+                      </td>
+
                       <td className=" h-[56px] text-[12px] text-six px-1">
                         {item?.account_status ?? "N/A"}
                       </td>

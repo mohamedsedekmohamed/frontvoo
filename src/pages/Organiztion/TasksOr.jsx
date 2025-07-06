@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,8 @@ const TasksOr = () => {
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState([]);
-
+const [sortKey, setSortKey] = useState('');
+const [sortOrder, setSortOrder] = useState('');
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
@@ -125,7 +126,33 @@ const TasksOr = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
+ const sortedData = useMemo(() => {
+    let sortableData = [...filteredData]; 
+  
+    if (!sortKey || !sortOrder) {
+      return sortableData;
+    }
+  
+    return sortableData.sort((a, b) => {
+      if (sortKey === 'date') {
+        return sortOrder === 'asc'
+          ? new Date(a.date) - new Date(b.date)
+          : new Date(b.date) - new Date(a.date);
+      }
+  
+      if (sortKey === 'start_time') {
+        const aDateTime = new Date(`${a.date}T${a.start_time}`);
+        const bDateTime = new Date(`${b.date}T${b.start_time}`);
+        return sortOrder === 'asc'
+          ? aDateTime - bDateTime
+          : bDateTime - aDateTime;
+      }
+  
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder]);
+    
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -194,6 +221,21 @@ const TasksOr = () => {
             className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
+      <select
+  value={`${sortKey}:${sortOrder}`}
+  onChange={(e) => {
+    const [key, order] = e.target.value.split(':');
+    setSortKey(key || '');
+    setSortOrder(order || '');
+  }}
+  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+>
+  <option value="">{t("SortBy")}</option>
+          <option value="start_time:asc">{t("StartTimeup")}</option>
+          <option value="start_time:desc">{t("StartTimedown")}</option>
+          <option value="date:asc">{t("Dateup")}</option>
+          <option value="date:desc">{t("Datedown")}</option>
+</select>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,8 @@ const Organizeation = () => {
   const [selectedFilter, setSelectedFilter] = useState('');
   const navigate = useNavigate();
     const [selectedIds, setSelectedIds] = useState([]);
-
+const [sortKey, setSortKey] = useState('');
+const [sortOrder, setSortOrder] = useState('');
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -101,7 +102,28 @@ const Organizeation = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
+  const sortedData = useMemo(() => {
+    let sortableData = [...filteredData]; 
+  
+    if (!sortKey || !sortOrder) {
+      return sortableData;
+    }
+  
+    return sortableData.sort((a, b) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+  
+     
+      if (sortKey === 'created_at') {
+        return sortOrder === 'asc'
+          ? new Date(aValue) - new Date(bValue)
+          : new Date(bValue) - new Date(aValue);
+      }
+  
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder]);
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -228,6 +250,19 @@ const handleBulkStatusChange = () => {
             />
             <CiSearch className='w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6' />
           </div>
+          <select
+  value={`${sortKey}:${sortOrder}`}
+  onChange={(e) => {
+    const [key, order] = e.target.value.split(':');
+    setSortKey(key || '');
+    setSortOrder(order || '');
+  }}
+  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+>
+  <option value="">Sort By</option>
+  <option value="created_at:asc">Join Date ↑</option>
+  <option value="created_at:desc">Join Date ↓</option>
+</select>
           <button onClick={()=> exportToExcel()} className='p-2 bg-one text-white rounded-[10px] animate-pulse flex gap-2 items-center '>
                     <span>Export To Excel</span>
                     <i><FaDownload/></i>

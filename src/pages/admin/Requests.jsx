@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
@@ -16,7 +16,8 @@ const Requests = () => {
   const [active, setActive] = useState("task"); // task or event
   const [selectedFilter, setSelectedFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
-
+const [sortKey, setSortKey] = useState('');
+const [sortOrder, setSortOrder] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -198,7 +199,39 @@ const Requests = () => {
     (item) => item.request_type === active
   );
   const pageCount = Math.ceil(filteredByType.length / rowsPerPage);
-  const paginatedData = filteredByType.slice(
+  const sortedData = useMemo(() => {
+      let sortableData = [...filteredByType]; 
+    
+      if (!sortKey || !sortOrder) {
+        return sortableData;
+      }
+    
+       return sortableData.sort((a, b) => {
+      const aSource = a.request_type === "event" ? a.event : a.task;
+      const bSource = b.request_type === "event" ? b.event : b.task;
+
+      if (!aSource || !bSource) return 0;
+
+      // sort by date
+      if (sortKey === "date") {
+        return sortOrder === "asc"
+          ? new Date(aSource.date) - new Date(bSource.date)
+          : new Date(bSource.date) - new Date(aSource.date);
+      }
+
+      // sort by start_time (with date)
+      if (sortKey === "start_time") {
+        const aDateTime = new Date(`${aSource.date}T${aSource.start_time}`);
+        const bDateTime = new Date(`${bSource.date}T${bSource.start_time}`);
+        return sortOrder === "asc"
+          ? aDateTime - bDateTime
+          : bDateTime - aDateTime;
+      }
+
+      return 0;
+      });
+    }, [filteredByType, sortKey, sortOrder]);
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
@@ -285,6 +318,22 @@ const handleBulkDelete = () => {
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
+          <select
+  value={`${sortKey}:${sortOrder}`}
+  onChange={(e) => {
+    const [key, order] = e.target.value.split(':');
+    setSortKey(key || '');
+    setSortOrder(order || '');
+  }}
+  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+>
+  <option value="">Sort By</option>
+
+  <option value="start_time:asc"> Start Time ↑</option>
+  <option value="start_time:desc"> Start Time ↓</option>
+  <option value="date:asc"> Date ↑</option>
+  <option value="date:desc"> Date ↓</option>
+</select>
         <div className="flex justify-center items-center gap-2 ">
           <button
             onClick={() => {
@@ -369,8 +418,10 @@ const handleBulkDelete = () => {
                 <th className="py-4 px-3">S/N</th>
                 <th className="py-4 px-3 ">Type</th>
                 <th className="py-4 px-3 ">User</th>
-                <th className="py-4 px-3 ">Task</th>
-                <th className="py-4 px-3 ">Event</th>
+     {active==="task"&&   <th className="py-4 px-3 ">Task</th> }         
+     {active==="event"&&   <th className="py-4 px-3 ">Event</th> }         
+                <th className="py-4 px-3 ">Date</th>
+                <th className="py-4 px-3 ">time</th>
                 <th className="py-4 px-3 ">Orgnization</th>
                 <th className="py-4 px-3 ">Action</th>
                 <th className="py-4 px-3">Details</th>
@@ -427,15 +478,32 @@ const handleBulkDelete = () => {
                       </span>
                     </div>
                   </td>
-
+ {active==="task"&& <>
                   <td className="py-2 px-3">
                     {truncateText(item?.task?.name)}
                   </td>
-
+                    <td className="py-2 px-3">
+                    {truncateText(item?.task?.date)}
+                  </td>
+                  <td className="py-2 px-3">
+                    {truncateText(item?.task?.start_time)}
+                  </td>
+                  </>
+}
+ {active==="event"&& 
+<>
                   <td className="py-2 px-3">
                     {truncateText(item?.event?.name)}
                   </td>
-
+                     <td className="py-2 px-3">
+                    {truncateText(item?.event?.date)}
+                  </td>
+                  <td className="py-2 px-3">
+                    {truncateText(item?.event?.start_time)}
+                  </td>
+</>
+}
+                
                   <td className="py-2 px-3">
                     {truncateText(item?.orgnization?.name)}
                   </td>
