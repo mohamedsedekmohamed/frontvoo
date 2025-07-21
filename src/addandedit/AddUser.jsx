@@ -252,6 +252,7 @@ const AddUser = () => {
       className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
       showYearDropdown
       scrollableYearDropdown
+      maxDate={new Date ()}
       yearDropdownItemNumber={100}
     />
   </div>

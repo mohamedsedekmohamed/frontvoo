@@ -94,8 +94,13 @@ const EventsOr = () => {
   const filteredData = data.filter((item) => {
     const query = searchQuery.toLowerCase();
 
+    // فلترة حسب التاريخ إذا كان مختار
+    const isDateMatch = !selectedDate || item.date === selectedDate;
+
+    // فلترة حسب البحث
+    let isSearchMatch;
     if (selectedFilter === "Filter" || selectedFilter === "") {
-      return Object.values(item).some((value) =>
+      isSearchMatch = Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value || {}).some((sub) =>
               sub?.toString().toLowerCase().includes(query)
@@ -109,8 +114,11 @@ const EventsOr = () => {
         value = value?.[key];
       }
 
-      return value?.toString().toLowerCase().includes(query);
+      isSearchMatch = value?.toString().toLowerCase().includes(query);
     }
+
+    // شرط نهائي: لازم يطابق التاريخ + البحث
+    return isDateMatch && isSearchMatch;
   });
   const cheose = ["Filter", "name", "date", "start_time", "location"];
   const labelMap = {
@@ -292,7 +300,8 @@ const EventsOr = () => {
                     <th className="py-4 px-3">رقم</th>
                     <th className="py-4 px-3">الحدث</th>
                     <th className="py-4 px-3">الميعاد</th>
-                    <th className="py-4 px-3">الوقت </th>
+                    <th className="py-4 px-3">وقت البدء </th>
+                    <th className="py-4 px-3"> وقت الأنتهاء  </th>
                     <th className="py-4 px-3">تفاصيل</th>
                     <th className="py-4 px-3">العمليات</th>
                     <th className="py-4 px-3">المكان</th>
@@ -340,7 +349,8 @@ const EventsOr = () => {
                     <th className="py-4 px-3">S/N</th>
                     <th className="py-4 px-3">Event</th>
                     <th className="py-4 px-3">Date</th>
-                    <th className="py-4 px-3">Time</th>
+                    <th className="py-4 px-3">Start Time</th>
+                    <th className="py-4 px-3">End Time</th>
                     <th className="py-4 px-3">Details</th>
                     <th className="py-4 px-3"> Operation</th>
                     <th className="py-4 px-3">location</th>
@@ -393,15 +403,16 @@ const EventsOr = () => {
                   key={item.id}
                   className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
                 >
-             
                   <td className="py-2 px-3">
                     {(currentPage - 1) * rowsPerPage + index + 1}
                   </td>
                   <td className="py-2 px-3">{truncateText(item?.name)}</td>
                   <td className="py-2 px-3">{truncateText(item?.date)}</td>
                   <td className="py-2 px-3">
-                    start{item?.start_time ?? "N/A"} end
-                    {item?.end_time ?? "N/A"}
+                    <span> {item?.start_time ?? "N/A"} </span>
+                  </td>
+                  <td className="py-2 px-3">
+                    <span> {item?.end_time ?? "N/A"} </span>
                   </td>
 
                   <td className="py-2 px-3">
@@ -445,7 +456,11 @@ const EventsOr = () => {
                     />
                   </td>
 
-                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-center":"justify-start"} flex  items-center px-1 `}>
+                  <td
+                    className={` h-[56px] lg:text-[12px] xl:text-[16px] ${
+                      isArabic ? "justify-center" : "justify-start"
+                    } flex  items-center px-1 `}
+                  >
                     <CiEdit
                       className="w-[24px] h-[24px] text-six cursor-pointer"
                       onClick={() => handleEdit(item.id)}
@@ -455,7 +470,6 @@ const EventsOr = () => {
                       onClick={() => handleDelete(item.id, item.name)}
                     />
                   </td>
-              
                 </tr>
               ))}
             </tbody>

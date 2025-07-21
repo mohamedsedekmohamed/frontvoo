@@ -91,26 +91,36 @@ const TasksOr = () => {
   };
 
   const filteredData = data.filter((item) => {
-    const query = searchQuery.toLowerCase();
+  const query = searchQuery.toLowerCase();
 
-    if (selectedFilter === "Filter" || selectedFilter === "") {
-      return Object.values(item).some((value) =>
-        typeof value === "object"
-          ? Object.values(value || {}).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
-            )
-          : value?.toString().toLowerCase().includes(query)
-      );
-    } else {
-      const keys = selectedFilter.split(".");
-      let value = item;
-      for (let key of keys) {
-        value = value?.[key];
-      }
+  // فلترة حسب التاريخ إذا كان مختار
+  const isDateMatch =
+    !selectedDate || item.date === selectedDate;
 
-      return value?.toString().toLowerCase().includes(query);
+  // فلترة حسب البحث
+  let isSearchMatch;
+  if (selectedFilter === "Filter" || selectedFilter === "") {
+    isSearchMatch = Object.values(item).some((value) =>
+      typeof value === "object"
+        ? Object.values(value || {}).some((sub) =>
+            sub?.toString().toLowerCase().includes(query)
+          )
+        : value?.toString().toLowerCase().includes(query)
+    );
+  } else {
+    const keys = selectedFilter.split(".");
+    let value = item;
+    for (let key of keys) {
+      value = value?.[key];
     }
-  });
+
+    isSearchMatch = value?.toString().toLowerCase().includes(query);
+  }
+
+  // شرط نهائي: لازم يطابق التاريخ + البحث
+  return isDateMatch && isSearchMatch;
+});
+
   const cheose = ["Filter", "name", "date", "start_time", "description"];
   const labelMap = {
     Filter: t("Filter"),

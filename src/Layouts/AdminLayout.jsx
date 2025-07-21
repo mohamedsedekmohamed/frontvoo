@@ -8,12 +8,10 @@ const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   
 useEffect(() => {
-    // تحقق من حجم الشاشة عند تحميل الصفحة
     if (window.innerWidth >= 1024) {
       setIsOpen(true);
     }
 
-    // إضافة listener لتحديث isOpen عند تغيير حجم الشاشة
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setIsOpen(true);
@@ -22,14 +20,12 @@ useEffect(() => {
       }
     };
 
-    // إضافة listener عند تحميل الصفحة
     window.addEventListener('resize', handleResize);
 
-    // تنظيف الـ listener عند فك الـ component
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []); // فقط عند التحميل الأولي
+  }, []);
   return (
     <div className="flex min-h-screen gap-3 mx-2 mt-2 relative">
         {isOpen&& 

@@ -88,16 +88,22 @@ const [sortOrder, setSortOrder] = useState('');
   const [selectedDate, setSelectedDate] = useState("");
 
   const handleChangedata = (e) => {
-    setSelectedDate(e.target.value); // value هي بصيغة YYYY-MM-DD
+    setSelectedDate(e.target.value); 
   };
 
 const filteredData = data.filter((item) => {
   const query = searchQuery.toLowerCase();
 
+  // فلترة حسب التاريخ إذا كان مختار
+  const isDateMatch =
+    !selectedDate || item.date === selectedDate;
+
+  // فلترة حسب البحث
+  let isSearchMatch;
   if (selectedFilter === "Filter" || selectedFilter === "") {
-    return Object.values(item).some(value =>
+    isSearchMatch = Object.values(item).some((value) =>
       typeof value === "object"
-        ? Object.values(value || {}).some(sub =>
+        ? Object.values(value || {}).some((sub) =>
             sub?.toString().toLowerCase().includes(query)
           )
         : value?.toString().toLowerCase().includes(query)
@@ -109,9 +115,13 @@ const filteredData = data.filter((item) => {
       value = value?.[key];
     }
 
-    return value?.toString().toLowerCase().includes(query);
+    isSearchMatch = value?.toString().toLowerCase().includes(query);
   }
+
+  // شرط نهائي: لازم يطابق التاريخ + البحث
+  return isDateMatch && isSearchMatch;
 });
+
 
   const cheose = ["Filter", "name", "date", "start_time", "location"];
   const labelMap = {
@@ -275,7 +285,8 @@ const filteredData = data.filter((item) => {
                 <th className="py-4 px-3">S/N</th>
                 <th className="py-4 px-3">Tasks</th>
                 <th className="py-4 px-3">Date</th>
-                <th className="py-4 px-3">Time</th>
+                <th className="py-4 px-3">Start Time</th>
+                <th className="py-4 px-3">End Time</th>
                 <th className="py-4 px-3">Details</th>
                 <th className="py-4 px-3">Operation</th>
                 <th className="py-4 px-3">location</th>
@@ -320,8 +331,9 @@ const filteredData = data.filter((item) => {
                   <td className="py-4 px-3">{truncateText(item?.name)}</td>
                   <td className="py-4 px-3">{truncateText(item?.date)}</td>
                   <td className="py-4 px-3">
-                    {" "}
-                    start{item?.start_time ?? "N/A"} end
+                    {item?.start_time ?? "N/A"} 
+                  </td>
+                  <td className="py-4 px-3">
                     {item?.end_time ?? "N/A"}
                   </td>
                   <td className="py-4 px-3 ">

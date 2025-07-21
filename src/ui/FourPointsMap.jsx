@@ -66,7 +66,7 @@ const FourPointsMap = ({setPoints,points}) => {
   return (
     <div>
       <MapContainer
-        center={[24.7136, 46.6753]}
+        center={[31.200092, 29.918739]}
         zoom={12}
         style={{ height: "500px", width: "100%" }}
       >

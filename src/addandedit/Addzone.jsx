@@ -23,37 +23,37 @@ const Addzone = () => {
         zone:''
       });
 
-      useEffect(() => {
-        const { sendData } = location.state || {};
-        if (sendData) {
-          setid(sendData); 
-          setEdit(true);
-        
-          const token = localStorage.getItem('token');
-          axios.get("https://backndVoo.voo-hub.com/api/admin/zone", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
-          })
-            .then(response => {
-              const user = response.data[0].zones.find(u => u.id === sendData);
-              if (user) {
-                setCountry(user.country_id|| '');
-                setCity(user.city_id || '');
-                setZone(user.name || '');   
+        useEffect(() => {
+          const { sendData } = location.state || {};
+          if (sendData) {
+            setid(sendData); 
+            setEdit(true);
+          
+            const token = localStorage.getItem('token');
+            axios.get("https://backndVoo.voo-hub.com/api/admin/zone", {
+              headers: {
+                Authorization: `Bearer ${token}`,
               }
             })
-            .catch(error => {
-              toast.error("Error fetching city:", error);
-            });
-        }
-      
-        const timeout = setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      
-        return () => clearTimeout(timeout);
-      }, [location.state]);
+              .then(response => {
+                const user = response.data[0].zones.find(u => u.id === sendData);
+                if (user) {
+                  setCountry(user.country_id|| '');
+                  setCity(user.city_id || '');
+                  setZone(user.name || '');   
+                }
+              })
+              .catch(error => {
+                toast.error("Error fetching city:", error);
+              });
+          }
+        
+          const timeout = setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        
+          return () => clearTimeout(timeout);
+        }, [location.state]);
 
        const validateForm = () => {
             let formErrors = {};

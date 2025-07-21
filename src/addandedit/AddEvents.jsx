@@ -46,8 +46,8 @@ const AddEvents = () => {
 
 
   const [google, setgoogle] = useState({
-      lat: 30.033333, // القاهرة
-      lng: 31.233334,
+   lat: 31.200092, // الإسكندرية
+lng: 29.918739
     });
     const updateLocation = (newLocation) => {
       setgoogle(newLocation);
@@ -133,6 +133,7 @@ const AddEvents = () => {
             setorganizers(event.number_of_organizers || '');
             setlocat(event.location || '');
             setPoints(event.points || [])
+            setvalue(event.status|| "inactive")
             // const latLng = extractLatLng(event.google_maps_location);
             // setgoogle(latLng || ''); // هنا بنمرر الإحداثيات المستخرجة
             // setnamegoogle(event.google_maps_location || '');
