@@ -3,22 +3,25 @@ import { FaClock } from "react-icons/fa";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-
+import { useTranslation } from 'react-i18next';
+ 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 
 const RecentEventList = ({ recent_event = [] }) => {
+       const { t, i18n } = useTranslation();
+  
   return (
     <div className="bg-[#F8F3FB] rounded-xl p-4 w-full max-w-md">
       <div className="flex items-center gap-2 mb-4">
         <FaClock className="text-lg text-gray-700" />
         <h2 className="text-lg font-semibold text-gray-700">
-          Recent Activity
+          {t("RecentActivity")}
         </h2>
       </div>
 
       {recent_event.length === 0 ? (
-        <p className="text-gray-500">No recent events.</p>
+        <p className="text-gray-500">{t("Norecentevents")}</p>
       ) : (
         <ul className="space-y-3">
           {recent_event.map((event) => {

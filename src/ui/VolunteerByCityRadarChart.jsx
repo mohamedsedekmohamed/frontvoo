@@ -8,6 +8,8 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { useTranslation } from 'react-i18next';
+
 import { FaMapMarkerAlt } from "react-icons/fa";
 const VolunteerByCityRadarChart = ({ data = [] }) => {
   const COLORS = ["#730FC9", "#C0A9D6", "#B2A9B6", "#ECECEC", "#333"];
@@ -19,6 +21,7 @@ const VolunteerByCityRadarChart = ({ data = [] }) => {
   }));
 
   const maxValue = Math.max(...chartData.map((item) => item.requests), 10);
+     const { t, i18n } = useTranslation();
 
   return (
     <div
@@ -36,7 +39,7 @@ const VolunteerByCityRadarChart = ({ data = [] }) => {
       <div style={{ flex: "1 1 300px" }}>
         <div className="flex items-center gap-2 text-[#333] mb-4">
           <FaMapMarkerAlt className="text-xl" />
-          <h2 className="text-xl font-semibold">Volunteer Distribution By City</h2>
+          <h2 className="text-xl font-semibold">{t("DistributionCity")}</h2>
         </div>
         <ul className="space-y-2">
           {chartData.map((item, index) => (
@@ -51,7 +54,7 @@ const VolunteerByCityRadarChart = ({ data = [] }) => {
                 }}
               ></span>
               <span className="text-[#730FC9] font-medium">
-                {item.city} – {item.requests} Volunteers
+                {item.city} – {item.requests} {t("Volunteers")}
               </span>
             </li>
           ))}
@@ -78,7 +81,7 @@ const VolunteerByCityRadarChart = ({ data = [] }) => {
           </ResponsiveContainer>
         ) : (
           <p className="text-[#730FC9] font-medium text-center mt-4">
-            No volunteer data available.
+             {t("dataavailable")}
           </p>
         )}
       </div>

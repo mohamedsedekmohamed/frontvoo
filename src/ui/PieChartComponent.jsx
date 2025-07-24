@@ -61,15 +61,14 @@ const PieChartComponent = () => {
  <div className=" flex items-center text-[#4C4C4D] gap-2 ">
   <i className="text-2xl"><PiUsersFourFill/></i>
    <h2 className="text-center text-lg font-semibold text-gray-700 ">
-    Volunteer Distribution by Gender
+     {t("Distribution")}
   </h2>
  </div>
   {loading ? (
     <p style={{ textAlign: "center", marginTop: 150 }}>{t("Loading")}</p>
   ) : error ? (
     <p style={{ textAlign: "center", marginTop: 150, color: "red" }}>
-      حدث خطأ أثناء تحميل البيانات
-    </p>
+{t("occurred")}    </p>
   ) : data.length > 0 ? (
     <ResponsiveContainer>
       <PieChart>
@@ -92,7 +91,7 @@ const PieChartComponent = () => {
     </ResponsiveContainer>
   ) : (
     <div style={{ textAlign: "center", marginTop: 150 }}>
-      <p className="text-one">No Complaints Analysis</p>
+      <p className="text-one">{t("NoComplaintsAnalysis")}</p>
     </div>
   )}
 </div>

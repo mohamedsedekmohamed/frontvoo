@@ -194,11 +194,28 @@ i18n
         JoinDateup: "Join Date ↑",
         JoinDatedown: "Join Date ↓",
         age: "Age",
-        Loading:"Loading"
-        },
+        Loading:"Loading",
+        Distribution:"Volunteer Distribution by Gender",
+        occurred:"An error occurred while loading data.",
+        NoComplaintsAnalysis:"No Complaints Analysis",
+        DistributionCity:"Volunteer Distribution By City",
+        Volunteers:"Volunteers",
+        dataavailable:"No volunteer data available",
+        RecentActivity:"Recent Activity",
+        Norecentevents:"No recent events"
       },
-      ar: {
-        translation: {
+    },
+    ar: {
+      translation: {
+        Norecentevents:"لا توجد أحداث حديثة",
+        RecentActivity:" النشاط الأخير",
+        TotalVolunteers:"إجمالي المتطوعين",
+        dataavailable:"لا تتوفر بيانات المتطوعين",
+        Volunteers:"المتطوعون",
+        DistributionCity:"توزيع المتطوعين حسب المدينة",
+        NoComplaintsAnalysis:"تحليل عدم وجود شكاوى",
+        occurred:"حدث خطأ أثناء تحميل البيانات",
+          Distribution:"توزيع المتطوعين حسب الجنس",
           Loading:"جاري التحميل",
           age: "العمر",
           JoinDatedown: "تاريخ الانضمام ↓",
