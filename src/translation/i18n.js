@@ -194,10 +194,12 @@ i18n
         JoinDateup: "Join Date ↑",
         JoinDatedown: "Join Date ↓",
         age: "Age",
+        Loading:"Loading"
         },
       },
       ar: {
         translation: {
+          Loading:"جاري التحميل",
           age: "العمر",
           JoinDatedown: "تاريخ الانضمام ↓",
           JoinDateup: "تاريخ الانضمام ↑",

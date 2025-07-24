@@ -49,8 +49,8 @@ useEffect(() => {
   return (
     <Routes>
 
-    <Route path="/" element={<Navigate to="/organizeation/user" />} />
-    <Route path="*" element={<Navigate to="/organizeation/user" replace />} />
+    <Route path="/" element={<Navigate to="/organizeation/home" />} />
+    <Route path="*" element={<Navigate to="/organizeation/home" replace />} />
        <Route path="/organizeation" element={<OrganiztionLayout />}>
        <Route path="user" element={<User />} />
        <Route path="events" element={<Events />} />
@@ -63,7 +63,7 @@ useEffect(() => {
        <Route path="operationTasksOr" element={<OperationTasksOr />} />
        <Route path="eventsdetails" element={<Eventsdetails />} />
        <Route path="operationOr" element={<OperationOr />} />
-       <Route path="Home" element={<Home />} />
+       <Route path="home" element={<Home />} />
        {/* <Route path="operation" element={<Operation />} /> */}
       
        <Route path="tasksdetails" element={<Tasksdetails />} />

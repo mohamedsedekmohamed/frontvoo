@@ -42,7 +42,7 @@ useEffect(()=>{
           setTimeout(() => {
             setIsLoggedIn(true);
             setorganiztionLayout(true);
-            navigate('/organiztion/user');
+            navigate('/organiztion/home');
           }, 3000);         
         }
       })

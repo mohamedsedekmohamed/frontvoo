@@ -81,7 +81,7 @@ const BarChart = ({All}) => {
 }, [All]); // ✅ أضف All إلى قائمة الاعتماد
 
   return (
-    <div className="w-[90%]  h-[300px] p-4 bg-white rounded-lg shadow-lg">
+    <div className="w-[90%]  h-[300px] p-4 bg-[#F7F3FB] rounded-lg shadow-lg">
       <canvas ref={chartRef} className="w-full h-full" />
     </div>
   );
