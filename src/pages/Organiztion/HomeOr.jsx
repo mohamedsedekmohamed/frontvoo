@@ -30,7 +30,6 @@ const HomeOr = () => {
         setData(response.data);
     })
       .catch(() => {
-        toast.error("Error fetching data");
       });
   }, []);
  
@@ -41,24 +40,24 @@ const HomeOr = () => {
     {/* one */}
 <div className='w-[23%} h-[159px] bg-threeteen  text-[#27AE60] flex flex-col  gap-6 p-8'>
   <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><FaUsers className='text-#27AE60'/></i><span>{t("ActiveVolunteers")}    </span> </div>
-  <span className='text-2xl'>{data.users_volunters} </span>
+  <span className='text-2xl'>{data.users_volunters??"0"}</span>
 </div>
 {/* two */}
 <div className='w-[23%} h-[159px] bg-fourteen  text-[#4A90E2] flex flex-col  gap-6 p-8'>
   <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl items-center'><i><FaTableCells className='text-[#4A90E2]'/></i><span>{t("CurrentTasks")} </span> </div>
-  <span className='text-2xl'> {data.current_tasks_count}</span>
+  <span className='text-2xl'> {data.current_tasks_count??"0"}</span>
 </div>
 
 {/* threr */}
 
 <div className='w-[23%} h-[159px] bg-threeteen text-[#16A085] flex flex-col  gap-6 p-8'>
   <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><VscCheck className='text-[#16A085]'/></i><span>{t("CompletedTasks")}  </span> </div>
-  <span className='text-2xl'> {data.ended_tasks_count}</span>
+  <span className='text-2xl'> {data.ended_tasks_count??"0"}</span>
 </div>
 {/* four */}
 <div className='w-[23%} h-[159px] bg-fourteen  text-[#F39C12] flex flex-col  gap-4 p-8'>
   <div className='flex gap-1  text-[16px] md:text-[18px] lg:text-[20px]  items-center'><i><ImUsers className='text-[#F39C12]'/></i><span>{t("UsersCount")}   </span> </div>
-  <span className='text-2xl'> {data.users_count}</span>
+  <span className='text-2xl'> {data.users_count??"0"}</span>
 </div>
 </div>
 {/* القسم الأول: BarChart و PieChart */}
