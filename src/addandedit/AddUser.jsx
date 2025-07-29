@@ -205,13 +205,16 @@ const AddUser = () => {
   };
 
   const handstartDate = (newData) => {
-    if (newData) {
-      const formatted = newData.toISOString().split('T')[0]; 
-      setbirthdate(formatted);
-        } else {
-      setbirthdate("");
-    }
-  };
+  if (newData) {
+    const year = newData.getFullYear();
+    const month = String(newData.getMonth() + 1).padStart(2, '0');
+    const day = String(newData.getDate()).padStart(2, '0');
+    setbirthdate(`${year}-${month}-${day}`);
+  } else {
+    setbirthdate("");
+  }
+};
+
 
   if (loading) {
     return (
@@ -238,25 +241,25 @@ const AddUser = () => {
           onChange={handleChange}
         />
 
-<div className='flex flex-col gap-3 items-start justify-end'>
-  <span className='text-[12px] font-bold text-one md:text-[16px]'>Birthdate</span>
+  <div className='flex flex-col gap-3 items-start justify-end'>
+    <span className='text-[12px] font-bold text-one md:text-[16px]'>Birthdate</span>
 
-  <div className='relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]'>
-    <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
+    <div className='relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]'>
+      <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
 
-    <DatePicker
-      selected={birthdate}
-      onChange={handstartDate}
-      placeholderText="Select date"
-      dateFormat="yyyy-MM-dd"
-      className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
-      showYearDropdown
-      scrollableYearDropdown
-      maxDate={new Date ()}
-      yearDropdownItemNumber={100}
-    />
+      <DatePicker
+        selected={birthdate}
+        onChange={handstartDate}
+        placeholderText="Select date"
+        dateFormat="yyyy-MM-dd"
+        className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
+        showYearDropdown
+        scrollableYearDropdown
+        maxDate={new Date ()}
+        yearDropdownItemNumber={100}
+      />
+    </div>
   </div>
-</div>
         <InputField
           placeholder="Phone"
           name="phone"

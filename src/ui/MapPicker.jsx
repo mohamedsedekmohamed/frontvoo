@@ -171,8 +171,8 @@
       <div className="flex w-full flex-col bg-white rounded-xl shadow-xl overflow-hidden relative" style={{ minHeight: '600px', fontFamily: "'Inter', sans-serif" }}>
         {/* العنوان */}
         <div className="bg-one text-white p-5 font-bold text-xl text-center tracking-wide rounded-t-xl">
-          اختيار الموقع
-        </div>
+Locate on the map
+    </div>
 
         {/* الخريطة + البحث */}
         <div ref={mapRef} className="w-full relative" style={{ height }}>

@@ -53,7 +53,6 @@ lng: 29.918739
       setgoogle(newLocation);
     };
       const extractLatLng = (url) => {
-    // استخراج الإحداثيات من الرابط باستخدام تعبير منتظم
     const regex = /q=([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)/;
     const matches = url.match(regex);
 
@@ -339,10 +338,12 @@ setPoints([])
     setid('')
   };
 
-  const handstartDate = (newData) => {
+ const handstartDate = (newData) => {
     if (newData) {
-      const formatted = newData.toISOString().split('T')[0];
-      setDate(formatted);
+     const year = newData.getFullYear();
+    const month = String(newData.getMonth() + 1).padStart(2, '0');
+    const day = String(newData.getDate()).padStart(2, '0');
+    setDate(`${year}-${month}-${day}`);
     } else {
       setDate('');
     }
@@ -496,11 +497,7 @@ setPoints([])
       <div className=" flex flex-col my-15">
         <span className="text-3xl font-bold text-three my-5 ">Place</span>
         <div className="flex flex-wrap justify-center gap-6 mt-6 bg-eight p-5">
-        {/* <GetLocationLink
-            google={google} // تمرير الإحداثيات هنا
-            setnamegoogle={setnamegoogle}
-            onLocationChange={(location) => setgoogle(location)}
-          /> */}
+       
           <MapPicker location={google} onLocationChange={updateLocation} />
                   </div>
       </div>

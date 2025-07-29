@@ -64,7 +64,7 @@ import 'react-toastify/dist/ReactToastify.css';
     </div>
     <span className='text-one  font-normal text-[20px] mt-2'> {data?.location??"N/A"}  {data?.zone?.name??"N/A"} </span>
     <span className='text-ten  font-normal text-[14px] mt-2'> {data?.zone?.name??"N/A"}</span>
-        <a href={data?.google_map_location??"null"} className='text-ten  font-normal text-[14px] mt-2'> {t("googlemap")}: {data?.google_map_location??"N/A"}</a>
+        <a href={data?.google_map_location??"null"} className='text-ten  font-normal text-[14px] mt-2'> {t("googlemap")}: {data?.location??"N/A"}</a>
     <span className='text-one  font-normal text-[20px] mt-6'> {t("description")} </span>
 
     <span className='text-ten  font-normal text-[14px] mt-2'> {data?.description ??"N/A"}</span>

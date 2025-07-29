@@ -194,14 +194,17 @@ if(sendData){
     setEdit(false);
   };
 
+
   const handstartDate = (newData) => {
-    if (newData) {
-      const formatted = newData.toISOString().split('T')[0];
-      setbirthdate(formatted);
-    } else {
-      setbirthdate("");
-    }
-  };
+  if (newData) {
+    const year = newData.getFullYear();
+    const month = String(newData.getMonth() + 1).padStart(2, '0');
+    const day = String(newData.getDate()).padStart(2, '0');
+    setbirthdate(`${year}-${month}-${day}`);
+  } else {
+    setbirthdate("");
+  }
+};
 
 
   if (loading) {

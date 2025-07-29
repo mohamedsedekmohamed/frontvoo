@@ -79,8 +79,8 @@ const Tasksdetails = () => {
               <span className="text-twelve   text-[16px]">
                 {" "}
                 {t("MapLink")}:
-                <a className="underline" href={data?.to_zone?.google_map_location}>
-{data?.to_zone?.google_map_location ?? "N/A"}                </a>
+                <a className="underline" href={data?.location}>
+{data?.location ?? "N/A"}                </a>
               </span>
             </div>
           </div>

@@ -55,7 +55,7 @@ const TasksDetails = () => {
                 <div className="mt-2 flex flex-col gap-2">
                 <span className='text-nine text-[16px]'>country: {data?.to_zone?.city?.country?.name ?? "N/A"}</span>
                 <span className='text-nine text-[16px]'>city: {data?.to_zone?.city?.name ?? "N/A"}</span>
-                <span className='text-nine text-[16px]'>country: {data?.to_zone?.name ?? "N/A"}</span>
+                <a href={data?.location} className='text-nine text-[16px]'>location: {data?.location?? "N/A"}</a>
                 </div>
               </div>
               case 'tasks':
@@ -127,8 +127,8 @@ const TasksDetails = () => {
                 <div className='flex flex-col gap-1'>
                  <span className='text-nine text-[10px] md:text-[16px]'>time  </span>
                  <div className='flex  flex-col gap-0.5'>
+                 <span className='text-[8px] md:text-[16px] lg:text-[20px] text-one'>date:{data?.date ?? "N/A"}</span>
                  <span className=' text-[8px] md:text-[16px] lg:text-[20px] text-one'> strat:{data?.start_time ?? "N/A"}</span>
-                 <span className='text-[8px] md:text-[16px] lg:text-[20px] text-one'>end:{data?.end_time ?? "N/A"}</span>
                  </div>
        
                 </div>

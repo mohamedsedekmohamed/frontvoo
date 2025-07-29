@@ -166,8 +166,10 @@ const Addtasksor = () => {
   };
   const handstartDate = (newData) => {
     if (newData) {
-      const formatted = newData.toISOString().split('T')[0];
-      setDate(formatted);
+     const year = newData.getFullYear();
+    const month = String(newData.getMonth() + 1).padStart(2, '0');
+    const day = String(newData.getDate()).padStart(2, '0');
+    setDate(`${year}-${month}-${day}`);
     } else {
       setDate('');
     }

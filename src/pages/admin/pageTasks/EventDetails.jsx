@@ -61,8 +61,7 @@ import 'react-toastify/dist/ReactToastify.css';
     <CiLocationOn className='text-[24px] text-one'/> <span className='text-one font-medium text-[24px]'>Location </span> 
     </div>
     <span className='text-one  font-normal text-[20px] mt-2'> {data?.to_zone?.city?.name??"N/A"} & {data?.to_zone?.city?.country?.name??"N/A"} </span>
-    <span className='text-ten  font-normal text-[14px] mt-2'> {data?.location??"N/A"}</span>
-    <a href={data?.google_map_location??"null"} className='text-ten  font-normal text-[14px] mt-2'> google_map: {data?.google_map_location??"N/A"}</a>
+    <a href={data?.location??"null"} className='text-ten  font-normal text-[14px] mt-2'> google_map: {data?.location??"N/A"}</a>
     <span className='text-one  font-normal text-[20px] mt-6'> description </span>
     <span className='text-ten  font-normal text-[14px] mt-2'> {data?.description ??"N/A"}</span>
 </div>

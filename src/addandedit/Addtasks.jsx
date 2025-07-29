@@ -15,6 +15,7 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import MapPicker from '../ui/MapPicker'
 
 const Addtasks = () => {
   const navigate = useNavigate();
@@ -33,6 +34,25 @@ const Addtasks = () => {
   const [orgnization, setorgnization] = useState('');
   const [description, setdescription] = useState('');
   const [loading, setLoading] = useState(true);
+   const [google, setgoogle] = useState({
+     lat: 31.200092, // الإسكندرية
+  lng: 29.918739
+      });
+      const updateLocation = (newLocation) => {
+        setgoogle(newLocation);
+      };
+           const extractLatLng = (url) => {
+    const regex = /q=([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)/;
+    const matches = url.match(regex);
+
+    if (matches) {
+      const lat = parseFloat(matches[1]);
+      const lng = parseFloat(matches[2]);
+      return { lat, lng };
+    } else {
+      return null; // في حالة عدم وجود الإحداثيات في الرابط
+    }
+  };
   const [errors, setErrors] = useState({
     volunteers: '',
     organizers: '',
@@ -41,6 +61,7 @@ const Addtasks = () => {
     description: '',
     tozone: '',
     fromzone: '',
+    google: '',
     birthdate: '',
   });
   useEffect(() => {
@@ -74,6 +95,18 @@ const Addtasks = () => {
             setimagetwo(event.image_link || null);
             setvalue(event.status || "")
             setorgnization(event.orgnization_id || "")
+            const url = event.google_maps_location;
+const locatio = extractLatLng(url);
+
+if (locatio) {
+  console.log(`Latitude: ${locatio.lat}, Longitude: ${locatio.lng}`);
+} else {
+  console.log("لم يتم العثور على الإحداثيات في الرابط.");
+}
+      setgoogle({ 
+        lat: locatio.lat, 
+    lng: locatio.lng,
+  })
           }
         })
         .catch((error) => {
@@ -127,6 +160,7 @@ const Addtasks = () => {
     let formErrors = {};
 
     if (!name) formErrors.name = 'Task name is required';
+    if (!google) formErrors.google = 'Loaction is required';
     if (!tozone) formErrors.tozone = ' to Zone is required';
     if (!fromzone) formErrors.fromzone = ' from Zone is required';
     if (!date) formErrors.date = 'Event date is required';
@@ -148,8 +182,10 @@ const Addtasks = () => {
   };
   const handstartDate = (newData) => {
     if (newData) {
-      const formatted = newData.toISOString().split('T')[0];
-      setDate(formatted);
+     const year = newData.getFullYear();
+    const month = String(newData.getMonth() + 1).padStart(2, '0');
+    const day = String(newData.getDate()).padStart(2, '0');
+    setDate(`${year}-${month}-${day}`);
     } else {
       setDate('');
     }
@@ -179,7 +215,9 @@ const Addtasks = () => {
       number_of_voo_needed: parseInt(volunteers),
       description,
       status: value,
-      orgnization_id:orgnization
+      orgnization_id:orgnization,
+        google_map_location:`https://maps.google.com/?q=${google.lat},${google.lng}`,
+
          };
 if(imagetwo!==image)
   {
@@ -196,20 +234,7 @@ if(imagetwo!==image)
         .then(() => {
           toast.success('Task updated successfully');
           setTimeout(() => navigate(-1), 2000);
-        })
-        .catch(() => toast.error('Failed to update event'));
-    } else {
-      axios
-        .post('https://backndVoo.voo-hub.com/api/admin/task/add', eventData, { headers })
-        .then(() => {
-          toast.success('Task added successfully');
-          setTimeout(() => navigate(-1), 2000);
-        })
-        .catch(() => toast.error('Failed to add event'));
-    }
-
-    // Reset form
-    setName('');
+            setName('');
     setDate('');
     setStart('');
     setvolunteers('');
@@ -222,6 +247,32 @@ if(imagetwo!==image)
     setfromzone('');
     setEdit(false);
     setid('')
+        })
+        .catch(() => toast.error('Failed to update event'));
+    } else {
+      axios
+        .post('https://backndVoo.voo-hub.com/api/admin/task/add', eventData, { headers })
+        .then(() => {
+          toast.success('Task added successfully');
+          setTimeout(() => navigate(-1), 2000);
+             setName('');
+    setDate('');
+    setStart('');
+    setvolunteers('');
+    setorgnization('');
+    setimage(null);
+    setimagetwo(null)
+    setdescription('');
+    setvalue('inactive');
+    settozone('');
+    setfromzone('');
+    setEdit(false);
+    setid('')
+        })
+        .catch(() => toast.error('Failed to add event'));
+    }
+
+  
   };
 
   if (loading) {
@@ -263,6 +314,7 @@ if(imagetwo!==image)
             />
           </div>
         </div>
+    
         <div className=" flex flex-col  ">
           <span className="text-3xl font-bold text-three ">place and time</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
@@ -325,7 +377,17 @@ if(imagetwo!==image)
 
           </div>
         </div>
+        
         <SwitchButton value={value} setValue={setvalue} />
+
+        </div>
+               <div className=" flex flex-col my-15">
+        <span className="text-3xl font-bold text-three my-5 ">Location</span>
+        <div className="flex flex-wrap justify-center gap-6 mt-6 bg-eight p-5">
+       
+          <MapPicker location={google} onLocationChange={updateLocation} />
+                  </div>
+      </div>
         <div className="flex mt-6">
           <button
             className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
@@ -333,7 +395,6 @@ if(imagetwo!==image)
           >
             Done
           </button>
-        </div>
       </div>
     </div>
   )
