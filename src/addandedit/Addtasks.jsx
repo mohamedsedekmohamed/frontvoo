@@ -248,8 +248,22 @@ if(imagetwo!==image)
     setEdit(false);
     setid('')
         })
-        .catch(() => toast.error('Failed to update event'));
+      .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
     } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+    });    } else {
       axios
         .post('https://backndVoo.voo-hub.com/api/admin/task/add', eventData, { headers })
         .then(() => {
@@ -269,8 +283,22 @@ if(imagetwo!==image)
     setEdit(false);
     setid('')
         })
-        .catch(() => toast.error('Failed to add event'));
+      .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
     }
+  } else {
+    toast.error("Something went wrong.");
+  }
+    });    }
 
   
   };

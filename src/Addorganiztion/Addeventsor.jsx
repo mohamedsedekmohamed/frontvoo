@@ -280,20 +280,7 @@ if (image !== originalFlag) {
         .then(() => {
           toast.success( t('EventUpdated'));
           setTimeout(() => navigate(-1), 2000);
-        })
-        .catch(() => toast.error(t("NetworkFailed")));
-    } else {
-      axios
-        .post('https://backndVoo.voo-hub.com/api/ornization/event/add', eventData, { headers })
-        .then(() => {
-          toast.success(t('EventAdded'));
-          setTimeout(() => navigate(-1), 2000);
-        })
-      .catch(() => toast.error(t('NetworkFailed')));
-    }
-
-    // Reset form
-    setName('');
+            setName('');
     setDate('');
     setStart('');
     setEnd('');
@@ -318,6 +305,74 @@ setgoogle({
     setEdit(false);
     setid('')
     setOriginalFlag(null)
+        })
+ .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+});
+    } else {
+      axios
+        .post('https://backndVoo.voo-hub.com/api/ornization/event/add', eventData, { headers })
+        .then(() => {
+          toast.success(t('EventAdded'));
+          setTimeout(() => navigate(-1), 2000);
+            setName('');
+    setDate('');
+    setStart('');
+    setEnd('');
+    setgoogle('');
+    setvolunteers('');
+    setorganizers('');
+    setlocat('');
+setgoogle({
+  lat: 30.033333,
+  lng: 31.233334,
+});
+
+    setimage(null);
+    setPoints([])
+    setdescription('');
+    setCountry('');
+    setCity('');
+    setvalue('inactive');
+    setzone('');
+    setbenfit([]);
+    setrequirment([]);
+    setEdit(false);
+    setid('')
+    setOriginalFlag(null)
+        })
+ .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+});
+    }
+
+   
   };
 
 const handstartDate = (newData) => {

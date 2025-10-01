@@ -98,7 +98,6 @@ const filteredData = data.filter((item) => {
   const isDateMatch =
     !selectedDate || item.date === selectedDate;
 
-  // فلترة حسب البحث
   let isSearchMatch;
   if (selectedFilter === "Filter" || selectedFilter === "") {
     isSearchMatch = Object.values(item).some((value) =>
@@ -118,7 +117,6 @@ const filteredData = data.filter((item) => {
     isSearchMatch = value?.toString().toLowerCase().includes(query);
   }
 
-  // شرط نهائي: لازم يطابق التاريخ + البحث
   return isDateMatch && isSearchMatch;
 });
 
@@ -175,23 +173,20 @@ const filteredData = data.filter((item) => {
     confirmButtonText: "Yes",
   }).then((result) => {
     if (result.isConfirmed) {
-      const requests = selectedIds.map((id) =>
-        axios.delete(`https://backndVoo.voo-hub.com/api/admin/event/delete/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-      );
+      axios.delete("https://backndVoo.voo-hub.com/api/admin/event/deleteGroup", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds,  },
+})
+  .then(() => {
+    toast.success("Selected event deleted successfully");
+    setSelectedIds([]);
+    setUpdate((prev) => !prev);
+  })
+  .catch(() => toast.error("Error deleting some event"));
 
-      Promise.all(requests)
-        .then(() => {
-          setUpdate((prev) => !prev);
-          setSelectedIds([]);
-          Swal.fire("Deleted!", "Selected event have been deleted.", "success");
-        })
-        .catch(() => {
-          Swal.fire("Error", "Some deletions failed.", "error");
-        });
     }
   });
 };

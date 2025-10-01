@@ -239,7 +239,8 @@ const [sortOrder, setSortOrder] = useState('');
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
-  const handleBulkAction = (action) => {
+
+ const handleBulkAction = (action) => {
   const token = localStorage.getItem("token");
   const label = action === "accept" ? "Accepted" : "Rejected";
 
@@ -250,23 +251,23 @@ const [sortOrder, setSortOrder] = useState('');
     confirmButtonText: "Yes",
   }).then((result) => {
     if (result.isConfirmed) {
-      const requests = selectedIds.map((id) =>
-        axios.put(
-          `https://backndVoo.voo-hub.com/api/admin/request/${action}/${id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-      );
-
-      Promise.all(requests)
+      axios.put(
+        `https://backndVoo.voo-hub.com/api/admin/request/${action}Group`,
+        { ids: selectedIds }, // نبعت IDs مرة واحدة
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
         .then(() => {
           setUpdate((prev) => !prev);
           setSelectedIds([]);
-          Swal.fire(`${label}!`, `All selected requests have been ${label.toLowerCase()}.`, "success");
+          Swal.fire(
+            `${label}!`,
+            `All selected requests have been ${label.toLowerCase()}.`,
+            "success"
+          );
         })
         .catch(() => {
           Swal.fire("Error", "One or more requests failed.", "error");
@@ -274,6 +275,7 @@ const [sortOrder, setSortOrder] = useState('');
     }
   });
 };
+
 
 const handleBulkDelete = () => {
   const token = localStorage.getItem("token");
@@ -285,15 +287,14 @@ const handleBulkDelete = () => {
     confirmButtonText: "Yes",
   }).then((result) => {
     if (result.isConfirmed) {
-      const requests = selectedIds.map((id) =>
-        axios.delete(`https://backndVoo.voo-hub.com/api/admin/request/delete/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-      );
-
-      Promise.all(requests)
+      axios.delete(
+        "https://backndVoo.voo-hub.com/api/admin/request/deleteGroup",
+{  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds,  },
+})
         .then(() => {
           setUpdate((prev) => !prev);
           setSelectedIds([]);

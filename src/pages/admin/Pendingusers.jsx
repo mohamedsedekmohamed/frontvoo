@@ -140,45 +140,44 @@ import Pagination from '@mui/material/Pagination';
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
-    const handleBulkAction = (action) => {
-    const token = localStorage.getItem("token");
-    const label = action === "accept" ? "Accepted" : "Rejected";
 
-    Swal.fire({
-      title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const requests = selectedIds.map((id) =>
-          axios.put(
-            `https://backndVoo.voo-hub.com/api/admin/bnyadm/${action}/${id}`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-        );
+ 
+ const handleBulkAction = (action) => {
+  const token = localStorage.getItem("token");
+  const label = action === "accept" ? "Accepted" : "Rejected";
 
-        Promise.all(requests)
-          .then(() => {
-            setUpdate((prev) => !prev);
-            setSelectedIds([]);
-            Swal.fire(
-              `${label}!`,
-              `All selected requests have been ${label.toLowerCase()}.`,
-              "success"
-            );
-          })
-          .catch(() => {
-            Swal.fire("Error", "One or more requests failed.", "error");
-          });
-      }
-    });
-  };
+  Swal.fire({
+    title: `Are you sure you want to ${action} ${selectedIds.length} Pending?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios.put(
+        `https://backndVoo.voo-hub.com/api/admin/bnyadm/${action}Group`,
+        { ids: selectedIds },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+        .then(() => {
+          setUpdate((prev) => !prev);
+          setSelectedIds([]);
+          Swal.fire(
+            `${label}!`,
+            `All selected Pending have been ${label.toLowerCase()}.`,
+            "success"
+          );
+        })
+        .catch(() => {
+          Swal.fire("Error", "One or more Pending failed.", "error");
+        });
+    }
+  });
+};
+
   return (
     <div><div className='flex justify-between items-center'>
             <div className='relative items-center'>

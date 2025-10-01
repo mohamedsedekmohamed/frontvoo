@@ -144,6 +144,16 @@ const AddUser = () => {
           setTimeout(() => {
             navigate(-1);
           }, 3000);
+             setbirthdate('');
+    setStatus("inactive")
+    setName('');
+    setPhone('');
+    setCountry('');
+    setCity('');
+    setgender('');
+    setEmail('');
+    setPassword('');
+    setEdit(false);
         })
         .catch((error) => {
   const errors = error?.response?.data;
@@ -174,6 +184,16 @@ const AddUser = () => {
         setTimeout(() => {
           navigate(-1);
         }, 3000);
+           setbirthdate('');
+    setStatus("inactive")
+    setName('');
+    setPhone('');
+    setCountry('');
+    setCity('');
+    setgender('');
+    setEmail('');
+    setPassword('');
+    setEdit(false);
       })
      .catch((error) => {
   const errors = error?.response?.data;
@@ -192,16 +212,7 @@ const AddUser = () => {
   }
 });
 
-    setbirthdate('');
-    setStatus("inactive")
-    setName('');
-    setPhone('');
-    setCountry('');
-    setCity('');
-    setgender('');
-    setEmail('');
-    setPassword('');
-    setEdit(false);
+ 
   };
 
   const handstartDate = (newData) => {

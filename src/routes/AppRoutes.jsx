@@ -31,7 +31,6 @@ import Addtasks from "../addandedit/Addtasks";
 import Addcountry from "../addandedit/Addcountry";
 import Addcity from "../addandedit/Addcity";
 import Addzone from "../addandedit/Addzone";
-import Putprofile from "../addandedit/Putprofile";
 //
 import AddFeeds from "../addandedit/AddFeeds";
 import Feeds from "../pages/admin/Feeds";
@@ -77,7 +76,6 @@ const AppRoutes = ({ setIsLoggedIn }) => {
         <Route path="addcountry" element={<Addcountry />} />
         <Route path="addcity" element={<Addcity />} />
         <Route path="addzone" element={<Addzone />} />
-        <Route path="putprofile" element={<Putprofile />} />
         <Route
           path="information"
           element={<Information setIsLoggedIn={setIsLoggedIn} />}

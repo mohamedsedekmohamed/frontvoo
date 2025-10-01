@@ -178,40 +178,38 @@ const UserOr = () => {
     if (!text) return "N/A";
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
-  const handleBulkDelete = () => {
-    if (selectedIds.length === 0) return;
+const handleBulkDelete = () => {
+  if (selectedIds.length === 0) return;
+      const token = localStorage.getItem("token");
 
-    Swal.fire({
-      title: "Are you sure?",
-      text: "This action will delete selected users!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete them!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const token = localStorage.getItem("token");
-        Promise.all(
-          selectedIds.map((user) =>
-            axios.delete(
-              `https://backndVoo.voo-hub.com/api/ornization/user/delete/${user.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            )
-          )
-        )
-          .then(() => {
-            toast.success("Selected users deleted successfully");
-            setSelectedIds([]);
-            setUpdate((prev) => !prev);
-          })
-          .catch(() => toast.error("Error deleting some users"));
-      }
-    });
-  };
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This action will delete selected users!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete them!",
+  }).then((result) => {
+    if (result.isConfirmed) {
 
+     axios.delete("https://backndVoo.voo-hub.com/api/ornization/user/deleteGroup", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds.map((user) => user.id), // body لازم يكون جوا data
+  },
+})
+  .then(() => {
+    toast.success("Selected users deleted successfully");
+    setSelectedIds([]);
+    setUpdate((prev) => !prev);
+  })
+  .catch(() => toast.error("Error deleting some users"));
+
+    }
+  });
+
+};
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -373,7 +371,7 @@ const UserOr = () => {
                   <td className=" h-[56px] py-2 px-3">
                     <div className="flex flex-col gap-1">
                       <span className="text-[12px] font-normal">
-                        {truncateText(item?.name)}
+                        {truncateTextar(item?.name)}
                       </span>
                       <span className="text-[12px] font-normal">
                         {truncateText(item?.phone)}
@@ -384,7 +382,7 @@ const UserOr = () => {
                     {truncateText(item?.age)}
                   </td>
                   <td className=" h-[56px] text-[12px]">
-                    {truncateText(item?.email)}
+                    {truncateTextar(item?.email)}
                   </td>
                   <td className=" h-[56px] text-[12px] px-1">
                     {truncateText(item?.country?.name)}

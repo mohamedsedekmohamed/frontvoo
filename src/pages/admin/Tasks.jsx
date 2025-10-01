@@ -164,43 +164,34 @@ const [sortOrder, setSortOrder] = useState('');
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
-  const handleBulkDelete = () => {
-    const token = localStorage.getItem("token");
 
-    Swal.fire({
-      title: `Are you sure you want to delete ${selectedIds.length} task?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const requests = selectedIds.map((id) =>
-          axios.delete(
-            `https://backndVoo.voo-hub.com/api/admin/task/delete/${id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-        );
+ const handleBulkDelete = () => {
+  const token = localStorage.getItem("token");
 
-        Promise.all(requests)
-          .then(() => {
-            setUpdate((prev) => !prev);
-            setSelectedIds([]);
-            Swal.fire(
-              "Deleted!",
-              "Selected task have been deleted.",
-              "success"
-            );
-          })
-          .catch(() => {
-            Swal.fire("Error", "Some deletions failed.", "error");
-          });
-      }
-    });
-  };
+  Swal.fire({
+    title: `Are you sure you want to delete ${selectedIds.length} Task`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios.delete("https://backndVoo.voo-hub.com/api/admin/task/deleteGroup", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds,  },
+})
+  .then(() => {
+    toast.success("Selected Task deleted successfully");
+    setSelectedIds([]);
+    setUpdate((prev) => !prev);
+  })
+  .catch(() => toast.error("Error deleting some Task؟"));
+
+    }
+  });
+};
   return (
     <div>
       <div className="flex justify-between items-center">

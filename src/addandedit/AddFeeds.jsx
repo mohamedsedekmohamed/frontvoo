@@ -111,6 +111,12 @@ const AddFeeds = () => {
         .then(() => {
           toast.success("Feeds Updated Successfully");
           setTimeout(() => navigate(-1), 3000);
+           setImagetwo(null)
+        setVideotwo(null)
+    setEdit(false);
+    setContent("");
+    setImage(null);
+    setVideo(null);
         })
         .catch(handleError);
       return;
@@ -125,15 +131,16 @@ const AddFeeds = () => {
       .then(() => {
         toast.success("Feeds Added Successfully" );
         setTimeout(() => navigate(-1), 3000);
-      })
-      .catch(handleError);
-    
-    setImagetwo(null)
+         setImagetwo(null)
         setVideotwo(null)
     setEdit(false);
     setContent("");
     setImage(null);
     setVideo(null);
+      })
+      .catch(handleError);
+    
+   
   };
 
   if (loading) {

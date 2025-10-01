@@ -138,6 +138,15 @@ const Addorganizeation = () => {
           setTimeout(() => {
             navigate(-1);
           }, 3000);
+           setStatus("inactive")
+    setOrganization("");
+    setPhone("");
+    setCountry("");
+    setCity("");
+    setEmail("");
+    setPassword("");
+    setEdit(false);
+    setid("");
         })
           .catch((error) => {
         const errors = error?.response?.data;
@@ -172,6 +181,15 @@ const Addorganizeation = () => {
         setTimeout(() => {
           navigate(-1);
         }, 3000);
+         setStatus("inactive")
+    setOrganization("");
+    setPhone("");
+    setCountry("");
+    setCity("");
+    setEmail("");
+    setPassword("");
+    setEdit(false);
+    setid("");
       })
    .catch((error) => {
      const errors = error?.response?.data;
@@ -189,16 +207,7 @@ const Addorganizeation = () => {
        toast.error("Something went wrong.");
      }
    });
-    setStatus("inactive")
-
-    setOrganization("");
-    setPhone("");
-    setCountry("");
-    setCity("");
-    setEmail("");
-    setPassword("");
-    setEdit(false);
-    setid("");
+   
   };
 
   if (loading) {

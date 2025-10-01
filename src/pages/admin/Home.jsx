@@ -33,30 +33,44 @@ const Home = () => {
   return (
     <div className='w-full mt-6 '>
       {/* boxs */}
-  <div class="grid  grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-2 h-full mx-5">
-    {/* one */}
-<div className='w-[23%} h-[159px] bg-threeteen  text-three flex flex-col  gap-6 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><FaUsers className='text-three'/></i><span>Active Volunteers    </span> </div>
-  <span className='text-2xl'>{data.users_volunters} </span>
-</div>
-{/* two */}
-<div className='w-[23%} h-[159px] bg-fourteen  text-one flex flex-col  gap-6 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl items-center'><i><FaTableCells active/></i><span>Current Tasks </span> </div>
-  <span className='text-2xl'> {data.current_tasks_count}</span>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+  {/* واحد */}
+  <div className="h-[160px] bg-threeteen text-three flex flex-col justify-between p-6 rounded-2xl shadow-md">
+    <div className="flex items-center gap-2 text-lg md:text-xl  font-medium">
+      <FaUsers className="text-three" />
+      <span>Active Volunteers</span>
+    </div>
+    <span className="text-3xl font-bold">{data.users_volunters}</span>
+  </div>
+
+  {/* اتنين */}
+  <div className="h-[160px] bg-fourteen text-one flex flex-col justify-between p-6 rounded-2xl shadow-md">
+    <div className="flex items-center gap-2 text-lg md:text-xl  font-medium">
+      <FaTableCells />
+      <span>Current Tasks</span>
+    </div>
+    <span className="text-3xl font-bold">{data.current_tasks_count}</span>
+  </div>
+
+  {/* تلاتة */}
+  <div className="h-[160px] bg-threeteen text-three flex flex-col justify-between p-6 rounded-2xl shadow-md">
+    <div className="flex items-center gap-2 text-lg md:text-xl  font-medium">
+      <VscCheck />
+      <span>Completed Tasks</span>
+    </div>
+    <span className="text-3xl font-bold">{data.ended_tasks_count}</span>
+  </div>
+
+  {/* أربعة */}
+  <div className="h-[160px] bg-fourteen text-one flex flex-col justify-between p-6 rounded-2xl shadow-md">
+    <div className="flex items-center gap-2 text-lg md:text-xl  font-medium">
+      <ImUsers />
+      <span>Users Count</span>
+    </div>
+    <span className="text-3xl font-bold">{data.users_count}</span>
+  </div>
 </div>
 
-{/* threr */}
-
-<div className='w-[23%} h-[159px] bg-threeteen text-three  text-one flex flex-col  gap-6 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[20px] lg:text-2xl  items-center'><i><VscCheck active/></i><span>Completed Tasks  </span> </div>
-  <span className='text-2xl'> {data.ended_tasks_count}</span>
-</div>
-{/* four */}
-<div className='w-[23%} h-[159px] bg-fourteen  text-one flex flex-col  gap-4 p-8'>
-  <div className='flex gap-1  text-[16px] md:text-[18px] lg:text-[20px]  items-center'><i><ImUsers /></i><span>Users Count   </span> </div>
-  <span className='text-2xl'> {data.users_count}</span>
-</div>
-</div>
 <div>
 <BarChart  All={data.user_year}/>
 </div>

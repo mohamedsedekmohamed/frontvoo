@@ -175,42 +175,32 @@ const EventsOr = () => {
     return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
   const handleBulkDelete = () => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    Swal.fire({
-      title: `Are you sure you want to delete ${selectedIds.length} event?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const requests = selectedIds.map((id) =>
-          axios.delete(
-            `https://backndVoo.voo-hub.com/api/ornization/event/delete/${id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-        );
+  Swal.fire({
+    title: `Are you sure you want to delete ${selectedIds.length} event?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios.delete("https://backndVoo.voo-hub.com/api/ornization/event/deleteGroup", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds,  },
+})
+  .then(() => {
+    toast.success("Selected event deleted successfully");
+    setSelectedIds([]);
+    setUpdate((prev) => !prev);
+  })
+  .catch(() => toast.error("Error deleting some event"));
 
-        Promise.all(requests)
-          .then(() => {
-            setUpdate((prev) => !prev);
-            setSelectedIds([]);
-            Swal.fire(
-              "Deleted!",
-              "Selected event have been deleted.",
-              "success"
-            );
-          })
-          .catch(() => {
-            Swal.fire("Error", "Some deletions failed.", "error");
-          });
-      }
-    });
-  };
+    }
+  });
+};
   return (
     <div>
       <div className="flex justify-between items-center">

@@ -158,8 +158,10 @@ const truncateText = (text, maxLength = 15) => {
   if (!text) return "N/A";
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
+
 const handleBulkDelete = () => {
   if (selectedIds.length === 0) return;
+      const token = localStorage.getItem("token");
 
   Swal.fire({
     title: "Are you sure?",
@@ -169,45 +171,47 @@ const handleBulkDelete = () => {
     confirmButtonText: "Yes, delete them!",
   }).then((result) => {
     if (result.isConfirmed) {
-      const token = localStorage.getItem("token");
-      Promise.all(
-        selectedIds.map((user) =>
-          axios.delete(`https://backndVoo.voo-hub.com/api/admin/user/delete/${user.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-        )
-      )
-        .then(() => {
-          toast.success("Selected users deleted successfully");
-          setSelectedIds([]);
-          setUpdate((prev) => !prev);
-        })
-        .catch(() => toast.error("Error deleting some users"));
+
+     axios.delete("https://backndVoo.voo-hub.com/api/admin/user/deleteGroup", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds.map((user) => user.id), // body لازم يكون جوا data
+  },
+})
+  .then(() => {
+    toast.success("Selected users deleted successfully");
+    setSelectedIds([]);
+    setUpdate((prev) => !prev);
+  })
+  .catch(() => toast.error("Error deleting some users"));
+
     }
   });
+
 };
+
 
 const handleBulkStatusChange = () => {
   if (selectedIds.length === 0) return;
 
   const token = localStorage.getItem("token");
 
-  Promise.all(
-    selectedIds.map((user) =>
-      axios.put(
-        `https://backndVoo.voo-hub.com/api/admin/organization/status/${user.id}`,
-        {
-          account_status: user.status === "active" ? "inactive" : "active",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-    )
+  const newStatus =
+    selectedIds.every((user) => user.status === "active") ? "inactive" : "active";
+
+  axios.put(
+    "https://backndVoo.voo-hub.com/api/admin/user/statusGroup",
+    {
+      ids: selectedIds.map((user) => user.id),
+      account_status: newStatus,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   )
     .then(() => {
       toast.success("Status updated for selected users");
@@ -216,6 +220,7 @@ const handleBulkStatusChange = () => {
     })
     .catch(() => toast.error("Error updating status for some users"));
 };
+
 const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);

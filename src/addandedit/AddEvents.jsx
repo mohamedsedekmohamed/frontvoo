@@ -299,21 +299,7 @@ if(imagetwo!==image)
         .then(() => {
           toast.success('Event updated successfully');
           setTimeout(() => navigate(-1), 2000);
-        })
-        .catch(() => toast.error('Failed to update event'));
-    } else {
-      axios
-        .post('https://backndVoo.voo-hub.com/api/admin/event/add', eventData, { headers })
-        .then((response) => {
-          toast.success('Event added successfully');
-          console.log(response)
-          setTimeout(() => navigate(-1), 2000);
-        })
-        .catch(() => toast.error('Failed to add event'));
-    }
-
-    // Reset form
-    setName('');
+           setName('');
     setDate('');
     setStart('');
     setEnd('');
@@ -336,6 +322,70 @@ setPoints([])
     setrequirment([]);
     setEdit(false);
     setid('')
+        })
+  .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+});    } else {
+      axios
+        .post('https://backndVoo.voo-hub.com/api/admin/event/add', eventData, { headers })
+        .then(() => {
+          toast.success('Event added successfully');
+          setTimeout(() => navigate(-1), 2000);
+           setName('');
+    setDate('');
+    setStart('');
+    setEnd('');
+setgoogle({
+  lat: 30.033333,
+  lng: 31.233334,
+});
+setPoints([])
+    setvolunteers('');
+    setorganizers('');
+    setlocat('');
+    setimage(null);
+    setimagetwo(null);
+    setdescription('');
+    setCountry('');
+    setCity('');
+    setvalue('inactive');
+    setzone('');
+    setbenfit([]);
+    setrequirment([]);
+    setEdit(false);
+    setid('')
+        })
+  .catch((error) => {
+  const errors = error?.response?.data;
+
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0]; 
+    const firstMessage = errors[firstKey]?.[0];
+
+    if (firstMessage) {
+      toast.error(firstMessage);
+    } else {
+      toast.error("Something went wrong.");
+    }
+  } else {
+    toast.error("Something went wrong.");
+  }
+});    }
+
+ 
   };
 
  const handstartDate = (newData) => {

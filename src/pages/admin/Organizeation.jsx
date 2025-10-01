@@ -182,6 +182,7 @@ const truncateText = (text, maxLength = 15) => {
 
 const handleBulkDelete = () => {
   if (selectedIds.length === 0) return;
+      const token = localStorage.getItem("token");
 
   Swal.fire({
     title: "Are you sure?",
@@ -191,16 +192,15 @@ const handleBulkDelete = () => {
     confirmButtonText: "Yes, delete them!",
   }).then((result) => {
     if (result.isConfirmed) {
-      const token = localStorage.getItem("token");
-      Promise.all(
-        selectedIds.map((user) =>
-          axios.delete(`https://backndVoo.voo-hub.com/api/admin/organization/delete/${user.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-        )
-      )
+
+        axios.delete("https://backndVoo.voo-hub.com/api/admin/organization/deleteGroup", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  data: {
+    ids: selectedIds.map((user) => user.id), // body لازم يكون جوا data
+  },
+})
         .then(() => {
           toast.success("Selected organization deleted successfully");
           setSelectedIds([]);
@@ -216,20 +216,20 @@ const handleBulkStatusChange = () => {
 
   const token = localStorage.getItem("token");
 
-  Promise.all(
-    selectedIds.map((user) =>
-      axios.put(
-        `https://backndVoo.voo-hub.com/api/admin/user/status/${user.id}`,
-        {
-          account_status: user.status === "active" ? "inactive" : "active",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-    )
+  const newStatus =
+    selectedIds.every((user) => user.status === "active") ? "inactive" : "active";
+
+  axios.put(
+    "https://backndVoo.voo-hub.com/api/admin/organization/statusGroup",
+    {
+      ids: selectedIds.map((user) => user.id),
+      account_status: newStatus,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   )
     .then(() => {
       toast.success("Status updated for selected organization");
