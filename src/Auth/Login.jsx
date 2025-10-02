@@ -64,9 +64,36 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
           }, 2000);
         }
       })
-      .catch(() => {
-        toast.error('Invalid email or password');
+    .catch((error) => {
+  if (error.response && error.response.data) {
+    const errors = error.response.data;
+
+    // حالة لو فيه key واحد اسمه error (string)
+    if (errors.error) {
+      toast.error(errors.error);
+      return;
+    }
+
+    // حالة لو جاي object زي { email: ["..."], password: ["..."] }
+    if (typeof errors === "object") {
+      Object.keys(errors).forEach((field) => {
+        const messages = errors[field];
+        if (Array.isArray(messages)) {
+          messages.forEach((msg) => toast.error(msg));
+        } else {
+          toast.error(messages); // لو كان string مش array
+        }
       });
+    } else {
+      // fallback لو الرسالة جت string مباشرة
+      toast.error(errors);
+    }
+
+  } else {
+    toast.error("Something went wrong");
+  }
+});
+  
   };
 
   return (
