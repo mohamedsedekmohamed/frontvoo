@@ -43,7 +43,7 @@ import AddNotification from '../addandedit/AddNotification'
 import AddInformation from "../pages/admin/AddInformation"
 //
 import Evaluation from '../pages/admin/Evaluation'
-import AddEvaluation from '../addandedit/AddEvaluation'
+import Addevaluation from '../addandedit/Addevaluation'
  import Newnotification from "../pages/admin/Newnotification";
 const AppRoutes = ({ setIsLoggedIn }) => {
   return (
@@ -72,7 +72,7 @@ const AppRoutes = ({ setIsLoggedIn }) => {
         <Route path="pendingusersDetaklis" element={<PendingusersDetaklis />} />
         <Route path="evaluation" element={<Evaluation />} />
         {/* add */}
-        <Route path="addevaluation" element={<AddEvaluation />} />
+        <Route path="addevaluation" element={<Addevaluation />} />
         <Route path="addUser" element={<AddUser />} />
         <Route path="addorganizeation" element={<Addorganizeation />} />
         <Route path="addEvents" element={<AddEvents />} />
