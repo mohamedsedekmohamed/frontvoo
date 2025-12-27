@@ -1,4 +1,4 @@
-import React, { useEffect , useRef } from "react";
+import React, { useEffect ,useState, useRef } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Nav from "./Nav";
@@ -11,25 +11,23 @@ import frameone from '../assets/Frameone.png'
 import frametwo from '../assets/Frametwo.png'
 import framethree from '../assets/Framethree.png'
 import framefour from '../assets/Framefour.png'
-import man from '../assets/man.png'
+// import man from '../assets/man.png'
 import { IoLogoApple } from "react-icons/io5";
 import Footer from "./Footer";
+import axios from 'axios';
 const Home = () => {
-const products = [
-    {
-      title: 'Lina A., Student Volunteer 1',
-      description: "I volunteered in environmental campaigns andmade friends for life. Through VOO, I connectedwith passionate individuals who shared my visionfor a better world. Not only did I contribute tomeaningful projects, but I also gained valuable skills and experiences. VOO truly opened doors to amazing opportunities that I never thought possible!",
-      sub: "Student Volunteer",
-      image:man
-    },
-    {
-      title: 'Lina A., Student Volunteer 1',
-      description: "I volunteered in environmental campaigns andmade friends for life. Through VOO, I connectedwith passionate individuals who shared my visionfor a better world. Not only did I contribute tomeaningful projects, but I also gained valuable skills and experiences. VOO truly opened doors to amazing opportunities that I never thought possible!",
-      sub: "Student Volunteer",
-      image:man
-    },
-  
-  ];
+const [products , setEvaluations] = useState([]);
+
+  // 2. جلب البيانات من الـ API عند تحميل المكون
+  useEffect(() => {
+    axios.get('https://backndvoo.voo-hub.com/api/home/evaluation')
+      .then((response) => {
+        setEvaluations(response.data.evaulations);
+      })
+      .catch((error) => {
+        console.error("Error fetching evaluations:", error);
+      });
+  }, []);
 
  const scrollRef = useRef(null);
 
@@ -287,16 +285,17 @@ Download Google Play      </button>
         {products.map((pro, idx) => (
           <div
             key={idx}
-            className="relative flex flex-col pt-30 lg:pt-45 min-w-[320px] md:min-w-[720px] max-h-140 md:max-h-125 rounded-[12px] bg-gradient-to-b from-[#730FC9] to-[#6010A5] text-white p-2 overflow-hidden"
+            className="relative overflow-y-scroll flex flex-col pt-10 lg:pt-30 min-w-[320px] md:min-w-[720px] max-h-140 md:max-h-125 rounded-[12px] bg-gradient-to-b from-[#730FC9] to-[#6010A5] text-white p-2 overflow-hidden"
           >
             {/* Quote Mark */}
-            <div className="absolute  bottom-50 md:bottom-20 text-white">
-              <span className="text-[200px]">“</span>
-            </div>
+            {/* Quote Mark */}
+<div className="absolute top-0 left-4 text-white/20 pointer-events-none select-none">
+  <span className="text-[120px] leading-none font-serif italic">“</span>
+</div>
 
             {/* Testimonial Text */}
             <p className="text-[16px] text-start px-3 font-[Open Sans]">
-              {pro.description}
+              {pro.evaulation}
             </p>
 
             <div className="w-full px-4 my-3 border text-center bg-white opacity-50" />
@@ -306,7 +305,7 @@ Download Google Play      </button>
               {/* Author Image */}
               <div className="w-[72px] rounded-full bg-white bg-center bg-cover">
                 <img
-                  src={pro.image}
+                  src={pro.image_link}
                   alt="Author"
                   className="w-full h-full rounded-full object-cover"
                 />
@@ -315,10 +314,10 @@ Download Google Play      </button>
               {/* Author Info */}
               <div className="flex flex-col gap-1 my-2">
                 <h4 className="text-[20px] leading-[30px] capitalize font-['Judson']">
-                  {pro.title}
+                  {pro.name}
                 </h4>
                 <p className="text-[16px] leading-[24px] text-[#E0CFEE] capitalize font-['Open Sans']">
-                  {pro.sub}
+                  {pro.title}
                 </p>
               </div>
             </div>

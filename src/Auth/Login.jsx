@@ -85,7 +85,6 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
         }
       });
     } else {
-      // fallback لو الرسالة جت string مباشرة
       toast.error(errors);
     }
 
@@ -93,7 +92,7 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
     toast.error("Something went wrong");
   }
 });
-  
+
   };
 
   return (

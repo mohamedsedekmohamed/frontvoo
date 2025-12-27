@@ -6,6 +6,7 @@ import {  FaCog, FaCalendarAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6"; 
 import { RiOrganizationChart } from "react-icons/ri";
 import IconTasks from '../Icons/IconTasks';
+import IconEvaluation from '../Icons/IconEvaluation';
 import IconCity from '../Icons/IconCity';
 import IconOperation from '../Icons/IconOperation';
 import { HiFlag } from "react-icons/hi";
@@ -98,7 +99,13 @@ const links = [
     to: "pendingusers",
     name: "Pending users",
     icon: <FaPersonMilitaryToPerson />,
-    iconActive: <FaPersonMilitaryToPerson />
+    iconActive: <FaPersonMilitaryToPerson variant />
+  },
+  {
+    to: "evaluation",
+    name: "Evaluation",
+    icon: <IconEvaluation  />,
+    iconActive: <IconEvaluation variant />
   },
 
     // {
