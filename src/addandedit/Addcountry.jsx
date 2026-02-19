@@ -80,93 +80,78 @@ const Addcountry = () => {
     return Object.keys(formErrors).length === 0;
   };
 
-  const handleSave = () => {
-    if (!validateForm()) {
-      return;
+const handleSave = () => {
+  if (!validateForm()) {
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  // 1. استخدم FormData بدلاً من Object عادي لإرسال الملفات
+  const formData = new FormData();
+  formData.append('name', country);
+
+  if (edit) {
+    // 2. لارافيل يتطلب إرسال _method بقيمة PUT عند استخدام FormData مع طلب POST
+    formData.append('_method', 'PUT');
+
+    // أرسل الملف فقط إذا تم تغييره وكان ملفاً فعلياً
+    if (flag !== checkflag ) {
+      formData.append('flag', flag); // اسم الحقل 'flag' ليطابق الباك إند
     }
 
-    const token = localStorage.getItem('token');
-    const newUsers = {
-      name: country,
-    };
-
-    if (flag !== checkflag) {
-      newUsers.flag = flag;
-    }
-
-    if (edit) {
-      axios.put(`https://backndVoo.voo-hub.com/api/admin/country/update/${id}`, newUsers, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then(() => {
-          toast.success('country updated successfully');
-          setTimeout(() => {
-            navigate(-1);
-          }, 1500);
-          setFlag(null);
-    setCountry('');
-    setid('');
-    setEdit(false);
-        })
-        .catch((error) => {
-        const errors = error?.response?.data;
-      
-        if (errors && typeof errors === 'object') {
-          const firstKey = Object.keys(errors)[0]; 
-          const firstMessage = errors[firstKey]?.[0];
-      
-          if (firstMessage) {
-            toast.error(firstMessage);
-          } else {
-            toast.error("Something went wrong.");
-          }
-        } else {
-          toast.error("Something went wrong.");
-        }
-      });
-      return;
-    }
-    const newUseer = {
-      name: country,
-      flag:flag
-    };
-
-    axios.post('https://backndVoo.voo-hub.com/api/admin/country/add', newUseer, {
+    // نستخدم axios.post حتى لو كانت العملية PUT لأن PHP لا يقرأ الملفات في طلب PUT الحقيقي
+    axios.post(`https://backndVoo.voo-hub.com/api/admin/country/update/${id}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
       },
     })
-      .then(() => {
-        toast.success('country added successfully');
-        setTimeout(() => {
-          navigate(-1);
-        }, 1500);
-        setFlag(null);
-    setCountry('');
-    setid('');
-    setEdit(false);
-      })
-     .catch((error) => {
-       const errors = error?.response?.data;
-     
-       if (errors && typeof errors === 'object') {
-         const firstKey = Object.keys(errors)[0]; 
-         const firstMessage = errors[firstKey]?.[0];
-     
-         if (firstMessage) {
-           toast.error(firstMessage);
-         } else {
-           toast.error("Something went wrong.");
-         }
-       } else {
-         toast.error("Something went wrong.");
-       }
-     });
+    .then(() => {
+      toast.success('country updated successfully');
+      cleanup();
+    })
+    .catch((error) => handleErrors(error));
+    
+    return;
+  }
 
-  };
+  // حالة الإضافة (Add)
+    formData.append('flag', flag);
 
+  axios.post('https://backndVoo.voo-hub.com/api/admin/country/add', formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  .then(() => {
+    toast.success('country added successfully');
+    cleanup();
+  })
+  .catch((error) => handleErrors(error));
+};
+
+// دالة تنظيف البيانات المكررة
+const cleanup = () => {
+  setTimeout(() => navigate(-1), 1500);
+  setFlag(null);
+  setCountry('');
+  setid('');
+  setEdit(false);
+};
+
+// دالة معالجة الأخطاء المكررة
+const handleErrors = (error) => {
+  const errors = error?.response?.data;
+  if (errors && typeof errors === 'object') {
+    const firstKey = Object.keys(errors)[0];
+    const firstMessage = Array.isArray(errors[firstKey]) ? errors[firstKey][0] : errors[firstKey];
+    toast.error(firstMessage || "Something went wrong.");
+  } else {
+    toast.error("Something went wrong.");
+  }
+};
 
   if (loading) {
     return (

@@ -79,7 +79,8 @@ import { IoLogoApple } from "react-icons/io5";
 
   {/* Bottom Bar */}
   <div className=" border  mt-1 border-t bg-[#FFCE02] border-seven  font-medium py-6 pl-5 text-[12px] text-seven">
-    © {new Date().getFullYear()} Powered by Wegostation
+    © {new Date().getFullYear()}  Copyright received The Geed powered by Wegostation
+
   </div>
 </footer>
   )
