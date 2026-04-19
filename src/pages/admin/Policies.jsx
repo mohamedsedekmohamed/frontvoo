@@ -22,7 +22,7 @@ const Policies = () => {
         },
       })
       .then((response) => {
-  setData(response.data.policy);
+  setData(response.data);
       })
       .catch(() => {
         toast.error("Error fetching data");
@@ -46,16 +46,16 @@ const Policies = () => {
             <thead>
               <tr className="bg-four">
                 <th className="py-4 px-3">S/N</th>
-                <th className="py-4 px-3">Name</th>
-                <th className="py-4 px-3">Policies</th>
+                <th className="py-4 px-3">Title</th>
+                <th className="py-4 px-3">Description</th>
                 <th className="py-4 px-3">Action</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]">
                 <td className="px-3">1</td>
-                <td className="px-3">{data.name||"A/N"}</td>
-                <td className="px-3">{truncateText(data.value)}</td>
+                <td className="px-3">{truncateText(data.policy)}</td>
+                <td className="px-3">{truncateText(data.description)}</td>
                 <td className="px-3 flex  mt-4 gap-2">
                   <CiEdit
                     className="w-[24px] h-[24px] text-six cursor-pointer"

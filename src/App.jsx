@@ -7,6 +7,7 @@ import Suppert from "./Auth/Suppert.jsx";
 import Privacy from "./Auth/Privacy.jsx";
 import Home from './Landpage/Home.jsx'
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import Policy from "./Auth/Policy.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -35,6 +36,7 @@ function App() {
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setorganiztionLayout={setorganiztionLayout} />} />
             <Route path="/support" element={<Suppert />} />
             <Route path="/Privacy" element={<Privacy />} />
+            <Route path="/Policy" element={<Policy />} />
             <Route path="/*" element={<Navigate to="/login" />} />
           </>
         ) : (

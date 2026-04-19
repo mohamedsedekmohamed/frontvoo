@@ -10,7 +10,7 @@ const InputField = ({
   const inputType = email || "text";
 
   // تحديد أقصى عدد حروف بناءً على نوع الإدخال
-  const maxLength = email === "number" ? 50 : email === "email" ? 100 : 500;
+  const maxLength = email === "number" ? 50 : email === "email" ? 100 : 5000;
 
   return (
     <div className="flex flex-col gap-3 items-start justify-center">

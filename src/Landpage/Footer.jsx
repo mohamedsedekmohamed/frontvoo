@@ -1,8 +1,10 @@
 import React from 'react'
 import footerloge from '../assets/footerloge.png'
 import { IoLogoApple } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 
  const Footer = () => {
+   const navigate = useNavigate();
   return (
 <footer className="  bg-landone mt-5 "  data-aos="fade-down-left">
     {/* Contact Us */}
@@ -78,10 +80,18 @@ import { IoLogoApple } from "react-icons/io5";
 
 
   {/* Bottom Bar */}
-  <div className=" border  mt-1 border-t bg-[#FFCE02] border-seven  font-medium py-6 pl-5 text-[12px] text-seven">
-    © {new Date().getFullYear()}  Copyright received The Geed powered by Wegostation
+ <div className="border mt-1 border-t bg-[#FFCE02] border-seven font-medium py-6 pl-5 text-[12px] text-seven flex items-center justify-between">
+  <span className="font-bold">
+    © {new Date().getFullYear()} Copyright received The Geed powered by Wegostation
+  </span>
 
-  </div>
+  <button
+    onClick={() => navigate("/policy")}
+    className="bg-black text-white mr-5 px-3 py-1 rounded hover:bg-gray-800 transition"
+  >
+    Read Policy
+  </button>
+</div>
 </footer>
   )
 }

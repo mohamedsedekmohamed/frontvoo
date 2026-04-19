@@ -10,12 +10,15 @@ const AddPolicies = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [policy, setPolicy] = useState("");
+  const [policy_description, setpolicydescription] = useState("");
   const [errors, setErrors] = useState({
     policy: "",
+    policy_description: "",
   });
   useEffect(() => {
     const { sendData } = location.state || {};
-    setPolicy(sendData.value);
+    setPolicy(sendData.policy);
+    setpolicydescription(sendData.description);
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -24,6 +27,8 @@ const AddPolicies = () => {
   const validateForm = () => {
     let formErrors = {};
     if (!policy) formErrors.policy = "policy is required";
+    if (!policy_description)
+      formErrors.policy_description = "policy description is required";
     Object.values(formErrors).forEach((error) => {
       toast.error(error);
     });
@@ -32,42 +37,50 @@ const AddPolicies = () => {
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "policies") setPolicy(value);
+    if (name === "description") setpolicydescription(value);
+    if (name === "policy") setPolicy(value);
   };
+
+
   const handleSave = () => {
     if (!validateForm()) {
       return;
     }
     const token = localStorage.getItem("token");
     axios
-      .post(`https://backndvoo.voo-hub.com/api/admin/policy/update`, {policy}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      .post(
+        `https://backndvoo.voo-hub.com/api/admin/policy/update`,
+        { policy , description: policy_description },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
+      )
       .then(() => {
         toast.success("policy updated successfully");
         setTimeout(() => {
           navigate(-1);
         }, 1500);
       })
-       .catch((error) => {
-      const errors = error?.response?.data;
-    
-      if (errors && typeof errors === 'object') {
-        const firstKey = Object.keys(errors)[0]; 
-        const firstMessage = errors[firstKey]?.[0];
-    
-        if (firstMessage) {
-          toast.error(firstMessage);
+      .catch((error) => {
+        const errors = error?.response?.data;
+
+        if (errors && typeof errors === "object") {
+          const firstKey = Object.keys(errors)[0];
+          const firstMessage = errors[firstKey]?.[0];
+
+          if (firstMessage) {
+            toast.error(firstMessage);
+          } else {
+            toast.error("Something went wrong.");
+          }
         } else {
           toast.error("Something went wrong.");
         }
-      } else {
-        toast.error("Something went wrong.");
-      }
-        });
-      setPolicy('')
+      });
+    setPolicy("");
+    setpolicydescription("");
   };
   if (loading) {
     return (
@@ -86,9 +99,15 @@ const AddPolicies = () => {
       <AddAll name="Edit Policy" navGo={-1} />
       <div className="flex flex-wrap gap-6 mt-6">
         <InputField
-          placeholder="Policies"
-          name="policies"
+          placeholder="Title"
+          name="policy"
           value={policy}
+          onChange={handleChange}
+        />
+        <InputField
+          placeholder="Description"
+          name="description"
+          value={policy_description}
           onChange={handleChange}
         />
       </div>
