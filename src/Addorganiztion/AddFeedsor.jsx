@@ -14,7 +14,7 @@ const AddFeedsor = () => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
-
+const[disabled, setDisabled] = useState(false);
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [imagetwo, setImagetwo] = useState(null);
@@ -96,7 +96,7 @@ const AddFeedsor = () => {
     formData.append("content", content);
     if (image !==imagetwo) formData.append("image", image);
     if (video!==videotwo) formData.append("video", video);
-
+setDisabled(true);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -115,7 +115,10 @@ const AddFeedsor = () => {
           toast.success(t("Updated Successfully"));
           setTimeout(() => navigate(-1), 3000);
         })
-        .catch(handleError);
+        .catch(error => {
+          handleError(error);
+          setDisabled(false);
+        });
       return;
     }
 
@@ -129,7 +132,10 @@ const AddFeedsor = () => {
         toast.success(t("Added Successfully"));
         setTimeout(() => navigate(-1), 3000);
       })
-      .catch(handleError);
+      .catch(error => {
+        handleError(error);
+        setDisabled(false);
+      });
     
     setImagetwo(null)
         setVideotwo(null)
@@ -190,11 +196,11 @@ const AddFeedsor = () => {
           />
         </div>
 
-        <button
+        <button disabled={disabled}
           onClick={handleSave}
           className="w-[200px] md:w-[300px] h-[48px] md:h-[72px] bg-one text-white rounded-[8px] text-lg font-medium mt-2 hover:bg-opacity-90 transition"
         >
-          {edit ? t("edit") : t("add")}
+          {disabled ? t("Saving") : t("Done")}
         </button>
       </div>
     </div>

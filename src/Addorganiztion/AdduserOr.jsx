@@ -19,7 +19,7 @@ const AdduserOr = () => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
-
+const[disabled,setDisabled]=useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState('');
@@ -106,7 +106,7 @@ if(sendData){
 
   const handleSave = () => {
     if (!validateForm()) return;
-
+setDisabled(true);
     const token = localStorage.getItem('token');
    const newUser = {
       name,
@@ -149,6 +149,7 @@ if(sendData){
   } else {
     toast.error("Something went wrong.");
   }
+  setDisabled(false);
     });
       return;
     }
@@ -179,6 +180,7 @@ if(sendData){
   } else {
     toast.error("Something went wrong.");
   }
+  setDisabled(false);
 });
 
       setbirthdate('');
@@ -259,7 +261,7 @@ if(sendData){
           className='transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl'
           onClick={handleSave}
         >
-          {t("Done")}
+          {disabled ? t("Saving") : t("Done")}
         </button>
       </div>
     </div>
