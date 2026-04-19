@@ -14,6 +14,7 @@ const AddNotification = () => {
      const[notification,setNotification]=useState("")
      const[title,setTitle]=useState("")
      const[users,setUsers]=useState([])
+       const[disabled, setDisabled] = useState(false);
        const [errors, setErrors] = useState({
          notification: '',
          title: '',
@@ -71,7 +72,7 @@ const AddNotification = () => {
     if (!validateForm()) {
       return;
     }
- 
+ setDisabled(true);
     const token = localStorage.getItem('token');
    
 
@@ -112,6 +113,7 @@ title
         } else {
           toast.error("Something went wrong.");
         }
+          setDisabled(false);
           });
       return;
     }
@@ -143,6 +145,7 @@ title
       } else {
         toast.error("Something went wrong.");
       }
+        setDisabled(false);
         });
 
     setEdit(false);
@@ -188,9 +191,9 @@ title
       </div>
 
       <div className="flex mt-6">
-        <button className='w-[300px] text-[32px] text-white
+        <button disabled={disabled} className='w-[300px] text-[32px] text-white
          transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>
-          Done
+          {disabled ? "Saving..." : "Done"}
         </button>
       </div>
     </div>

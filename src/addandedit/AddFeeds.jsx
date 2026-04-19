@@ -19,6 +19,7 @@ const AddFeeds = () => {
   const [videotwo, setVideotwo] = useState(null);
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const[disabled, setDisabled] = useState(false);
   const [errors, setErrors] = useState({});
   const [id, setId] = useState("");
  const handleFileChange = (file) => {
@@ -100,7 +101,7 @@ const AddFeeds = () => {
         "Content-Type": "multipart/form-data",
       },
     };
-
+setDisabled(true);
     if (edit) {
       axios
         .post(
@@ -118,7 +119,10 @@ const AddFeeds = () => {
     setImage(null);
     setVideo(null);
         })
-        .catch(handleError);
+        .catch((error) => {
+          handleError(error);
+          setDisabled(false);
+        });
       return;
     }
 
@@ -138,7 +142,13 @@ const AddFeeds = () => {
     setImage(null);
     setVideo(null);
       })
-      .catch(handleError);
+    .catch((error) =>
+    {
+
+      handleError(error)
+      setDisabled(false);
+    }
+  );
     
    
   };
@@ -194,11 +204,11 @@ const AddFeeds = () => {
           />
         </div>
 
-        <button
+        <button disabled={disabled}
           onClick={handleSave}
           className="w-[200px] md:w-[300px] h-[48px] md:h-[72px] bg-one text-white rounded-[8px] text-lg font-medium mt-2 hover:bg-opacity-90 transition"
         >
-          {edit ?"Edit" : "Add"}
+        {disabled ? "Saving..." : "Add"}
         </button>
       </div>
     </div>

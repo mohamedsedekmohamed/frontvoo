@@ -11,7 +11,7 @@ import SwitchButton from "../ui/SwitchButton";
 
 const Addorganizeation = () => {
   const [status, setStatus] = useState("inactive");
-
+  const[disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [country, setCountry] = useState("");
@@ -106,7 +106,7 @@ const Addorganizeation = () => {
     if (!validateForm()) {
       return;
     }
-
+setDisabled(true);
     const token = localStorage.getItem("token");
     const newUser = {
       name: organization,
@@ -163,6 +163,7 @@ const Addorganizeation = () => {
         } else {
           toast.error("Something went wrong.");
         }
+        setDisabled(false);
           });
             return;
           }
@@ -206,6 +207,7 @@ const Addorganizeation = () => {
      } else {
        toast.error("Something went wrong.");
      }
+     setDisabled(false);
    });
    
   };
@@ -276,11 +278,11 @@ const Addorganizeation = () => {
               <SwitchButton value={status} title='status' setValue={setStatus} />
       </div>
       <div className="flex mt-6">
-        <button
+        <button disabled={disabled}
           className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
           onClick={handleSave}
         >
-          Done
+         {disabled ? "Saving..." : "Done"}
         </button>
       </div>
     </div>

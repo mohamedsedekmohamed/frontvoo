@@ -15,6 +15,7 @@ const Addcountry = () => {
   const [country, setCountry] = useState('');
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [disabled, setDisabled] = useState(false);
 
   const [errors, setErrors] = useState({
     
@@ -84,7 +85,7 @@ const handleSave = () => {
   if (!validateForm()) {
     return;
   }
-
+setDisabled(true);
   const token = localStorage.getItem('token');
 
   // 1. استخدم FormData بدلاً من Object عادي لإرسال الملفات
@@ -111,7 +112,13 @@ const handleSave = () => {
       toast.success('country updated successfully');
       cleanup();
     })
-    .catch((error) => handleErrors(error));
+    .catch((error) =>
+    {
+
+      handleErrors(error)
+      setDisabled(false);
+    }
+  );
     
     return;
   }
@@ -129,7 +136,14 @@ const handleSave = () => {
     toast.success('country added successfully');
     cleanup();
   })
-  .catch((error) => handleErrors(error));
+   .catch((error) =>
+    {
+
+      handleErrors(error)
+      setDisabled(false);
+    }
+  );
+ 
 };
 
 // دالة تنظيف البيانات المكررة
@@ -185,9 +199,9 @@ const handleErrors = (error) => {
       </div>
 
       <div className="flex mt-6">
-        <button className='w-[300px] text-[32px] text-white
+        <button disabled={disabled} className='w-[300px] text-[32px] text-white
          transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>
-          Done
+          {disabled ? "Saving..." : "Done"}
         </button>
       </div>
     </div>

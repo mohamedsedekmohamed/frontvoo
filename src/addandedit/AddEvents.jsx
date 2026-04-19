@@ -43,6 +43,7 @@ const AddEvents = () => {
   const [benfit, setbenfit] = useState([]);
   const [requirment, setrequirment] = useState([]);
   const [loading, setLoading] = useState(true);
+  const[disabled, setDisabled] = useState(false);
 
 
   const [google, setgoogle] = useState({
@@ -263,7 +264,7 @@ if(!image &&!edit)formErrors.image="image is required"
     if (!validateForm()) {
       return;
     }
-
+setDisabled(true);
     const token = localStorage.getItem('token');
     const eventData = {
       country_id: country,
@@ -338,6 +339,7 @@ setPoints([])
   } else {
     toast.error("Something went wrong.");
   }
+  setDisabled(false);
 });    } else {
       axios
         .post('https://backndVoo.voo-hub.com/api/admin/event/add', eventData, { headers })
@@ -383,6 +385,7 @@ setPoints([])
   } else {
     toast.error("Something went wrong.");
   }
+  setDisabled(false);
 });    }
 
  
@@ -567,11 +570,11 @@ setPoints([])
       </div>
       <FourPointsMap points={points} setPoints={setPoints} />
       <div className="flex mt-6">
-        <button
+        <button disabled={disabled}
           className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
           onClick={handleSave}
         >
-          Done
+          {disabled ? "Saving" : "Done"}
         </button>
       </div>
       <ToastContainer />

@@ -16,6 +16,7 @@ const Addzone = () => {
       const [zone, setZone] = useState('');
       const [edit, setEdit] = useState(false);
       const [loading, setLoading] = useState(true);
+      const[disabled, setDisabled] = useState(false);
     
       const [errors, setErrors] = useState({
         country: '',
@@ -80,6 +81,7 @@ const Addzone = () => {
             if (!validateForm()) {
               return;
             }
+            setDisabled(true);
         
             const token = localStorage.getItem('token');
             const newUser = {
@@ -104,6 +106,7 @@ const Addzone = () => {
                 })
                 .catch(() => {
                   toast.error("Failed network");
+                  setDisabled(false);
                 });
               return;
             }
@@ -134,6 +137,7 @@ const Addzone = () => {
               } else {
                 toast.error("Something went wrong.");
               }
+              setDisabled(false);
                 });
       setCity('')
             setCountry('');
@@ -179,10 +183,10 @@ const Addzone = () => {
             />
               </div>
         
-              <div className="flex mt-6">
+              <div  disabled={disabled} className="flex mt-6">
                 <button className='w-[300px] text-[32px] text-white
                  transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>
-                  Done
+                 {disabled ? "Saving..." : "Done"}
                 </button>
               </div>
             </div>

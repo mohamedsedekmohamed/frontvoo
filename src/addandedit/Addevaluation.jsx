@@ -19,6 +19,8 @@ const Addevaluation = () => {
   const [evaluationText, setEvaluationText] = useState('');
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [disabled, setDisabled] = useState(false);
+  
 
   // التعامل مع رفع الصورة
 const handleFileChange = (file) => {
@@ -81,7 +83,7 @@ const handleFileChange = (file) => {
    if (checkImage !== image) {
       formData.append('image', image);
     }
-
+setDisabled(true);
     const url = edit 
       ? `https://backndvoo.voo-hub.com/api/admin/evaluation/update/${id}`
       : `https://backndvoo.voo-hub.com/api/admin/evaluation/add`;
@@ -104,6 +106,7 @@ const handleFileChange = (file) => {
     .catch((error) => {
       const errorMsg = error?.response?.data?.message || "Something went wrong.";
       toast.error(errorMsg);
+      setDisabled(false);
     });
   };
 
@@ -163,7 +166,8 @@ const handleFileChange = (file) => {
           className='w-[300px] text-[28px] text-white transition-transform hover:scale-95 font-medium h-[64px] bg-one rounded-2xl' 
           onClick={handleSave}
         >
-          {edit ? "Update" : "Done"}
+          {disabled ? "Saving" : "Done"}
+          
         </button>
       </div>
     </div>

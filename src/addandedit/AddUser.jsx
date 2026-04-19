@@ -1,107 +1,111 @@
-import React, { useEffect, useState } from 'react';
-import AddAll from '../ui/AddAll'
-import InputField from '../ui/InputField'
-import InputArrow from '../ui/InputArrow';
+import React, { useEffect, useState } from "react";
+import AddAll from "../ui/AddAll";
+import InputField from "../ui/InputField";
+import InputArrow from "../ui/InputArrow";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import SwitchButton from '../ui/SwitchButton'
-import Inputfiltter from '../ui/Inputfiltter';
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import SwitchButton from "../ui/SwitchButton";
+import Inputfiltter from "../ui/Inputfiltter";
 
 const AddUser = () => {
   const navigate = useNavigate();
-    const [status, setStatus] = useState('inactive');
+  const [status, setStatus] = useState("inactive");
 
   const location = useLocation();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [id, setid] = useState('');
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [email, setEmail] = useState('');
-  const [birthdate, setbirthdate] = useState('');
-  const [password, setPassword] = useState('');
-  const [gender, setgender] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [id, setid] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [email, setEmail] = useState("");
+  const [birthdate, setbirthdate] = useState("");
+  const [password, setPassword] = useState("");
+  const [gender, setgender] = useState("");
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const[disabled, setDisabled] = useState(false);
   const [errors, setErrors] = useState({
-    name: '',
-    phone: '',
-    country: '',
-    city: '',
-    gender: '',
-    birthdate: '',
-    email: '',
-    password: ''
+    name: "",
+    phone: "",
+    country: "",
+    city: "",
+    gender: "",
+    birthdate: "",
+    email: "",
+    password: "",
   });
   useEffect(() => {
     const { sendData } = location.state || {};
     if (sendData) {
-      setid(sendData); 
+      setid(sendData);
       setEdit(true);
-  
-      const token = localStorage.getItem('token');
-      axios.get("https://backndVoo.voo-hub.com/api/admin/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
-        .then(response => {
-          const user = response.data.users.find(u => u.id === sendData);
+
+      const token = localStorage.getItem("token");
+      axios
+        .get("https://backndVoo.voo-hub.com/api/admin/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const user = response.data.users.find((u) => u.id === sendData);
           console.log(user);
           if (user) {
-            setName(user.name || '');
-            setPhone(user.phone || '');
-            setCountry(user.country_id || '');
-            setCity(user.city_id || '');
-            setgender(user.gender || '');
-            setEmail(user.email || '');
-            setbirthdate(user.birth||'');
-            setStatus(user.account_status||'');
+            setName(user.name || "");
+            setPhone(user.phone || "");
+            setCountry(user.country_id || "");
+            setCity(user.city_id || "");
+            setgender(user.gender || "");
+            setEmail(user.email || "");
+            setbirthdate(user.birth || "");
+            setStatus(user.account_status || "");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching user:", error);
         });
     }
-  
+
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 1000);
-  
+
     return () => clearTimeout(timeout);
   }, [location.state]);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'name') setName(value);
-    if (name === 'phone') setPhone(value);
-    if (name === 'country') setCountry(value);
-    if (name === 'city') setCity(value);
-    if (name === 'gender') setgender(value);
-    if (name === 'email') setEmail(value);
-    if (name === 'password') setPassword(value);
+    if (name === "name") setName(value);
+    if (name === "phone") setPhone(value);
+    if (name === "country") setCountry(value);
+    if (name === "city") setCity(value);
+    if (name === "gender") setgender(value);
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
   };
 
   const validateForm = () => {
     let formErrors = {};
-    if (!name) formErrors.name = 'Name is required';
-    if (!birthdate) formErrors.birthdate = 'Birthdate is required';
+    if (!name) formErrors.name = "Name is required";
+    if (!birthdate) formErrors.birthdate = "Birthdate is required";
     if (!phone) {
-      formErrors.phone = 'Phone is required';
+      formErrors.phone = "Phone is required";
     } else if (!/^\+?\d+$/.test(phone)) {
-      formErrors.phone = 'Phone should contain only numbers or start with a "+"';
+      formErrors.phone =
+        'Phone should contain only numbers or start with a "+"';
     }
-    if (!country) formErrors.country = 'Country is required';
-    if (!city) formErrors.city = 'City is required';
-    if (!gender) formErrors.gender = 'Gender is required';
-    if (!email.includes('@gmail.com')) formErrors.email = 'Email should contain @gmail.com';
+    if (!country) formErrors.country = "Country is required";
+    if (!city) formErrors.city = "City is required";
+    if (!gender) formErrors.gender = "Gender is required";
+    if (!email.includes("@gmail.com"))
+      formErrors.email = "Email should contain @gmail.com";
     if (!edit && password.length < 8) {
-      formErrors.password = 'Password must be at least 8 characters';
+      formErrors.password = "Password must be at least 8 characters";
     }
 
     Object.values(formErrors).forEach((error) => {
@@ -116,17 +120,17 @@ const AddUser = () => {
     if (!validateForm()) {
       return;
     }
-
-    const token = localStorage.getItem('token');
+setDisabled(true);
+    const token = localStorage.getItem("token");
     const newUser = {
       name,
       phone,
       country_id: country,
       city_id: city,
       gender,
-      bithdate:birthdate,
+      bithdate: birthdate,
       email,
-      account_status:status
+      account_status: status,
     };
 
     if (!edit) {
@@ -134,114 +138,118 @@ const AddUser = () => {
     }
 
     if (edit) {
-      axios.put(`https://backndVoo.voo-hub.com/api/admin/user/update/${id}`, newUser, {
+      axios
+        .put(
+          `https://backndVoo.voo-hub.com/api/admin/user/update/${id}`,
+          newUser,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        .then(() => {
+          toast.success("User updated successfully");
+          setTimeout(() => {
+            navigate(-1);
+          }, 3000);
+          setbirthdate("");
+          setStatus("inactive");
+          setName("");
+          setPhone("");
+          setCountry("");
+          setCity("");
+          setgender("");
+          setEmail("");
+          setPassword("");
+          setEdit(false);
+        })
+        .catch((error) => {
+          const errors = error?.response?.data;
+
+          if (errors && typeof errors === "object") {
+            const firstKey = Object.keys(errors)[0];
+            const firstMessage = errors[firstKey]?.[0];
+
+            if (firstMessage) {
+              toast.error(firstMessage);
+            } else {
+              toast.error("Something went wrong.");
+            }
+          } else {
+            toast.error("Something went wrong.");
+          }
+       setDisabled(false); });
+      return;
+    }
+
+    axios
+      .post("https://backndVoo.voo-hub.com/api/admin/user/add", newUser, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(() => {
-          toast.success('User updated successfully');
-          setTimeout(() => {
-            navigate(-1);
-          }, 3000);
-             setbirthdate('');
-    setStatus("inactive")
-    setName('');
-    setPhone('');
-    setCountry('');
-    setCity('');
-    setgender('');
-    setEmail('');
-    setPassword('');
-    setEdit(false);
-        })
-        .catch((error) => {
-  const errors = error?.response?.data;
-
-  if (errors && typeof errors === 'object') {
-    const firstKey = Object.keys(errors)[0]; 
-    const firstMessage = errors[firstKey]?.[0];
-
-    if (firstMessage) {
-      toast.error(firstMessage);
-    } else {
-      toast.error("Something went wrong.");
-    }
-  } else {
-    toast.error("Something went wrong.");
-  }
-    });
-      return;
-    }
-
-    axios.post('https://backndVoo.voo-hub.com/api/admin/user/add', newUser, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
       .then(() => {
-        toast.success('User added successfully');
+        toast.success("User added successfully");
         setTimeout(() => {
           navigate(-1);
         }, 3000);
-           setbirthdate('');
-    setStatus("inactive")
-    setName('');
-    setPhone('');
-    setCountry('');
-    setCity('');
-    setgender('');
-    setEmail('');
-    setPassword('');
-    setEdit(false);
+        setbirthdate("");
+        setStatus("inactive");
+        setName("");
+        setPhone("");
+        setCountry("");
+        setCity("");
+        setgender("");
+        setEmail("");
+        setPassword("");
+        setEdit(false);
       })
-     .catch((error) => {
-  const errors = error?.response?.data;
+      .catch((error) => {
+        const errors = error?.response?.data;
 
-  if (errors && typeof errors === 'object') {
-    const firstKey = Object.keys(errors)[0]; 
-    const firstMessage = errors[firstKey]?.[0];
+        if (errors && typeof errors === "object") {
+          const firstKey = Object.keys(errors)[0];
+          const firstMessage = errors[firstKey]?.[0];
 
-    if (firstMessage) {
-      toast.error(firstMessage);
-    } else {
-      toast.error("Something went wrong.");
-    }
-  } else {
-    toast.error("Something went wrong.");
-  }
-});
-
- 
+          if (firstMessage) {
+            toast.error(firstMessage);
+          } else {
+            toast.error("Something went wrong.");
+          }
+        } else {
+          toast.error("Something went wrong.");
+        }
+       setDisabled(false);
+      });
   };
 
   const handstartDate = (newData) => {
-  if (newData) {
-    const year = newData.getFullYear();
-    const month = String(newData.getMonth() + 1).padStart(2, '0');
-    const day = String(newData.getDate()).padStart(2, '0');
-    setbirthdate(`${year}-${month}-${day}`);
-  } else {
-    setbirthdate("");
-  }
-};
-
+    if (newData) {
+      const year = newData.getFullYear();
+      const month = String(newData.getMonth() + 1).padStart(2, "0");
+      const day = String(newData.getDate()).padStart(2, "0");
+      setbirthdate(`${year}-${month}-${day}`);
+    } else {
+      setbirthdate("");
+    }
+  };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-      <div className="relative w-24 h-24">
-        <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-b-transparent border-one animate-spin"></div>
-        <div className="absolute inset-2 rounded-full border-4 border-t-transparent border-b-transparent border-three animate-spin-reverse"></div>
-        <div className="absolute inset-6 rounded-full bg-one opacity-40"></div>
+        <div className="relative w-24 h-24">
+          <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-b-transparent border-one animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-4 border-t-transparent border-b-transparent border-three animate-spin-reverse"></div>
+          <div className="absolute inset-6 rounded-full bg-one opacity-40"></div>
+        </div>
       </div>
-    </div>
     );
   }
 
   return (
     <div>
-      <ToastContainer/>
+      <ToastContainer />
       <AddAll name={edit ? "Edit user" : "Add user"} navGo={-1} />
 
       <div className="flex flex-wrap gap-6 mt-6">
@@ -252,25 +260,27 @@ const AddUser = () => {
           onChange={handleChange}
         />
 
-  <div className='flex flex-col gap-3 items-start justify-end'>
-    <span className='text-[12px] font-bold text-one md:text-[16px]'>Birthdate</span>
+        <div className="flex flex-col gap-3 items-start justify-end">
+          <span className="text-[12px] font-bold text-one md:text-[16px]">
+            Birthdate
+          </span>
 
-    <div className='relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]'>
-      <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
+          <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]">
+            <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
 
-      <DatePicker
-        selected={birthdate}
-        onChange={handstartDate}
-        placeholderText="Select date"
-        dateFormat="yyyy-MM-dd"
-        className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
-        showYearDropdown
-        scrollableYearDropdown
-        maxDate={new Date ()}
-        yearDropdownItemNumber={100}
-      />
-    </div>
-  </div>
+            <DatePicker
+              selected={birthdate}
+              onChange={handstartDate}
+              placeholderText="Select date"
+              dateFormat="yyyy-MM-dd"
+              className=" w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven pl-10"
+              showYearDropdown
+              scrollableYearDropdown
+              maxDate={new Date()}
+              yearDropdownItemNumber={100}
+            />
+          </div>
+        </div>
         <InputField
           placeholder="Phone"
           name="phone"
@@ -296,28 +306,31 @@ const AddUser = () => {
           onChange={handleChange}
           required
         />
-            <Inputfiltter 
-              placeholder="city"
-              name="city"
-              value={city}
-              onChange={handleChange}
-              shara={country}
-            />
-          <InputField
-            placeholder="Password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-          />
-      <div className='flex justify-center items-end'>
-              <SwitchButton value={status} title='status' setValue={setStatus} />
+        <Inputfiltter
+          placeholder="city"
+          name="city"
+          value={city}
+          onChange={handleChange}
+          shara={country}
+        />
+        <InputField
+          placeholder="Password"
+          name="password"
+          value={password}
+          onChange={handleChange}
+        />
+        <div className="flex justify-center items-end">
+          <SwitchButton value={status} title="status" setValue={setStatus} />
+        </div>
       </div>
-      </div>
-
 
       <div className="flex mt-6">
-        <button className='transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>
-          Done
+        <button
+        disabled={disabled}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
+          onClick={handleSave}
+        >
+          {disabled ? "Saving..." : "Done"}
         </button>
       </div>
     </div>

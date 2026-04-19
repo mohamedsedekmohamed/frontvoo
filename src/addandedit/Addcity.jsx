@@ -14,6 +14,7 @@ const Addcity = () => {
     const [city, setCity] = useState('');
     const [edit, setEdit] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [disabled, setDisabled] = useState(false);
   
     const [errors, setErrors] = useState({
       
@@ -77,7 +78,7 @@ const Addcity = () => {
       if (!validateForm()) {
         return;
       }
-  
+  setDisabled(true);
       const token = localStorage.getItem('token');
       const newUser = {
         name: city,
@@ -99,6 +100,7 @@ const Addcity = () => {
             }, 1500);
           })
           .catch((error) => {
+            setDisabled(false);
            const errors = error?.response?.data;
          
            if (errors && typeof errors === 'object') {
@@ -133,6 +135,8 @@ const Addcity = () => {
       setEdit(false);
         })
            .catch((error) => {
+                        setDisabled(false);
+
           const errors = error?.response?.data;
         
           if (errors && typeof errors === 'object') {
@@ -183,9 +187,11 @@ const Addcity = () => {
         </div>
   
         <div className="flex mt-6">
-          <button className='w-[300px] text-[32px] text-white
+          <button
+          disabled={disabled}
+          className='w-[300px] text-[32px] text-white
            transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>
-            Done
+            {disabled ? "Saving..." : "Done"}
           </button>
         </div>
       </div>

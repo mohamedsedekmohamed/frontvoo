@@ -11,6 +11,7 @@ const AddPolicies = () => {
   const [loading, setLoading] = useState(true);
   const [policy, setPolicy] = useState("");
   const [policy_description, setpolicydescription] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const [errors, setErrors] = useState({
     policy: "",
     policy_description: "",
@@ -46,6 +47,7 @@ const AddPolicies = () => {
     if (!validateForm()) {
       return;
     }
+    setDisabled(true);
     const token = localStorage.getItem("token");
     axios
       .post(
@@ -78,6 +80,7 @@ const AddPolicies = () => {
         } else {
           toast.error("Something went wrong.");
         }
+        setDisabled(false);
       });
     setPolicy("");
     setpolicydescription("");
@@ -112,12 +115,12 @@ const AddPolicies = () => {
         />
       </div>
       <div className="flex mt-6">
-        <button
+        <button disabled={disabled}
           className="w-[300px] text-[32px] text-white
                  transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl"
           onClick={handleSave}
         >
-          Done
+       {disabled ? "Saving..." : "Done"}
         </button>
       </div>
     </div>
