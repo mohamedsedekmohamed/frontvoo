@@ -121,8 +121,26 @@ const AdminSidebar = ({ setIsOpen, isOpen }) => {
   const location = useLocation();
 
   useEffect(() => {
-    // ... احتفظ بكود الـ customPaths الخاص بك كما هو ...
-    const customPaths = { /* مساراتك */ };
+    const customPaths = {
+      '/admin/addUser': '/admin/user',
+      '/admin/userdetails': '/admin/user',
+      '/admin/addorganizeation': '/admin/organizeation',
+      '/admin/organizeationdatali': '/admin/organizeation',
+      '/admin/addevents': '/admin/events',
+      '/admin/operation': '/admin/events',
+      '/admin/eventDetalis': '/admin/events',
+      '/admin/addtasks': '/admin/tasks',
+      '/admin/operationTasks': '/admin/tasks',
+      '/admin/requestsdetails': '/admin/requests',
+      '/admin/tasksDetails': '/admin/tasks',
+      '/admin/addcountry': '/admin/country',
+      '/admin/addcity': '/admin/city',
+      '/admin/addzone': '/admin/zone',
+      '/admin/pendingusersDetaklis': '/admin/pendingusers',
+      '/admin/addfeeds': '/admin/feeds',
+      '/admin/addpolicies': '/admin/policies',
+      '/admin/addotification': '/admin/notification',
+    };
     const newPath = customPaths[location.pathname] || location.pathname;
     setIsActive(newPath);
   }, [location.pathname]);

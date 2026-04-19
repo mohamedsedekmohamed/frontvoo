@@ -78,8 +78,20 @@ const OrganizeationSidebar = ({ setIsOpen, isOpen }) => {
   const location = useLocation();
 
   useEffect(() => {
-    // احتفظ بالـ customPaths الخاصة بك كما هي
-    const customPaths = { /* مساراتك */ };
+  const customPaths = {
+      '/organizeation/adduser': '/organizeation/user',
+      '/organizeation/userDetails': '/organizeation/user',
+      '/organizeation/eventsdetails': '/organizeation/events',
+      '/organizeation/addeventsor': '/organizeation/events',
+      '/organizeation/addtasksor': '/organizeation/tasks',
+      '/organizeation/tasksdetails': '/organizeation/tasks',
+      '/organizeation/pendingusersDetaklis': '/organizeation/pendingusers',
+      '/organizeation/OperationOr': '/organizeation/events',
+      '/organizeation/operationTasksOr': '/organizeation/tasks',
+      '/organizeation/addProjector': '/organizeation/projectOr',
+      '/organizeation/AddFeedsor': '/organizeation/Feedsor',
+    };
+  
     const newPath = customPaths[location.pathname] || location.pathname;
     setIsActive(newPath);
   }, [location.pathname]);
