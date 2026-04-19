@@ -12,6 +12,7 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     localStorage.removeItem('token');
@@ -40,7 +41,7 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
       toast.error("Password must be at least 6 characters");
       return;
     }
-
+ setLoading(true);
     axios.post('https://backndVoo.voo-hub.com/api/login', {
       email: username,
       password: password
@@ -65,6 +66,7 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
         }
       })
     .catch((error) => {
+      setLoading(false);
   if (error.response && error.response.data) {
     const errors = error.response.data;
 
@@ -136,10 +138,11 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
           </div>
 
           <button
+          disabled={loading}
             onClick={handleLogin}
             className='w-[300px] md:w-[450px] h-[72px] bg-one rounded-[8px] mt-5 text-white font-medium transition transform hover:scale-90'
           >
-            Login
+            {loading ?"waiting..":"Login"}
           </button>
         </div>
       </div>

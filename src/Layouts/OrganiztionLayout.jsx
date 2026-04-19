@@ -1,44 +1,54 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import OrganizeationSidebar from "../components/OrganizeationSidebar";
 import OrganizationNavbar from "../components/OrganizeationNavbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const OrganiztionLayout = () => {
-    const {  i18n } = useTranslation();
-    const isArabic = i18n.language === 'ar';
-  //  useEffect(() => {
-  //     const storedLang = localStorage.getItem('language');
-  //     const browserLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
-    
-  //     const langToUse = storedLang || browserLang;
-    
-  //     if (i18n.language !== langToUse) {
-  //       i18n.changeLanguage(langToUse)}
-    
-  //     if (!storedLang) {
-  //       localStorage.setItem('language', langToUse);
-  //     }
-  //   }, []);
-    
+  const { i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  // إغلاق القائمة الجانبية عند تغيير المسار في الموبايل
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setIsOpen(false);
+    }
+  }, [location.pathname]);
+
+  // التحكم في حالة القائمة بناءً على حجم الشاشة
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <div className="flex min-h-screen gap-3 mx-2 mt-2 relative"  dir={isArabic ? 'rtl' : 'ltr'}>
-    <aside className="w-64 bg-gradient-to-b from-one to-two  sticky top-0 h-screen 0">
-      <OrganizeationSidebar  />
-    </aside>
+    <div className="flex h-screen overflow-hidden bg-gray-50" dir={isArabic ? 'rtl' : 'ltr'}>
+      {/* القائمة الجانبية */}
+      <OrganizeationSidebar setIsOpen={setIsOpen} isOpen={isOpen} />
 
-    <div className="flex-1 flex flex-col gap-2">
-      <header className="bg- bg-three rounded-[12px] shadow p-4">
-        <OrganizationNavbar />
-      </header>
+      {/* المحتوى الرئيسي */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <header className="bg-three rounded-xl shadow m-3 md:m-4 mb-2 p-3 md:p-4 shrink-0 relative z-10">
+          <OrganizationNavbar setIsOpen={setIsOpen} isOpen={isOpen} />
+        </header>
 
-      <main className="flex-1  p-4">
-        <Outlet />
-      </main>
+        <main className="flex-1 overflow-y-auto p-3 md:p-4 pt-0">
+          <Outlet />
+        </main>
+      </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-
-export default OrganiztionLayout
+export default OrganiztionLayout;
