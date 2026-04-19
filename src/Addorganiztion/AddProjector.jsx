@@ -15,6 +15,7 @@ const AddProjector = () => {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const[disabled, setDisabled] = useState(false);
  const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [errors, setErrors] = useState({
@@ -77,7 +78,7 @@ const AddProjector = () => {
     if (!validateForm()) {
       return;
     }
-
+setDisabled(true);
     const token = localStorage.getItem("token");
     const newUsers = {
       name,
@@ -119,6 +120,7 @@ const AddProjector = () => {
         } else {
           toast.error("Something went wrong.");
         }
+        setDisabled(false);
       });
       
       return;
@@ -158,6 +160,7 @@ const AddProjector = () => {
        } else {
          toast.error("Something went wrong.");
        }
+       setDisabled(false);
      });
      
  
@@ -198,7 +201,7 @@ const AddProjector = () => {
          transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl"
           onClick={handleSave}
         >
-                    {t("Done")}
+              {disabled ? t("Saving") : t("Done")}
 
         </button>
       </div>

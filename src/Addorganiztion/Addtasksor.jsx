@@ -1,53 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import AddAll from '../ui/AddAll';
-import InputField from '../ui/InputField';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import SwitchButton from '../ui/SwitchButton';
-import AddBenefitOr from '../ui/AddBenefitOr';
-import FileUploadButton from '../ui/FileUploadButton';
-import { FaRegCalendarAlt } from 'react-icons/fa';
-import TimePicker from 'react-time-picker';
-import 'react-time-picker/dist/TimePicker.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import InputArrowOr from '../ui/InputArrowOr';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from "react";
+import AddAll from "../ui/AddAll";
+import InputField from "../ui/InputField";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import SwitchButton from "../ui/SwitchButton";
+import AddBenefitOr from "../ui/AddBenefitOr";
+import FileUploadButton from "../ui/FileUploadButton";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import InputArrowOr from "../ui/InputArrowOr";
+import { useTranslation } from "react-i18next";
 
 const Addtasksor = () => {
-    const { t, i18n } = useTranslation();
-  const [locat, setLocation] = useState('');
-  const isArabic = i18n.language === 'ar';
-
-   const [benfit, setbenfit] = useState([]);
-    const [requirment, setrequirment] = useState([]);
+  const { t, i18n } = useTranslation();
+  const [locat, setLocation] = useState("");
+  const isArabic = i18n.language === "ar";
+  const [disabled, setdisabled] = useState(false);
+  const [benfit, setbenfit] = useState([]);
+  const [requirment, setrequirment] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const [id, setid] = useState('');
-  const [tozone, settozone] = useState('');
-  const [fromzone, setfromzone] = useState('');
-  const [name, setName] = useState('');
-  const [start, setStart] = useState('');
-  const [volunteers, setvolunteers] = useState('');
+  const [id, setid] = useState("");
+  const [tozone, settozone] = useState("");
+  const [fromzone, setfromzone] = useState("");
+  const [name, setName] = useState("");
+  const [start, setStart] = useState("");
+  const [volunteers, setvolunteers] = useState("");
   const [image, setimage] = useState(null);
- const [originalFlag, setOriginalFlag] = useState(null);
-  const [value, setvalue] = useState('inactive');
+  const [originalFlag, setOriginalFlag] = useState(null);
+  const [value, setvalue] = useState("inactive");
   const [edit, setEdit] = useState(false);
-  const [date, setDate] = useState('');
-  const [orgnization, setorgnization] = useState('');
-  const [description, setdescription] = useState('');
+  const [date, setDate] = useState("");
+  const [orgnization, setorgnization] = useState("");
+  const [description, setdescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({
-    volunteers: '',
-    organizers: '',
-    start: '',
-    name: '',
-    description: '',
-    tozone: '',
-    fromzone: '',
-    birthdate: '',
+    volunteers: "",
+    organizers: "",
+    start: "",
+    name: "",
+    description: "",
+    tozone: "",
+    fromzone: "",
+    birthdate: "",
   });
   useEffect(() => {
     const { sendData } = location.state || {};
@@ -56,9 +56,9 @@ const Addtasksor = () => {
       setid(sendData);
       setEdit(true);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       axios
-        .get('https://backndVoo.voo-hub.com/api/ornization/task', {
+        .get("https://backndVoo.voo-hub.com/api/ornization/task", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -66,29 +66,35 @@ const Addtasksor = () => {
         .then((response) => {
           const event = response.data.tasks.find((e) => e.id === sendData);
           if (event) {
-            setName(event.name || '');
-           
-            settozone(event.to_zone_id || '');
-            setfromzone(event.from_zone_id || '');
-            setLocation(event.location || '');
+            setName(event.name || "");
+
+            settozone(event.to_zone_id || "");
+            setfromzone(event.from_zone_id || "");
+            setLocation(event.location || "");
             setbenfit(
-              event.event_benfits?.map((b) => ({ text: b.benfit, status: b.status })) || []
+              event.event_benfits?.map((b) => ({
+                text: b.benfit,
+                status: b.status,
+              })) || [],
             );
             setrequirment(
-              event.event_requirments?.map((r) => ({ text: r.requirment, status: r.status })) || []
+              event.event_requirments?.map((r) => ({
+                text: r.requirment,
+                status: r.status,
+              })) || [],
             );
-            setDate(event.date || '');
-            setStart(event.start_time || '');
-            setvolunteers(event.number_of_voo_needed || '');
-            setdescription(event.description || '');
+            setDate(event.date || "");
+            setStart(event.start_time || "");
+            setvolunteers(event.number_of_voo_needed || "");
+            setdescription(event.description || "");
             setimage(event.image_link || null);
             setOriginalFlag(event.image_link || null);
-            setvalue(event.status || "")
-            setorgnization(event.orgnization_id || "")
+            setvalue(event.status || "");
+            setorgnization(event.orgnization_id || "");
           }
         })
         .catch((error) => {
-          console.error('Error fetching event:', error);
+          console.error("Error fetching event:", error);
         });
     }
 
@@ -99,44 +105,43 @@ const Addtasksor = () => {
     return () => clearTimeout(timeout);
   }, [location.state]);
 
-  
   const handleFileChange = (file) => {
     if (file) setimage(file);
   };
   const handlechangetwo = (e) => {
     const { name, value } = e.target;
-    if (name === "getZone") settozone(value)
-  }
- 
+    if (name === "getZone") settozone(value);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     switch (name) {
-      case 'Task':
+      case "Task":
         setName(value);
         break;
-      case 'getZone':
+      case "getZone":
         setfromzone(value);
         break;
-      case 'date':
+      case "date":
         setDate(value);
         break;
-      case 'start':
+      case "start":
         setStart(value);
         break;
-      case 'volunteers':
+      case "volunteers":
         setvolunteers(value);
         break;
-      case 'description':
+      case "description":
         setdescription(value);
         break;
-      case 'organization':
+      case "organization":
         setorgnization(value);
         break;
-      case 'locat':
+      case "locat":
         setLocation(value);
         break;
-    
+
       default:
         break;
     }
@@ -144,18 +149,18 @@ const Addtasksor = () => {
   const validateForm = () => {
     let formErrors = {};
 
-    if (!name) formErrors.name = 'Task name is required';
-    if (!tozone) formErrors.tozone = ' to Zone is required';
-    if (!fromzone) formErrors.fromzone = ' from Zone is required';
-    if (!date) formErrors.date = 'Event date is required';
-    if (!start) formErrors.start = 'Start time is required';
+    if (!name) formErrors.name = "Task name is required";
+    if (!tozone) formErrors.tozone = " to Zone is required";
+    if (!fromzone) formErrors.fromzone = " from Zone is required";
+    if (!date) formErrors.date = "Event date is required";
+    if (!start) formErrors.start = "Start time is required";
     if (!volunteers) {
-      formErrors.volunteers = 'Number of volunteers is required';
+      formErrors.volunteers = "Number of volunteers is required";
     } else if (isNaN(volunteers) || volunteers <= 0) {
-      formErrors.volunteers = 'Volunteers must be a positive number';
+      formErrors.volunteers = "Volunteers must be a positive number";
     }
-    if (!description) formErrors.description = 'Description is required';
-    if (!image && !edit) formErrors.image = "image is required"
+    if (!description) formErrors.description = "Description is required";
+    if (!image && !edit) formErrors.image = "image is required";
 
     Object.values(formErrors).forEach((error) => {
       toast.error(error);
@@ -166,12 +171,12 @@ const Addtasksor = () => {
   };
   const handstartDate = (newData) => {
     if (newData) {
-     const year = newData.getFullYear();
-    const month = String(newData.getMonth() + 1).padStart(2, '0');
-    const day = String(newData.getDate()).padStart(2, '0');
-    setDate(`${year}-${month}-${day}`);
+      const year = newData.getFullYear();
+      const month = String(newData.getMonth() + 1).padStart(2, "0");
+      const day = String(newData.getDate()).padStart(2, "0");
+      setDate(`${year}-${month}-${day}`);
     } else {
-      setDate('');
+      setDate("");
     }
   };
 
@@ -180,32 +185,31 @@ const Addtasksor = () => {
       const formattedTime = newTime;
       setStart(formattedTime);
     } else {
-      setStart(''); // في حالة حذف الوقت
+      setStart(""); // في حالة حذف الوقت
     }
-  }
+  };
 
   const handleSave = () => {
     if (!validateForm()) {
       return;
     }
-
-    const token = localStorage.getItem('token');
+    setdisabled(true);
+    const token = localStorage.getItem("token");
     const eventData = {
       name,
       date,
-      from_zone_id:fromzone,
-      to_zone_id:tozone,
+      from_zone_id: fromzone,
+      to_zone_id: tozone,
       start_time: start,
       number_of_voo_needed: parseInt(volunteers),
       description,
       status: value,
       location: locat,
-      orgnization_id:orgnization,
-      benfit: benfit.map((item) => ({ benfit: item.text, })),
-      requirment: requirment.map((item) => ({ requirment: item.text})),
-  
-         };
- if (image !== originalFlag) {
+      orgnization_id: orgnization,
+      benfit: benfit.map((item) => ({ benfit: item.text })),
+      requirment: requirment.map((item) => ({ requirment: item.text })),
+    };
+    if (image !== originalFlag) {
       eventData.image = image;
     }
 
@@ -215,39 +219,53 @@ const Addtasksor = () => {
 
     if (edit) {
       axios
-        .put(`https://backndVoo.voo-hub.com/api/ornization/task/update/${id}`, eventData, { headers })
+        .put(
+          `https://backndVoo.voo-hub.com/api/ornization/task/update/${id}`,
+          eventData,
+          { headers },
+        )
         .then(() => {
-          toast.success('Task updated successfully');
+          toast.success("Task updated successfully");
           setTimeout(() => navigate(-1), 2000);
         })
-        .catch(() => toast.error('Failed to update event'));
+        .catch(() => {
+          setdisabled(false);
+          toast.error("Failed to update event");
+        });
     } else {
       axios
-        .post('https://backndVoo.voo-hub.com/api/ornization/task/add', eventData, { headers })
+        .post(
+          "https://backndVoo.voo-hub.com/api/ornization/task/add",
+          eventData,
+          { headers },
+        )
         .then(() => {
-          toast.success('Task added successfully');
+          toast.success("Task added successfully");
           setTimeout(() => navigate(-1), 2000);
         })
-        .catch(() => toast.error('Failed to add event'));
+        .catch(() => {
+          setdisabled(false);
+          toast.error("Failed to update event");
+        });
     }
 
     // Reset form
-    setName('');
-    setDate('');
-    setStart('');
-    setLocation('');
-    setvolunteers('');
-    setorgnization('');
+    setName("");
+    setDate("");
+    setStart("");
+    setLocation("");
+    setvolunteers("");
+    setorgnization("");
     setimage(null);
-    setOriginalFlag(null)
-    setdescription('');
-    setvalue('inactive');
-    settozone('');
+    setOriginalFlag(null);
+    setdescription("");
+    setvalue("inactive");
+    settozone("");
     setbenfit([]);
     setrequirment([]);
-    setfromzone('');
+    setfromzone("");
     setEdit(false);
-    setid('')
+    setid("");
   };
 
   if (loading) {
@@ -267,10 +285,12 @@ const Addtasksor = () => {
       <AddAll name={edit ? t("Edittask") : t("Addtask")} navGo={-1} />
       <div className="flex flex-wrap gap-6 mt-6">
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">{t("Information")}</span>
+          <span className="text-3xl font-bold text-three ">
+            {t("Information")}
+          </span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <InputField
-         placeholder={t("Task")}
+              placeholder={t("Task")}
               name="Task"
               value={name}
               onChange={handleChange}
@@ -281,17 +301,19 @@ const Addtasksor = () => {
               value={description}
               onChange={handleChange}
             />
-           <InputField
-          placeholder={t("location")}
+            <InputField
+              placeholder={t("location")}
               name="locat"
               value={locat}
               onChange={handleChange}
             />
           </div>
         </div>
-     
+
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">{t("Date_Time")}</span>
+          <span className="text-3xl font-bold text-three ">
+            {t("Date_Time")}
+          </span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <InputArrowOr
               placeholder={t("From_zone")}
@@ -306,7 +328,9 @@ const Addtasksor = () => {
               onChange={handlechangetwo}
             />
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">{t("date")}</span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]">
+                {t("date")}
+              </span>
               <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px]">
                 <FaRegCalendarAlt className="absolute top-1/2 right-4 transform -translate-y-1/2 text-one z-10" />
                 <DatePicker
@@ -315,7 +339,7 @@ const Addtasksor = () => {
                   onChange={handstartDate}
                   placeholderText={t("SelectDate")}
                   dateFormat="yyyy-MM-dd"
-                  className={`w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven ${isArabic? 'pr-10' : ' pl-10'}`}
+                  className={`w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven ${isArabic ? "pr-10" : " pl-10"}`}
                   showYearDropdown
                   scrollableYearDropdown
                   yearDropdownItemNumber={100}
@@ -323,8 +347,11 @@ const Addtasksor = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 items-start justify-end">
-            <span className="text-[12px] font-bold text-one md:text-[16px]"> {t("start")} </span>
-            <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
+              <span className="text-[12px] font-bold text-one md:text-[16px]">
+                {" "}
+                {t("start")}{" "}
+              </span>
+              <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
                 <TimePicker
                   className={`w-full h-full`}
                   onChange={handStartTime}
@@ -337,7 +364,9 @@ const Addtasksor = () => {
           </div>
         </div>
         <div className=" flex flex-col  ">
-          <span className="text-3xl font-bold text-three ">{t("volunteers")}</span>
+          <span className="text-3xl font-bold text-three ">
+            {t("volunteers")}
+          </span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <InputField
               placeholder={t("number_of_volunteers")}
@@ -347,28 +376,32 @@ const Addtasksor = () => {
               email="number"
             />
 
-
-            <FileUploadButton name="image" kind={t("image")} flag={image} onFileChange={handleFileChange} />
-
+            <FileUploadButton
+              name="image"
+              kind={t("image")}
+              flag={image}
+              onFileChange={handleFileChange}
+            />
           </div>
         </div>
         <SwitchButton value={value} setValue={setvalue} />
-        <AddBenefitOr 
-            benfit={benfit}
-            setbenfit={setbenfit}
-            requirment={requirment}
-            setrequirment={setrequirment}/>
+        <AddBenefitOr
+          benfit={benfit}
+          setbenfit={setbenfit}
+          requirment={requirment}
+          setrequirment={setrequirment}
+        />
         <div className="flex mt-6">
           <button
             className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
             onClick={handleSave}
           >
-          {t("Done")}
+            {disabled ? t("Saving") : t("Done")}
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Addtasksor
+export default Addtasksor;
