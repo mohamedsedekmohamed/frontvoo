@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 import { useTranslation } from "react-i18next";
 
 const ProjectOr = () => {
@@ -57,21 +57,21 @@ const ProjectOr = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -90,9 +90,9 @@ const ProjectOr = () => {
       return Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value || {}).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -110,7 +110,7 @@ const ProjectOr = () => {
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
   const cheose = ["Filter", "name", "description"];
   const labelMap = {
@@ -121,14 +121,37 @@ const ProjectOr = () => {
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-  const truncateTextar = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
-  };
+
+  const columns = [
+    {
+      header: "S/N",
+      render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: t("Name"),
+      render: (row) => row.name,
+    },
+    {
+      header: t("Description"),
+      render: (row) => row.description,
+    },
+
+    {
+      header: t("Action"),
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit
+            className="w-[22px] h-[22px] text-six cursor-pointer"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[22px] h-[22px] ml-2 text-red-500 cursor-pointer"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -176,73 +199,15 @@ const ProjectOr = () => {
         </div>
       </div>
 
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-3">رقم</th>
-                    <th className="py-4 px-3">الأسم</th>
-                    <th className="py-4 px-3">وصف</th>
-                    <th className="py-4 px-3">الإجراء</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-3">S/N</th>
-                    <th className="py-4 px-3">Name</th>
-                    <th className="py-4 px-3">Description</th>
-                    <th className="py-4 px-3">Action</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody dir={isArabic ? "rtl" : "ltr"}>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                >
-                  
-                      <td className="  px-2">
-                        {index + 1 + (currentPage - 1) * rowsPerPage}
-                      </td>
-                      <td className="  px-2">{truncateText(item.name)}</td>
-                      <td className="  px-2">
-                        {truncateText(item.description)}
-                      </td>
-
-                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-end":"justify-start"} flex  items-center px-1 `}>
-                        <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                          <RiDeleteBin6Line
-                            className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                            onClick={() => handleDelete(item.id, item.content)}
-                          />
-                          <CiEdit
-                            className="w-[24px] h-[24px] text-six cursor-pointer"
-                            onClick={() => handleEdit(item.id)}
-                          />
-                        </div>
-                      </td>
-                   
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
-        />
-      </div>
-
+     <div className="mt-6">
+       <ReusableTable
+        columns={columns}
+        data={paginatedData}
+        currentPage={currentPage}
+        pageCount={pageCount}
+        onPageChange={setCurrentPage}
+      />
+     </div>
       <ToastContainer />
     </div>
   );

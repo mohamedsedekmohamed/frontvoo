@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const EventsOr = () => {
   const [data, setData] = useState([]);
@@ -59,21 +59,21 @@ const EventsOr = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -103,9 +103,9 @@ const EventsOr = () => {
       isSearchMatch = Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value || {}).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -164,43 +164,141 @@ const EventsOr = () => {
 
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-  const truncateTextar = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
-  };
+
   const handleBulkDelete = () => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  Swal.fire({
-    title: `Are you sure you want to delete ${selectedIds.length} event?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios.delete("https://backndVoo.voo-hub.com/api/ornization/event/deleteGroup", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-  data: {
-    ids: selectedIds,  },
-})
-  .then(() => {
-    toast.success("Selected event deleted successfully");
-    setSelectedIds([]);
-    setUpdate((prev) => !prev);
-  })
-  .catch(() => toast.error("Error deleting some event"));
+    Swal.fire({
+      title: `Are you sure you want to delete ${selectedIds.length} event?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            "https://backndVoo.voo-hub.com/api/ornization/event/deleteGroup",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              data: {
+                ids: selectedIds,
+              },
+            },
+          )
+          .then(() => {
+            toast.success("Selected event deleted successfully");
+            setSelectedIds([]);
+            setUpdate((prev) => !prev);
+          })
+          .catch(() => toast.error("Error deleting some event"));
+      }
+    });
+  };
+  const columns = [
+    {
+      header: "S/N",
+      render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: t("Events"),
+      render: (row) => row.name,
+    },
+    {
+      header: t("date"),
+      render: (row) => row.date,
+    },
+    {
+      header: t("start"),
+      render: (row) => row.start_time || "N/A",
+    },
+    {
+      header: t("end"),
+      render: (row) => row.end_time || "N/A",
+    },
+    {
+      header: t("Details"),
+      render: (row) => (
+        <button
+          className="underline"
+          onClick={() =>
+            navigate("/organizeation/eventsdetails", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          Details
+        </button>
+      ),
+    },
+    {
+      header: t("Operation"),
+      render: (row) => (
+        <button
+          className="underline"
+          onClick={() =>
+            navigate("/organizeation/OperationOr", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          Operation
+        </button>
+      ),
+    },
+    {
+      header: t("location"),
+      render: (row) => row.location,
+    },
+    {
+      header: (
+        <input
+          type="checkbox"
+          checked={
+            selectedIds.length === paginatedData.length &&
+            paginatedData.length > 0
+          }
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(paginatedData.map((i) => i.id));
+            } else setSelectedIds([]);
+          }}
+        />
+      ),
+      render: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.includes(row.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds((p) => [...p, row.id]);
+            } else {
+              setSelectedIds((p) => p.filter((id) => id !== row.id));
+            }
+          }}
+        />
+      ),
+    },
+    {
+      header: t("Action"),
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit
+            className="w-[22px] h-[22px] text-six cursor-pointer"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[22px] h-[22px] ml-2 text-red-500 cursor-pointer"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
+        </div>
+      ),
+    },
+  ];
 
-    }
-  });
-};
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -280,200 +378,13 @@ const EventsOr = () => {
           </button>
         </div>
       )}
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-3">رقم</th>
-                    <th className="py-4 px-3">الحدث</th>
-                    <th className="py-4 px-3">الميعاد</th>
-                    <th className="py-4 px-3">وقت البدء </th>
-                    <th className="py-4 px-3"> وقت الأنتهاء  </th>
-                    <th className="py-4 px-3">تفاصيل</th>
-                    <th className="py-4 px-3">العمليات</th>
-                    <th className="py-4 px-3">المكان</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">الإجراء</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-3">S/N</th>
-                    <th className="py-4 px-3">Event</th>
-                    <th className="py-4 px-3">Date</th>
-                    <th className="py-4 px-3">Start Time</th>
-                    <th className="py-4 px-3">End Time</th>
-                    <th className="py-4 px-3">Details</th>
-                    <th className="py-4 px-3"> Operation</th>
-                    <th className="py-4 px-3">location</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">Action</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-
-            <tbody dir={isArabic ? "rtl" : "ltr"}>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                >
-                  <td className="py-2 px-3">
-                    {(currentPage - 1) * rowsPerPage + index + 1}
-                  </td>
-                  <td className="py-2 px-3">{truncateText(item?.name)}</td>
-                  <td className="py-2 px-3">{truncateText(item?.date)}</td>
-                  <td className="py-2 px-3">
-                    <span> {item?.start_time ?? "N/A"} </span>
-                  </td>
-                  <td className="py-2 px-3">
-                    <span> {item?.end_time ?? "N/A"} </span>
-                  </td>
-
-                  <td className="py-2 px-3">
-                    <button
-                      className="underline "
-                      onClick={() =>
-                        navigate("/organizeation/eventsdetails", {
-                          state: { sendData: item.id },
-                        })
-                      }
-                    >
-                      Details
-                    </button>
-                  </td>
-                  <td className="py-2 px-3">
-                    <button
-                      className="underline "
-                      onClick={() =>
-                        navigate("/organizeation/OperationOr", {
-                          state: { sendData: item.id },
-                        })
-                      }
-                    >
-                      Operation
-                    </button>
-                  </td>
-                  <td className="py-2 px-3">{truncateText(item?.location)}</td>
-                  <td className="py-4 px-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(item.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedIds((prev) => [...prev, item.id]);
-                        } else {
-                          setSelectedIds((prev) =>
-                            prev.filter((id) => id !== item.id)
-                          );
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td
-                    className={` h-[56px] lg:text-[12px] xl:text-[16px] ${
-                      isArabic ? "justify-center" : "justify-start"
-                    } flex  items-center px-1 `}
-                  >
-                    <CiEdit
-                      className="w-[24px] h-[24px] text-six cursor-pointer"
-                      onClick={() => handleEdit(item.id)}
-                    />
-                    <RiDeleteBin6Line
-                      className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-                      onClick={() => handleDelete(item.id, item.name)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />

@@ -9,8 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
-import Pagination from "@mui/material/Pagination";
-
+import ReusableTable from "../../ui/ReusableTable";
 const UserOr = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
@@ -66,7 +65,7 @@ const UserOr = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
@@ -74,7 +73,7 @@ const UserOr = () => {
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch((error) => {
@@ -83,7 +82,7 @@ const UserOr = () => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -99,9 +98,9 @@ const UserOr = () => {
       return Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value || {}).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -165,51 +164,152 @@ const UserOr = () => {
 
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
   const handleEdit = (id) => {
     navigate("/organizeation/adduser", { state: { sendData: id } });
   };
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    const token = localStorage.getItem("token");
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action will delete selected users!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete them!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            "https://backndVoo.voo-hub.com/api/ornization/user/deleteGroup",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              data: {
+                ids: selectedIds.map((user) => user.id), // body لازم يكون جوا data
+              },
+            },
+          )
+          .then(() => {
+            toast.success("Selected users deleted successfully");
+            setSelectedIds([]);
+            setUpdate((prev) => !prev);
+          })
+          .catch(() => toast.error("Error deleting some users"));
+      }
+    });
   };
-  const truncateTextar = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
-  };
-const handleBulkDelete = () => {
-  if (selectedIds.length === 0) return;
-      const token = localStorage.getItem("token");
-
-  Swal.fire({
-    title: "Are you sure?",
-    text: "This action will delete selected users!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete them!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-
-     axios.delete("https://backndVoo.voo-hub.com/api/ornization/user/deleteGroup", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-  data: {
-    ids: selectedIds.map((user) => user.id), // body لازم يكون جوا data
-  },
-})
-  .then(() => {
-    toast.success("Selected users deleted successfully");
-    setSelectedIds([]);
-    setUpdate((prev) => !prev);
-  })
-  .catch(() => toast.error("Error deleting some users"));
-
-    }
-  });
-
-};
+  const columns = [
+    {
+      header: "S/N",
+      render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: t("User"),
+      render: (row) => (
+        <div className="flex flex-col">
+          <span>{row.name}</span>
+          <span className="text-gray-500">{row.phone}</span>
+        </div>
+      ),
+    },
+    {
+      header: t("Age"),
+      render: (row) => row.age,
+    },
+    {
+      header: t("Email"),
+      render: (row) => row.email,
+    },
+    {
+      header: t("Country"),
+      render: (row) => row.country?.name,
+    },
+    {
+      header: t("City"),
+      render: (row) => row.city?.name,
+    },
+    {
+      header: t("Details"),
+      render: (row) => (
+        <button
+          className="underline text-blue-600"
+          onClick={() =>
+            navigate("/organizeation/userDetails", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          {t("Details")}
+        </button>
+      ),
+    },
+    {
+      header: t("Organization"),
+      render: (row) => row.orgnization?.name,
+    },
+    {
+      header: t("JoinDate"),
+      render: (row) =>
+        row.created_at
+          ? new Date(row.created_at).toISOString().split("T")[0]
+          : "N/A",
+    },
+    {
+      header: t("Status"),
+      render: (row) => row.account_status,
+    },
+    {
+      header: (
+        <input
+          type="checkbox"
+          checked={
+            selectedIds.length === paginatedData.length &&
+            paginatedData.length > 0
+          }
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(
+                paginatedData.map((i) => ({
+                  id: i.id,
+                  status: i.account_status,
+                })),
+              );
+            } else setSelectedIds([]);
+          }}
+        />
+      ),
+      render: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.some((u) => u.id === row.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds((p) => [
+                ...p,
+                { id: row.id, status: row.account_status },
+              ]);
+            } else {
+              setSelectedIds((p) => p.filter((u) => u.id !== row.id));
+            }
+          }}
+        />
+      ),
+    },
+    {
+      header: t("Action"),
+      render: (row) => (
+        <RiDeleteBin6Line
+          className="w-[22px] h-[22px] text-five cursor-pointer hover:text-red-600"
+          onClick={() => handleDelete(row.id, row.name)}
+        />
+      ),
+    },
+  ];
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -280,178 +380,13 @@ const handleBulkDelete = () => {
           </button>
         </div>
       )}
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-3">رقم</th>
-                    <th className="py-4 px-3">المستخدم</th>
-                    <th className="py-4 px-3">العمر</th>
-                    <th className="py-4 px-3">الإيميل</th>
-                    <th className="py-4 px-3">الدولة</th>
-                    <th className="py-4 px-3">المدينة</th>
-                    <th className="py-4 px-3">تفاصيل</th>
-                    <th className="py-4 px-3">المؤسسة</th>
-                    <th className="py-4 px-3">يوم التسجيل</th>
-                    <th className="py-4 px-3">الحالة</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => ({
-                                id: item.id,
-                                status: item.account_status,
-                              }))
-                            );
-                          } else {
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">الإجراء</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-3">S/N</th>
-                    <th className="py-4 px-3">User</th>
-                    <th className="py-4 px-3">Age</th>
-                    <th className="py-4 px-3">Gmail</th>
-                    <th className="py-4 px-3">Country</th>
-                    <th className="py-4 px-3">City</th>
-                    <th className="py-4 px-3">Details</th>
-                    <th className="py-4 px-3">Organization</th>
-                    <th className="py-4 px-3">join date</th>
-                    <th className="py-4 px-3">Status</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => ({
-                                id: item.id,
-                                status: item.account_status,
-                              }))
-                            );
-                          } else {
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">Action</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-
-            <tbody dir={isArabic ? "rtl" : "ltr"}>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                >
-                  <td className="py-2 px-3">
-                    {(currentPage - 1) * rowsPerPage + index + 1}
-                  </td>
-                  <td className=" h-[56px] py-2 px-3">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[12px] font-normal">
-                        {truncateTextar(item?.name)}
-                      </span>
-                      <span className="text-[12px] font-normal">
-                        {truncateText(item?.phone)}
-                      </span>
-                    </div>
-                  </td>
-                  <td className=" h-[56px] text-[12px]">
-                    {truncateText(item?.age)}
-                  </td>
-                  <td className=" h-[56px] text-[12px]">
-                    {truncateTextar(item?.email)}
-                  </td>
-                  <td className=" h-[56px] text-[12px] px-1">
-                    {truncateText(item?.country?.name)}
-                  </td>
-                  <td className="h-[56px] text-[12px] px-1">
-                    {truncateText(item?.city?.name)}
-                  </td>
-                  <td className=" h-[56px] text-[12px] px-1">
-                    <button
-                      className="underline"
-                      onClick={() =>
-                        navigate("/organizeation/userDetails", {
-                          state: { sendData: item.id },
-                        })
-                      }
-                    >
-                      Details
-                    </button>
-                  </td>
-                  <td className=" h-[56px] text-[12px] font-medium px-1">
-                    {truncateText(item?.orgnization?.name)}
-                  </td>
-                  <td className="py-2 px-3 ">
-                    {item?.created_at
-                      ? new Date(item.created_at).toISOString().split("T")[0]
-                      : "N/A"}{" "}
-                  </td>
-
-                  <td className=" h-[56px] text-[12px] text-six px-1">
-                    {item?.account_status ?? "N/A"}
-                  </td>
-                  <td className="py-4 px-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.some((user) => user.id === item.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedIds((prev) => [
-                            ...prev,
-                            { id: item.id, status: item.account_status },
-                          ]);
-                        } else {
-                          setSelectedIds((prev) =>
-                            prev.filter((user) => user.id !== item.id)
-                          );
-                        }
-                      }}
-                    />
-                  </td>
-                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-center":"justify-start"} flex  items-center px-1 `}>
-                    <RiDeleteBin6Line
-                      className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-                      onClick={() => handleDelete(item.id, item.name)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />

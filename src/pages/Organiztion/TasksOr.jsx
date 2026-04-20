@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const TasksOr = () => {
   const [data, setData] = useState([]);
@@ -58,21 +58,21 @@ const TasksOr = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -91,35 +91,34 @@ const TasksOr = () => {
   };
 
   const filteredData = data.filter((item) => {
-  const query = searchQuery.toLowerCase();
+    const query = searchQuery.toLowerCase();
 
-  // فلترة حسب التاريخ إذا كان مختار
-  const isDateMatch =
-    !selectedDate || item.date === selectedDate;
+    // فلترة حسب التاريخ إذا كان مختار
+    const isDateMatch = !selectedDate || item.date === selectedDate;
 
-  // فلترة حسب البحث
-  let isSearchMatch;
-  if (selectedFilter === "Filter" || selectedFilter === "") {
-    isSearchMatch = Object.values(item).some((value) =>
-      typeof value === "object"
-        ? Object.values(value || {}).some((sub) =>
-            sub?.toString().toLowerCase().includes(query)
-          )
-        : value?.toString().toLowerCase().includes(query)
-    );
-  } else {
-    const keys = selectedFilter.split(".");
-    let value = item;
-    for (let key of keys) {
-      value = value?.[key];
+    // فلترة حسب البحث
+    let isSearchMatch;
+    if (selectedFilter === "Filter" || selectedFilter === "") {
+      isSearchMatch = Object.values(item).some((value) =>
+        typeof value === "object"
+          ? Object.values(value || {}).some((sub) =>
+              sub?.toString().toLowerCase().includes(query),
+            )
+          : value?.toString().toLowerCase().includes(query),
+      );
+    } else {
+      const keys = selectedFilter.split(".");
+      let value = item;
+      for (let key of keys) {
+        value = value?.[key];
+      }
+
+      isSearchMatch = value?.toString().toLowerCase().includes(query);
     }
 
-    isSearchMatch = value?.toString().toLowerCase().includes(query);
-  }
-
-  // شرط نهائي: لازم يطابق التاريخ + البحث
-  return isDateMatch && isSearchMatch;
-});
+    // شرط نهائي: لازم يطابق التاريخ + البحث
+    return isDateMatch && isSearchMatch;
+  });
 
   const cheose = ["Filter", "name", "date", "start_time", "description"];
   const labelMap = {
@@ -164,43 +163,138 @@ const TasksOr = () => {
 
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-  const truncateTextar = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
-  };
- const handleBulkDelete = () => {
-  const token = localStorage.getItem("token");
+  
 
-  Swal.fire({
-    title: `Are you sure you want to delete ${selectedIds.length} Task`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios.delete("https://backndVoo.voo-hub.com/api/ornization/task/deleteGroup", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-  data: {
-    ids: selectedIds,  },
-})
-  .then(() => {
-    toast.success("Selected Taskdeleted successfully");
-    setSelectedIds([]);
-    setUpdate((prev) => !prev);
-  })
-  .catch(() => toast.error("Error deleting some Task؟"));
+  const handleBulkDelete = () => {
+    const token = localStorage.getItem("token");
 
-    }
-  });
-};
+    Swal.fire({
+      title: `Are you sure you want to delete ${selectedIds.length} Task`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            "https://backndVoo.voo-hub.com/api/ornization/task/deleteGroup",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              data: {
+                ids: selectedIds,
+              },
+            },
+          )
+          .then(() => {
+            toast.success("Selected Taskdeleted successfully");
+            setSelectedIds([]);
+            setUpdate((prev) => !prev);
+          })
+          .catch(() => toast.error("Error deleting some Task؟"));
+      }
+    });
+  };
+  const columns = [
+    {
+      header: "S/N",
+      render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: t("Task"),
+      render: (row) => row.name,
+    },
+    {
+      header: t("start"),
+      render: (row) => row.start_time,
+    },
+    {
+      header: t("description"),
+      render: (row) => row.description,
+    },
+    {
+      header: t("date"),
+      render: (row) => row.date,
+    },
+    {
+      header: t("Details"),
+      render: (row) => (
+        <button
+          className="underline"
+          onClick={() =>
+            navigate("/organizeation/tasksdetails", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          Details
+        </button>
+      ),
+    },
+    {
+      header: t("Operation"),
+      render: (row) => (
+        <button
+          className="underline"
+          onClick={() =>
+            navigate("/organizeation/operationTasksOr", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          Operation
+        </button>
+      ),
+    },
+    {
+      header: (
+        <input
+          type="checkbox"
+          checked={
+            selectedIds.length === paginatedData.length &&
+            paginatedData.length > 0
+          }
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(paginatedData.map((i) => i.id));
+            } else setSelectedIds([]);
+          }}
+        />
+      ),
+      render: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.includes(row.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds((p) => [...p, row.id]);
+            } else {
+              setSelectedIds((p) => p.filter((id) => id !== row.id));
+            }
+          }}
+        />
+      ),
+    },
+    {
+      header: t("Action"),
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit
+            className="w-[22px] h-[22px] text-six cursor-pointer"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[22px] h-[22px] ml-2 text-red-500 cursor-pointer"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -279,194 +373,13 @@ const TasksOr = () => {
           </button>
         </div>
       )}
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-3">رقم</th>
-                    <th className="py-4 px-3">المهمة</th>
-                    <th className="py-4 px-3">الميعاد</th>
-                    <th className="py-4 px-3">الوصف</th>
-                    <th className="py-4 px-3">الوقت</th>
-                    <th className="py-4 px-3">تفاصيل</th>
-                    <th className="py-4 px-3">العمليات</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">الإجراء</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-3">S/N</th>
-                    <th className="py-4 px-3">Task</th>
-                    <th className="py-4 px-3">Time</th>
-                    <th className="py-4 px-3">Description</th>
-                    <th className="py-4 px-3">Date</th>
-                    <th className="py-4 px-3">Details</th>
-                    <th className="py-4 px-3">Operation</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3 ">Action</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                >
-                  
-                          
-                   
-                      <td className="py-2 px-3">
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </td>
-                      <td className="py-2 px-3">{truncateText(item?.name)}</td>
-                      <td className="py-2 px-3">
-                        {truncateText(item?.start_time)}
-                      </td>
-                      <td className="py-2 px-3">
-                        {truncateText(item?.description)}
-                      </td>
-                      <td className="py-2 px-3">{truncateText(item?.date)}</td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="underline"
-                          onClick={() =>
-                            navigate("/organizeation/tasksdetails", {
-                              state: { sendData: item.id },
-                            })
-                          }
-                        >
-                          Details
-                        </button>
-                      </td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="underline "
-                          onClick={() =>
-                            navigate("/organizeation/operationTasksOr", {
-                              state: { sendData: item.id },
-                            })
-                          }
-                        >
-                          operation
-                        </button>
-                      </td>
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              );
-                            }
-                          }}
-                        />
-                      </td>
-                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-center":"justify-start"} flex  items-center px-1 `}>
-                        <CiEdit
-                          className="w-[24px] h-[24px] text-six cursor-pointer"
-                          onClick={() => handleEdit(item.id)}
-                        />
-                        <RiDeleteBin6Line
-                          className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
-                          onClick={() => handleDelete(item.id, item.name)}
-                        />
-                      </td>
-                  
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />

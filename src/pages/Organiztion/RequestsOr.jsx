@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 import Swal from "sweetalert2";
 
 const RequestsOr = () => {
@@ -51,9 +51,9 @@ const RequestsOr = () => {
       return Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value || {}).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -120,7 +120,7 @@ const RequestsOr = () => {
 
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const handleAccept = (id) => {
@@ -133,7 +133,7 @@ const RequestsOr = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       )
       .then(() => {
         toast.success("Request accepted successfully");
@@ -154,7 +154,7 @@ const RequestsOr = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       )
       .then(() => {
         toast.success("Request rejected successfully");
@@ -165,50 +165,149 @@ const RequestsOr = () => {
       });
   };
 
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-  const truncateTextar = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
-  };
+
   const handleBulkAction = (action) => {
-  const token = localStorage.getItem("token");
-  const label = action === "accept" ? "Accepted" : "Rejected";
+    const token = localStorage.getItem("token");
+    const label = action === "accept" ? "Accepted" : "Rejected";
 
-  Swal.fire({
-    title: `Are you sure you want to ${action} ${selectedIds.length} Pending?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios.put(
-        `https://backndVoo.voo-hub.com/api/orgnization/bnyadm/${action}Group`,
-        { ids: selectedIds },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    Swal.fire({
+      title: `Are you sure you want to ${action} ${selectedIds.length} Pending?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .put(
+            `https://backndVoo.voo-hub.com/api/orgnization/bnyadm/${action}Group`,
+            { ids: selectedIds },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          )
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              `${label}!`,
+              `All selected Pending have been ${label.toLowerCase()}.`,
+              "success",
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "One or more Pending failed.", "error");
+          });
+      }
+    });
+  };
+  const columns = [
+  {
+    header: t("S/N"),
+    render: (_, __, index) =>
+      (currentPage - 1) * rowsPerPage + index + 1,
+  },
+  {
+    header: t("Type"),
+    accessor: "request_type",
+    render: (item) => (item?.request_type),
+  },
+  {
+    header: t("User"),
+    render: (item) => (
+      <div className="flex flex-col gap-0.5">
+        <span className="text-[12px]">
+          {(item?.user?.name)}
+        </span>
+        <span className="text-[10px]">
+          {(item?.user?.email)}
+        </span>
+      </div>
+    ),
+  },
+  {
+    header: t("Event/Task"),
+    render: (item) =>
+      item?.event?.name
+        ? (item?.event?.name)
+        : (item?.task?.name),
+  },
+  {
+    header: t("Date"),
+    render: (item) =>
+      item?.event?.date || item?.task?.date,
+  },
+  {
+    header: t("Time"),
+    render: (item) =>
+      item?.event?.start_time || item?.task?.start_time,
+  },
+  {
+    header: t("Organization"),
+    render: (item) => (item?.orgnization?.name),
+  },
+  {
+    header: t("Status"),
+    render: (item) => (
+      <span className="bg-eight rounded-circle px-2 py-1 text-three">
+        {item?.status ?? "N/A"}
+      </span>
+    ),
+  },
+  {
+    header: (
+      <input
+        type="checkbox"
+        checked={
+          selectedIds.length === paginatedData.length &&
+          paginatedData.length > 0
         }
-      )
-        .then(() => {
-          setUpdate((prev) => !prev);
-          setSelectedIds([]);
-          Swal.fire(
-            `${label}!`,
-            `All selected Pending have been ${label.toLowerCase()}.`,
-            "success"
-          );
-        })
-        .catch(() => {
-          Swal.fire("Error", "One or more Pending failed.", "error");
-        });
-    }
-  });
-};
-
+        onChange={(e) => {
+          if (e.target.checked) {
+            setSelectedIds(paginatedData.map((i) => i.id));
+          } else {
+            setSelectedIds([]);
+          }
+        }}
+      />
+    ),
+    render: (item) => (
+      <input
+        type="checkbox"
+        checked={selectedIds.includes(item.id)}
+        onChange={(e) => {
+          if (e.target.checked) {
+            setSelectedIds((prev) => [...prev, item.id]);
+          } else {
+            setSelectedIds((prev) =>
+              prev.filter((id) => id !== item.id)
+            );
+          }
+        }}
+      />
+    ),
+  },
+  {
+    header: t("Actions"),
+    render: (item) => (
+      <select
+        className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
+        onChange={(e) => {
+          if (e.target.value === "accept") handleAccept(item.id);
+          if (e.target.value === "reject") handleReject(item.id);
+        }}
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select
+        </option>
+        <option value="accept">Accept</option>
+        <option value="reject">Reject</option>
+      </select>
+    ),
+  },
+]; 
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -276,226 +375,14 @@ const RequestsOr = () => {
           </button>
         </div>
       )}
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-3">رقم</th>
-                    <th className="py-4 px-3">النوع</th>
-                    <th className="py-4 px-3">المستخدم</th>
-                    <th className="py-4 px-3">المهمه/الحدث</th>
-                    <th className="py-4 px-3">التاريخ</th>
-                    <th className="py-4 px-3">الوقت</th>
-                    <th className="py-4 px-3">المؤسسة</th>
-                    <th className="py-4 px-3">الحالة</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
 
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">الإجراء</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-3">S/N </th>
-                    <th className="py-4 px-3">Type</th>
-                    <th className="py-4 px-3">User</th>
-                    <th className="py-4 px-3">Event/Task</th>
-                    <th className="py-4 px-3">Date</th>
-                    <th className="py-4 px-3">Time</th>
-                    <th className="py-4 px-3">Orgnization</th>
-                    <th className="py-4 px-3">Status</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">Actions</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((item) => (
-                <tr
-                  key={item.id}
-                  className="border-y hover:border-3 relative hover:bg-four"
-                ></tr>
-              ))}
-            </tbody>
-
-            <tbody dir={isArabic ? "rtl" : "ltr"}>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3  relative hover:bg-four"
-                >
-                 
-                      <td className=" h-[56px] font-bold lg:text-[12px] xl:text-[12px] px-3">
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </td>
-                      <td className="h-[56px] lg:text-[12px]  xl:text-[12px]">
-                        {truncateText(item?.request_type)}
-                      </td>
-                      <td className="py-2 px-3">
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-[12px]">
-                            {truncateText(item?.user?.name)}
-                          </span>
-                          <span className="text-[10px]">
-                            {truncateText(item?.user?.email)}
-                          </span>
-                        </div>
-                      </td>
-                      {item?.event?.name ? (
-                        <>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.event?.name)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.event?.date)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.event?.start_time)}
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.task?.name)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.task?.date)}
-                          </td>
-                          <td className="py-4 px-3 h-[56px] ">
-                            {truncateTextar(item?.task?.start_time)}
-                          </td>
-                        </>
-                      )}
-                      <td className="h-[56px] lg:text-[12px] xl:text-[14px]">
-                        {truncateText(item?.orgnization?.name)}
-                      </td>
-                      <td className=" h-[56px] lg:text-[12px] xl:text-[14px] text-three ">
-                        <span className="bg-eight rounded-circle px-2 py-1">
-                          {item?.status ?? "N/A"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              );
-                            }
-                          }}
-                        />
-                      </td>
-                  <td className={` h-[56px] lg:text-[12px] xl:text-[16px] ${isArabic?"justify-center":"justify-start"} flex  items-center px-1 `}>
-                        <select
-                          className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "accept") {
-                              handleAccept(item.id);
-                            } else if (value === "reject") {
-                              handleReject(item.id);
-                            }
-                          }}
-                          defaultValue=""
-                        >
-                          <option value="" disabled>
-                            Select
-                          </option>
-                          <option value="accept">Accept</option>
-                          <option value="reject">Reject</option>
-                        </select>
-                      </td>
-              
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />
