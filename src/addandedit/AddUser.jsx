@@ -28,7 +28,7 @@ const AddUser = () => {
   const [gender, setgender] = useState("");
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
-  const[disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [errors, setErrors] = useState({
     name: "",
     phone: "",
@@ -120,7 +120,7 @@ const AddUser = () => {
     if (!validateForm()) {
       return;
     }
-setDisabled(true);
+    setDisabled(true);
     const token = localStorage.getItem("token");
     const newUser = {
       name,
@@ -179,7 +179,8 @@ setDisabled(true);
           } else {
             toast.error("Something went wrong.");
           }
-       setDisabled(false); });
+          setDisabled(false);
+        });
       return;
     }
 
@@ -220,7 +221,7 @@ setDisabled(true);
         } else {
           toast.error("Something went wrong.");
         }
-       setDisabled(false);
+        setDisabled(false);
       });
   };
 
@@ -326,11 +327,18 @@ setDisabled(true);
 
       <div className="flex mt-6">
         <button
-        disabled={disabled}
-          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
+          disabled={disabled}
           onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-          {disabled ? "Saving..." : "Done"}
+          {disabled ? (
+            <>
+              <span>Saving</span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            "Done"
+          )}
         </button>
       </div>
     </div>

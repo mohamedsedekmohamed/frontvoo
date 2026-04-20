@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const Evaluation = () => {
   const [data, setData] = useState([]);
@@ -57,11 +57,14 @@ const Evaluation = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://backndvoo.voo-hub.com/api/admin/evaluation/delete/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
+          .delete(
+            `https://backndvoo.voo-hub.com/api/admin/evaluation/delete/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          })
+          )
           .then(() => {
             setUpdate(!update);
             Swal.fire("Deleted!", "Evaluation has been deleted.", "success");
@@ -82,7 +85,7 @@ const Evaluation = () => {
     const query = searchQuery.toLowerCase();
     if (selectedFilter === "Filter" || selectedFilter === "") {
       return Object.values(item).some((value) =>
-        value?.toString().toLowerCase().includes(query)
+        value?.toString().toLowerCase().includes(query),
       );
     } else {
       return item[selectedFilter]?.toString().toLowerCase().includes(query);
@@ -92,7 +95,7 @@ const Evaluation = () => {
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const cheose = ["Filter", "name", "title", "evaulation"];
@@ -103,11 +106,49 @@ const Evaluation = () => {
     evaulation: "Evaluation",
   };
 
-  const truncateText = (text, maxLength = 20) => {
+  const truncateText = (text, maxLength = 5000) => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
 
+  const columns = [
+    {
+      header: "S/N",
+      render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: "Name",
+      render: (row) => truncateText(row.name),
+    },
+    {
+      header: "Title",
+      render: (row) => truncateText(row.title),
+    },
+    {
+      header: "Evaluation",
+      render: (row) => truncateText(row.evaulation),
+    },
+    {
+      header: "Image",
+      render: (row) => (
+        <img
+          src={row.image_link}
+          className="w-10 h-10 rounded-full object-cover border"
+          alt=""
+          onError={(e) => (e.target.src = "https://via.placeholder.com/40")}
+        />
+      ),
+    },
+    {
+      header: 'Action',
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition" onClick={() => handleEdit(row.id)} />
+          <RiDeleteBin6Line className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition" onClick={() => handleDelete(row.id, row.name)} />
+        </div>
+      )
+    }
+  ];
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -122,7 +163,11 @@ const Evaluation = () => {
         </div>
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" alt="filter" />
+            <img
+              src={filter}
+              className="text-white w-4 h-4 md:w-6 md:h-6"
+              alt="filter"
+            />
             <select
               style={{ appearance: "none", paddingRight: "20px" }}
               value={selectedFilter}
@@ -141,65 +186,20 @@ const Evaluation = () => {
             className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">Add</span>
+            <span className="text-[16px] md:text-[20px] font-medium text-one">
+              Add
+            </span>
           </button>
         </div>
       </div>
 
-      <div className="mt-10 block text-left">
-        <div className="min-w-[800px] overflow-x-auto">
-          <table className="w-full border-y border-x border-black">
-            <thead className="w-full">
-              <tr className="bg-four">
-                <th className="py-4 px-3">S/N</th>
-                <th className="py-4 px-3">Name</th>
-                <th className="py-4 px-3">Title</th>
-                <th className="py-4 px-3">Evaluation</th>
-                <th className="py-4 px-3">Image</th>
-                <th className="py-4 px-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((item, index) => (
-                <tr key={item.id} className="border-y border-x hover:bg-four transition-all">
-                  <td className="py-2 px-3 font-bold">
-                    {(currentPage - 1) * rowsPerPage + index + 1}
-                  </td>
-                  <td className="py-4 px-3">{truncateText(item.name)}</td>
-                  <td className="py-4 px-3">{truncateText(item.title)}</td>
-                  <td className="py-4 px-3">{truncateText(item.evaulation)}</td>
-                  <td className="py-4 px-3">
-                    <img
-                      className="w-10 h-10 rounded-full object-cover border"
-                      src={item.image_link}
-                      alt={item.name}
-                      onError={(e) => { e.target.src = "https://via.placeholder.com/40" }}
-                    />
-                  </td>
-                  <td className="py-4 px-3 flex gap-2">
-                    <CiEdit
-                      className="w-[24px] h-[24px] text-six cursor-pointer"
-                      onClick={() => handleEdit(item.id)}
-                    />
-                    <RiDeleteBin6Line
-                      className="w-[24px] h-[24px] text-five cursor-pointer"
-                      onClick={() => handleDelete(item.id, item.name)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />

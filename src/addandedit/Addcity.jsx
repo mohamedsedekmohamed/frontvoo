@@ -187,12 +187,20 @@ const Addcity = () => {
         </div>
   
         <div className="flex mt-6">
-          <button
+      <button
           disabled={disabled}
-          className='w-[300px] text-[32px] text-white
-           transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl' onClick={handleSave}>
-            {disabled ? "Saving..." : "Done"}
-          </button>
+          onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
+        >
+          {disabled ? (
+            <>
+              <span>Saving</span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            "Done"
+          )}
+        </button>
         </div>
       </div>
     );

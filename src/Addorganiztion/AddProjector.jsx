@@ -15,8 +15,8 @@ const AddProjector = () => {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const[disabled, setDisabled] = useState(false);
- const { t, i18n } = useTranslation();
+  const [disabled, setDisabled] = useState(false);
+  const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [errors, setErrors] = useState({
     name: "",
@@ -36,10 +36,10 @@ const AddProjector = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         )
         .then((response) => {
-          const pro = response.data.project
+          const pro = response.data.project;
           if (pro) {
             setName(pro.name || "");
             setDescription(pro.description || "");
@@ -78,7 +78,7 @@ const AddProjector = () => {
     if (!validateForm()) {
       return;
     }
-setDisabled(true);
+    setDisabled(true);
     const token = localStorage.getItem("token");
     const newUsers = {
       name,
@@ -93,36 +93,36 @@ setDisabled(true);
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         )
         .then(() => {
           toast.success("project updated successfully");
           setTimeout(() => {
             navigate(-1);
           }, 1500);
-             setName("");
-    setDescription("");
-    setid("");
-    setEdit(false);
+          setName("");
+          setDescription("");
+          setid("");
+          setEdit(false);
         })
-       .catch((error) => {
-        const errors = error?.response?.data;
-      
-        if (errors && typeof errors === 'object') {
-          const firstKey = Object.keys(errors)[0]; 
-          const firstMessage = errors[firstKey]?.[0];
-      
-          if (firstMessage) {
-            toast.error(firstMessage);
+        .catch((error) => {
+          const errors = error?.response?.data;
+
+          if (errors && typeof errors === "object") {
+            const firstKey = Object.keys(errors)[0];
+            const firstMessage = errors[firstKey]?.[0];
+
+            if (firstMessage) {
+              toast.error(firstMessage);
+            } else {
+              toast.error("Something went wrong.");
+            }
           } else {
             toast.error("Something went wrong.");
           }
-        } else {
-          toast.error("Something went wrong.");
-        }
-        setDisabled(false);
-      });
-      
+          setDisabled(false);
+        });
+
       return;
     }
     axios
@@ -133,37 +133,35 @@ setDisabled(true);
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       )
       .then(() => {
         toast.success("project added successfully");
         setTimeout(() => {
           navigate(-1);
         }, 1500);
-           setName("");
-    setDescription("");
-    setid("");
-    setEdit(false);
+        setName("");
+        setDescription("");
+        setid("");
+        setEdit(false);
       })
       .catch((error) => {
-       const errors = error?.response?.data;
-     
-       if (errors && typeof errors === 'object') {
-         const firstKey = Object.keys(errors)[0]; 
-         const firstMessage = errors[firstKey]?.[0];
-     
-         if (firstMessage) {
-           toast.error(firstMessage);
-         } else {
-           toast.error("Something went wrong.");
-         }
-       } else {
-         toast.error("Something went wrong.");
-       }
-       setDisabled(false);
-     });
-     
- 
+        const errors = error?.response?.data;
+
+        if (errors && typeof errors === "object") {
+          const firstKey = Object.keys(errors)[0];
+          const firstMessage = errors[firstKey]?.[0];
+
+          if (firstMessage) {
+            toast.error(firstMessage);
+          } else {
+            toast.error("Something went wrong.");
+          }
+        } else {
+          toast.error("Something went wrong.");
+        }
+        setDisabled(false);
+      });
   };
   if (loading) {
     return (
@@ -197,12 +195,18 @@ setDisabled(true);
       </div>
       <div className="flex mt-6">
         <button
-          className="w-[300px] text-[32px] text-white
-         transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl"
+          disabled={disabled}
           onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-              {disabled ? t("Saving") : t("Done")}
-
+          {disabled ? (
+            <>
+              {t("Saving")}
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            t("Done")
+          )}
         </button>
       </div>
     </div>

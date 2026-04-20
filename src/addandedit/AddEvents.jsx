@@ -1,59 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import AddAll from '../ui/AddAll';
-import InputField from '../ui/InputField';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import InputArrow from '../ui/InputArrow';
-import SwitchButton from '../ui/SwitchButton';
-import Inputfiltter from '../ui/Inputfiltter';
-import GetLocationLink from '../ui/GetLocationLink';
-import AddBenefitsRequirements from '../ui/AddBenefitsRequirements';
-import FileUploadButton from '../ui/FileUploadButton';
-import { FaRegCalendarAlt } from 'react-icons/fa';
-import TimePicker from 'react-time-picker';
-import 'react-time-picker/dist/TimePicker.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import MapPicker from '../ui/MapPicker'
-import FourPointsMap from '../ui/FourPointsMap';
+import React, { useEffect, useState } from "react";
+import AddAll from "../ui/AddAll";
+import InputField from "../ui/InputField";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import InputArrow from "../ui/InputArrow";
+import SwitchButton from "../ui/SwitchButton";
+import Inputfiltter from "../ui/Inputfiltter";
+import GetLocationLink from "../ui/GetLocationLink";
+import AddBenefitsRequirements from "../ui/AddBenefitsRequirements";
+import FileUploadButton from "../ui/FileUploadButton";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import MapPicker from "../ui/MapPicker";
+import FourPointsMap from "../ui/FourPointsMap";
 const AddEvents = () => {
-    const [points, setPoints] = useState([]);
-  
+  const [points, setPoints] = useState([]);
+
   const navigate = useNavigate();
   const location = useLocation();
-  const [id, setid] = useState('');
-  const [country, setCountry] = useState('');
-  const [zone, setzone] = useState('');
-  const [name, setName] = useState('');
-  const [date, setDate] = useState('');
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
-  const [volunteers, setvolunteers] = useState('');
-  const [organizers, setorganizers] = useState('');
-  const [locat, setlocat] = useState('');
+  const [id, setid] = useState("");
+  const [country, setCountry] = useState("");
+  const [zone, setzone] = useState("");
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [volunteers, setvolunteers] = useState("");
+  const [organizers, setorganizers] = useState("");
+  const [locat, setlocat] = useState("");
   // const [namegoogle, setnamegoogle] = useState('');
-  const [description, setdescription] = useState('');
+  const [description, setdescription] = useState("");
   const [image, setimage] = useState(null);
-    const [imagetwo, setimagetwo] = useState(null);
-  const [value, setvalue] = useState('inactive');
-  const [city, setCity] = useState('');
+  const [imagetwo, setimagetwo] = useState(null);
+  const [value, setvalue] = useState("inactive");
+  const [city, setCity] = useState("");
   const [edit, setEdit] = useState(false);
   const [benfit, setbenfit] = useState([]);
   const [requirment, setrequirment] = useState([]);
   const [loading, setLoading] = useState(true);
-  const[disabled, setDisabled] = useState(false);
-
+  const [disabled, setDisabled] = useState(false);
 
   const [google, setgoogle] = useState({
-   lat: 31.200092, // الإسكندرية
-lng: 29.918739
-    });
-    const updateLocation = (newLocation) => {
-      setgoogle(newLocation);
-    };
-      const extractLatLng = (url) => {
+    lat: 31.200092, // الإسكندرية
+    lng: 29.918739,
+  });
+  const updateLocation = (newLocation) => {
+    setgoogle(newLocation);
+  };
+  const extractLatLng = (url) => {
     const regex = /q=([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)/;
     const matches = url.match(regex);
 
@@ -67,33 +66,33 @@ lng: 29.918739
   };
 
   const [errors, setErrors] = useState({
-    volunteers: '',
-    locat: '',
-    organizers: '',
-    start: '',
-    end: '',
-    name: '',
-    description: '',
-    country: '',
-    city: '',
-    zone: '',
-    gender: '',
-    birthdate: '',
-    benfit: '',
-    requirment: '',
-    points:""
+    volunteers: "",
+    locat: "",
+    organizers: "",
+    start: "",
+    end: "",
+    name: "",
+    description: "",
+    country: "",
+    city: "",
+    zone: "",
+    gender: "",
+    birthdate: "",
+    benfit: "",
+    requirment: "",
+    points: "",
   });
   // function extractLatLng(url) {
   //   if (!url) return null;
-  
+
   //   try {
   //     const decodedUrl = decodeURIComponent(url);
   //     const match = decodedUrl.match(/q=([-.\d\s]+)[,;]([-.\d\s]+)/i);
-      
+
   //     if (match) {
   //       const lat = parseFloat(match[1].trim());
   //       const lng = parseFloat(match[2].trim());
-  
+
   //       if (!isNaN(lat) && !isNaN(lng)) {
   //         return { lat, lng };
   //       }
@@ -101,10 +100,10 @@ lng: 29.918739
   //   } catch (error) {
   //     console.error("Invalid URL format", error);
   //   }
-  
+
   //   return null;
   // }
-  
+
   useEffect(() => {
     const { sendData } = location.state || {};
 
@@ -112,9 +111,9 @@ lng: 29.918739
       setid(sendData);
       setEdit(true);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       axios
-        .get('https://backndVoo.voo-hub.com/api/admin/event', {
+        .get("https://backndVoo.voo-hub.com/api/admin/event", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -122,49 +121,56 @@ lng: 29.918739
         .then((response) => {
           const event = response.data.events.find((e) => e.id === sendData);
           if (event) {
-            setName(event.name || '');
-            setCountry(event.country_id || '');
-            setCity(event.city_id || '');
-            setzone(event.zone_id || '');
-            setDate(event.date || '');
-            setStart(event.start_time || '');
-            setEnd(event.end_time || '');
-            setvolunteers(event.number_of_volunteers || '');
-            setorganizers(event.number_of_organizers || '');
-            setlocat(event.location || '');
-            setPoints(event.points || [])
-            setvalue(event.status|| "inactive")
+            setName(event.name || "");
+            setCountry(event.country_id || "");
+            setCity(event.city_id || "");
+            setzone(event.zone_id || "");
+            setDate(event.date || "");
+            setStart(event.start_time || "");
+            setEnd(event.end_time || "");
+            setvolunteers(event.number_of_volunteers || "");
+            setorganizers(event.number_of_organizers || "");
+            setlocat(event.location || "");
+            setPoints(event.points || []);
+            setvalue(event.status || "inactive");
             // const latLng = extractLatLng(event.google_maps_location);
             // setgoogle(latLng || ''); // هنا بنمرر الإحداثيات المستخرجة
             // setnamegoogle(event.google_maps_location || '');
 
+            const url = event.google_maps_location;
+            const locatio = extractLatLng(url);
 
-    const url = event.google_maps_location;
-const locatio = extractLatLng(url);
+            if (locatio) {
+              console.log(
+                `Latitude: ${locatio.lat}, Longitude: ${locatio.lng}`,
+              );
+            } else {
+              console.log("لم يتم العثور على الإحداثيات في الرابط.");
+            }
+            setgoogle({
+              lat: locatio.lat,
+              lng: locatio.lng,
+            });
 
-if (locatio) {
-  console.log(`Latitude: ${locatio.lat}, Longitude: ${locatio.lng}`);
-} else {
-  console.log("لم يتم العثور على الإحداثيات في الرابط.");
-}
-      setgoogle({ 
-        lat: locatio.lat, 
-    lng: locatio.lng,
-  })
-
-            setdescription(event.description || '');
+            setdescription(event.description || "");
             setbenfit(
-              event.event_benfits?.map((b) => ({ text: b.benfit, status: b.status })) || []
+              event.event_benfits?.map((b) => ({
+                text: b.benfit,
+                status: b.status,
+              })) || [],
             );
             setrequirment(
-              event.event_requirments?.map((r) => ({ text: r.requirment, status: r.status })) || []
+              event.event_requirments?.map((r) => ({
+                text: r.requirment,
+                status: r.status,
+              })) || [],
             );
             setimage(event.image_link || null);
             setimagetwo(event.image_link || null);
           }
         })
         .catch((error) => {
-          console.error('Error fetching event:', error);
+          console.error("Error fetching event:", error);
         });
     }
 
@@ -182,40 +188,40 @@ if (locatio) {
     const { name, value } = e.target;
 
     switch (name) {
-      case 'Event':
+      case "Event":
         setName(value);
         break;
-      case 'country':
+      case "country":
         setCountry(value);
         break;
-      case 'city':
+      case "city":
         setCity(value);
         break;
-      case 'zone':
+      case "zone":
         setzone(value);
         break;
-      case 'date':
+      case "date":
         setDate(value);
         break;
-      case 'start':
+      case "start":
         setStart(value);
         break;
-      case 'end':
+      case "end":
         setEnd(value);
         break;
-      case 'volunteers':
+      case "volunteers":
         setvolunteers(value);
         break;
-      case 'organizers':
+      case "organizers":
         setorganizers(value);
         break;
-      case 'Location':
+      case "Location":
         setlocat(value);
         break;
-      case 'google':
+      case "google":
         setgoogle(value);
         break;
-      case 'description':
+      case "description":
         setdescription(value);
         break;
       default:
@@ -225,32 +231,32 @@ if (locatio) {
 
   const validateForm = () => {
     let formErrors = {};
-if(points.length !== 4) formErrors.points=' Should select 4 points'
-    if (!name) formErrors.name = 'Event name is required';
-    if (!country) formErrors.country = 'Country is required';
-    if (!city) formErrors.city = 'City is required';
-    if (!zone) formErrors.zone = 'Zone is required';
+    if (points.length !== 4) formErrors.points = " Should select 4 points";
+    if (!name) formErrors.name = "Event name is required";
+    if (!country) formErrors.country = "Country is required";
+    if (!city) formErrors.city = "City is required";
+    if (!zone) formErrors.zone = "Zone is required";
 
-    if (!date) formErrors.date = 'Event date is required';
-    if (!start) formErrors.start = 'Start time is required';
-    if (!end) formErrors.end = 'End time is required';
+    if (!date) formErrors.date = "Event date is required";
+    if (!start) formErrors.start = "Start time is required";
+    if (!end) formErrors.end = "End time is required";
 
     if (!volunteers) {
-      formErrors.volunteers = 'Number of volunteers is required';
+      formErrors.volunteers = "Number of volunteers is required";
     } else if (isNaN(volunteers) || volunteers <= 0) {
-      formErrors.volunteers = 'Volunteers must be a positive number';
+      formErrors.volunteers = "Volunteers must be a positive number";
     }
-if(!image &&!edit)formErrors.image="image is required"
+    if (!image && !edit) formErrors.image = "image is required";
     if (!organizers) {
-      formErrors.organizers = 'Number of organizers is required';
+      formErrors.organizers = "Number of organizers is required";
     } else if (isNaN(organizers) || organizers <= 0) {
-      formErrors.organizers = 'Organizers must be a positive number';
+      formErrors.organizers = "Organizers must be a positive number";
     }
 
-    if (!locat) formErrors.locat = 'Location is required';
+    if (!locat) formErrors.locat = "Location is required";
     // if (!namegoogle || !namegoogle.includes('http'))
-      // formErrors.google = 'Google Maps link is required and must be valid';
-    if (!description) formErrors.description = 'Description is required';
+    // formErrors.google = 'Google Maps link is required and must be valid';
+    if (!description) formErrors.description = "Description is required";
 
     Object.values(formErrors).forEach((error) => {
       toast.error(error);
@@ -264,8 +270,8 @@ if(!image &&!edit)formErrors.image="image is required"
     if (!validateForm()) {
       return;
     }
-setDisabled(true);
-    const token = localStorage.getItem('token');
+    setDisabled(true);
+    const token = localStorage.getItem("token");
     const eventData = {
       country_id: country,
       city_id: city,
@@ -277,18 +283,23 @@ setDisabled(true);
       end_time: end,
       number_of_volunteers: parseInt(volunteers),
       number_of_organizers: parseInt(organizers),
-      location : locat,
-      google_maps_location:`https://maps.google.com/?q=${google.lat},${google.lng}`,
+      location: locat,
+      google_maps_location: `https://maps.google.com/?q=${google.lat},${google.lng}`,
       description,
       status: value,
-      benfit: benfit.map((item) => ({ benfit: item.text, status: item.status })),
-      requirment: requirment.map((item) => ({ requirment: item.text, status: item.status })),
+      benfit: benfit.map((item) => ({
+        benfit: item.text,
+        status: item.status,
+      })),
+      requirment: requirment.map((item) => ({
+        requirment: item.text,
+        status: item.status,
+      })),
     };
-    
-if(imagetwo!==image)
-  {
-    eventData.image = image;
-  }
+
+    if (imagetwo !== image) {
+      eventData.image = image;
+    }
 
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -296,109 +307,115 @@ if(imagetwo!==image)
 
     if (edit) {
       axios
-        .put(`https://backndVoo.voo-hub.com/api/admin/event/update/${id}`, eventData, { headers })
+        .put(
+          `https://backndVoo.voo-hub.com/api/admin/event/update/${id}`,
+          eventData,
+          { headers },
+        )
         .then(() => {
-          toast.success('Event updated successfully');
+          toast.success("Event updated successfully");
           setTimeout(() => navigate(-1), 2000);
-           setName('');
-    setDate('');
-    setStart('');
-    setEnd('');
-setgoogle({
-  lat: 30.033333,
-  lng: 31.233334,
-});
-setPoints([])
-    setvolunteers('');
-    setorganizers('');
-    setlocat('');
-    setimage(null);
-    setimagetwo(null);
-    setdescription('');
-    setCountry('');
-    setCity('');
-    setvalue('inactive');
-    setzone('');
-    setbenfit([]);
-    setrequirment([]);
-    setEdit(false);
-    setid('')
+          setName("");
+          setDate("");
+          setStart("");
+          setEnd("");
+          setgoogle({
+            lat: 30.033333,
+            lng: 31.233334,
+          });
+          setPoints([]);
+          setvolunteers("");
+          setorganizers("");
+          setlocat("");
+          setimage(null);
+          setimagetwo(null);
+          setdescription("");
+          setCountry("");
+          setCity("");
+          setvalue("inactive");
+          setzone("");
+          setbenfit([]);
+          setrequirment([]);
+          setEdit(false);
+          setid("");
         })
-  .catch((error) => {
-  const errors = error?.response?.data;
+        .catch((error) => {
+          const errors = error?.response?.data;
 
-  if (errors && typeof errors === 'object') {
-    const firstKey = Object.keys(errors)[0]; 
-    const firstMessage = errors[firstKey]?.[0];
+          if (errors && typeof errors === "object") {
+            const firstKey = Object.keys(errors)[0];
+            const firstMessage = errors[firstKey]?.[0];
 
-    if (firstMessage) {
-      toast.error(firstMessage);
+            if (firstMessage) {
+              toast.error(firstMessage);
+            } else {
+              toast.error("Something went wrong.");
+            }
+          } else {
+            toast.error("Something went wrong.");
+          }
+          setDisabled(false);
+        });
     } else {
-      toast.error("Something went wrong.");
-    }
-  } else {
-    toast.error("Something went wrong.");
-  }
-  setDisabled(false);
-});    } else {
       axios
-        .post('https://backndVoo.voo-hub.com/api/admin/event/add', eventData, { headers })
-        .then(() => {
-          toast.success('Event added successfully');
-          setTimeout(() => navigate(-1), 2000);
-           setName('');
-    setDate('');
-    setStart('');
-    setEnd('');
-setgoogle({
-  lat: 30.033333,
-  lng: 31.233334,
-});
-setPoints([])
-    setvolunteers('');
-    setorganizers('');
-    setlocat('');
-    setimage(null);
-    setimagetwo(null);
-    setdescription('');
-    setCountry('');
-    setCity('');
-    setvalue('inactive');
-    setzone('');
-    setbenfit([]);
-    setrequirment([]);
-    setEdit(false);
-    setid('')
+        .post("https://backndVoo.voo-hub.com/api/admin/event/add", eventData, {
+          headers,
         })
-  .catch((error) => {
-  const errors = error?.response?.data;
+        .then(() => {
+          toast.success("Event added successfully");
+          setTimeout(() => navigate(-1), 2000);
+          setName("");
+          setDate("");
+          setStart("");
+          setEnd("");
+          setgoogle({
+            lat: 30.033333,
+            lng: 31.233334,
+          });
+          setPoints([]);
+          setvolunteers("");
+          setorganizers("");
+          setlocat("");
+          setimage(null);
+          setimagetwo(null);
+          setdescription("");
+          setCountry("");
+          setCity("");
+          setvalue("inactive");
+          setzone("");
+          setbenfit([]);
+          setrequirment([]);
+          setEdit(false);
+          setid("");
+        })
+        .catch((error) => {
+          const errors = error?.response?.data;
 
-  if (errors && typeof errors === 'object') {
-    const firstKey = Object.keys(errors)[0]; 
-    const firstMessage = errors[firstKey]?.[0];
+          if (errors && typeof errors === "object") {
+            const firstKey = Object.keys(errors)[0];
+            const firstMessage = errors[firstKey]?.[0];
 
-    if (firstMessage) {
-      toast.error(firstMessage);
-    } else {
-      toast.error("Something went wrong.");
+            if (firstMessage) {
+              toast.error(firstMessage);
+            } else {
+              toast.error("Something went wrong.");
+            }
+          } else {
+            toast.error("Something went wrong.");
+          }
+          setDisabled(false);
+        });
     }
-  } else {
-    toast.error("Something went wrong.");
-  }
-  setDisabled(false);
-});    }
-
- 
   };
 
- const handstartDate = (newData) => {
+  const handstartDate = (newData) => {
     if (newData) {
-     const year = newData.getFullYear();
-    const month = String(newData.getMonth() + 1).padStart(2, '0');
-    const day = String(newData.getDate()).padStart(2, '0');
-    setDate(`${year}-${month}-${day}`);
+      const year = newData.getFullYear();
+      const month = String(newData.getMonth() + 1).padStart(2, "0");
+      const day = String(newData.getDate()).padStart(2, "0");
+      setDate(`${year}-${month}-${day}`);
     } else {
-      setDate('');
+      setDate("");
     }
   };
 
@@ -407,7 +424,7 @@ setPoints([])
       const formattedTime = newTime;
       setStart(formattedTime);
     } else {
-      setStart(''); // في حالة حذف الوقت
+      setStart(""); // في حالة حذف الوقت
     }
   };
 
@@ -415,7 +432,7 @@ setPoints([])
     if (newTime) {
       setEnd(newTime);
     } else {
-      setEnd('');
+      setEnd("");
     }
   };
 
@@ -433,7 +450,7 @@ setPoints([])
 
   return (
     <div>
-      <AddAll name={edit ? 'Edit Event' : 'Add Event'} navGo={-1} />
+      <AddAll name={edit ? "Edit Event" : "Add Event"} navGo={-1} />
       <div className="flex flex-wrap gap-6 mt-6">
         <div className=" flex flex-col  ">
           <span className="text-3xl font-bold text-three ">Information</span>
@@ -458,7 +475,12 @@ setPoints([])
               onChange={handleChange}
               email="number"
             />
-            <FileUploadButton name="image" kind="image" flag={image} onFileChange={handleFileChange} />
+            <FileUploadButton
+              name="image"
+              kind="image"
+              flag={image}
+              onFileChange={handleFileChange}
+            />
             <InputField
               placeholder="Location"
               name="Location"
@@ -470,7 +492,7 @@ setPoints([])
               name="description"
               value={description}
               onChange={handleChange}
-              />
+            />
           </div>
         </div>
         <div className=" flex flex-col  ">
@@ -503,8 +525,10 @@ setPoints([])
           <span className="text-3xl font-bold text-three ">Date and Time</span>
           <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">Date</span>
-              <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px] z-100" >
+              <span className="text-[12px] font-bold text-one md:text-[16px]">
+                Date
+              </span>
+              <div className="relative w-[200px] md:w-[300px] h-[48px] md:h-[72px] z-100">
                 <FaRegCalendarAlt className="absolute top-1/2  z-100 right-4 transform -translate-y-1/2 text-one " />
                 <DatePicker
                   selected={date}
@@ -521,7 +545,9 @@ setPoints([])
             </div>
 
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">start Time </span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]">
+                start Time{" "}
+              </span>
               <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
                 <TimePicker
                   className={`w-full h-full `}
@@ -533,7 +559,9 @@ setPoints([])
               </div>
             </div>
             <div className="flex flex-col gap-3 items-start justify-end">
-              <span className="text-[12px] font-bold text-one md:text-[16px]">end Time </span>
+              <span className="text-[12px] font-bold text-one md:text-[16px]">
+                end Time{" "}
+              </span>
               <div className=" flex  justify-between items-center w-[200px] md:w-[300px] h-[48px] md:h-[72px] border-1 border-two rounded-[8px] placeholder-seven   ">
                 <TimePicker
                   className={`w-full h-full `}
@@ -550,12 +578,13 @@ setPoints([])
       <div className=" flex flex-col my-15">
         <span className="text-3xl font-bold text-three my-5 ">Place</span>
         <div className="flex flex-wrap justify-center gap-6 mt-6 bg-eight p-5">
-       
           <MapPicker location={google} onLocationChange={updateLocation} />
-                  </div>
+        </div>
       </div>
       <div className=" flex flex-col my-3 ">
-        <span className="text-3xl font-bold text-three ">benfit And requirment</span>
+        <span className="text-3xl font-bold text-three ">
+          benfit And requirment
+        </span>
         <div className="flex flex-wrap gap-6 mt-6 bg-eight p-5">
           <AddBenefitsRequirements
             benfit={benfit}
@@ -565,16 +594,24 @@ setPoints([])
           />
         </div>
       </div>
-      <div className='my-5'>
-      <SwitchButton value={value} setValue={setvalue} />
+      <div className="my-5">
+        <SwitchButton value={value} setValue={setvalue} />
       </div>
       <FourPointsMap points={points} setPoints={setPoints} />
       <div className="flex mt-6">
-        <button disabled={disabled}
-          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
+        <button
+          disabled={disabled}
           onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-          {disabled ? "Saving" : "Done"}
+          {disabled ? (
+            <>
+              <span>Saving</span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            "Done"
+          )}
         </button>
       </div>
       <ToastContainer />

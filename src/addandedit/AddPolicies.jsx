@@ -42,7 +42,6 @@ const AddPolicies = () => {
     if (name === "policy") setPolicy(value);
   };
 
-
   const handleSave = () => {
     if (!validateForm()) {
       return;
@@ -52,7 +51,7 @@ const AddPolicies = () => {
     axios
       .post(
         `https://backndvoo.voo-hub.com/api/admin/policy/update`,
-        { policy , description: policy_description },
+        { policy, description: policy_description },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -115,12 +114,19 @@ const AddPolicies = () => {
         />
       </div>
       <div className="flex mt-6">
-        <button disabled={disabled}
-          className="w-[300px] text-[32px] text-white
-                 transition-transform hover:scale-95 font-medium h-[72px] bg-one rounded-2xl"
+        <button
+          disabled={disabled}
           onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-       {disabled ? "Saving..." : "Done"}
+          {disabled ? (
+            <>
+              <span>Saving</span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            "Done"
+          )}
         </button>
       </div>
     </div>

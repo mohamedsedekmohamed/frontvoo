@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import FileUploadButton from '../ui/FileUploadButton';
+import FileUploadButton from "../ui/FileUploadButton";
 import { FaVideo } from "react-icons/fa";
 
 const AddFeedsor = () => {
@@ -14,7 +14,7 @@ const AddFeedsor = () => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
-const[disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [imagetwo, setImagetwo] = useState(null);
@@ -24,7 +24,7 @@ const[disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [id, setId] = useState("");
- const handleFileChange = (file) => {
+  const handleFileChange = (file) => {
     if (file) setImage(file);
   };
   useEffect(() => {
@@ -41,7 +41,7 @@ const[disabled, setDisabled] = useState(false);
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         )
         .then((response) => {
           const data = response.data.news_feeds;
@@ -50,7 +50,6 @@ const[disabled, setDisabled] = useState(false);
           setImage(data.image_link || "");
           setVideo(data.video_link || "");
           setVideotwo(data.video_link || "");
-          
         })
         .catch((error) => {
           console.error("Error fetching feed:", error);
@@ -94,9 +93,9 @@ const[disabled, setDisabled] = useState(false);
     const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("content", content);
-    if (image !==imagetwo) formData.append("image", image);
-    if (video!==videotwo) formData.append("video", video);
-setDisabled(true);
+    if (image !== imagetwo) formData.append("image", image);
+    if (video !== videotwo) formData.append("video", video);
+    setDisabled(true);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -109,13 +108,13 @@ setDisabled(true);
         .post(
           `https://backndVoo.voo-hub.com/api/ornization/news_feeds/update/${id}`,
           formData,
-          config
+          config,
         )
         .then(() => {
           toast.success(t("Updated Successfully"));
           setTimeout(() => navigate(-1), 3000);
         })
-        .catch(error => {
+        .catch((error) => {
           handleError(error);
           setDisabled(false);
         });
@@ -126,19 +125,19 @@ setDisabled(true);
       .post(
         "https://backndVoo.voo-hub.com/api/ornization/news_feeds/add",
         formData,
-        config
+        config,
       )
       .then(() => {
         toast.success(t("Added Successfully"));
         setTimeout(() => navigate(-1), 3000);
       })
-      .catch(error => {
+      .catch((error) => {
         handleError(error);
         setDisabled(false);
       });
-    
-    setImagetwo(null)
-        setVideotwo(null)
+
+    setImagetwo(null);
+    setVideotwo(null);
     setEdit(false);
     setContent("");
     setImage(null);
@@ -170,11 +169,11 @@ setDisabled(true);
           onChange={handleChange}
         />
 
-       <FileUploadButton
-           name="image"
-           kind={t("image")}
-           flag={image}
-           onFileChange={handleFileChange}
+        <FileUploadButton
+          name="image"
+          kind={t("image")}
+          flag={image}
+          onFileChange={handleFileChange}
         />
         <div className="flex flex-col gap-2">
           <span className="font-bold text-one">{t("UploadVideo")} </span>
@@ -184,7 +183,7 @@ setDisabled(true);
             className="cursor-pointer w-[200px] md:w-[300px] h-[48px] md:h-[72px] border border-two rounded-[8px] flex items-center justify-center gap-2 text-gray-600 hover:bg-gray-100 transition"
           >
             <FaVideo className="text-xl" />
-            <span>  {video?t("done"):t("UploadVideo")} </span>
+            <span> {video ? t("done") : t("UploadVideo")} </span>
           </label>
 
           <input
@@ -196,11 +195,19 @@ setDisabled(true);
           />
         </div>
 
-        <button disabled={disabled}
+        <button
+          disabled={disabled}
           onClick={handleSave}
-          className="w-[200px] md:w-[300px] h-[48px] md:h-[72px] bg-one text-white rounded-[8px] text-lg font-medium mt-2 hover:bg-opacity-90 transition"
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-          {disabled ? t("Saving") : t("Done")}
+          {disabled ? (
+            <>
+              {t("Saving")}
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            t("Done")
+          )}
         </button>
       </div>
     </div>

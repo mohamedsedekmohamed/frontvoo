@@ -11,7 +11,7 @@ import SwitchButton from "../ui/SwitchButton";
 
 const Addorganizeation = () => {
   const [status, setStatus] = useState("inactive");
-  const[disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [country, setCountry] = useState("");
@@ -106,7 +106,7 @@ const Addorganizeation = () => {
     if (!validateForm()) {
       return;
     }
-setDisabled(true);
+    setDisabled(true);
     const token = localStorage.getItem("token");
     const newUser = {
       name: organization,
@@ -114,8 +114,7 @@ setDisabled(true);
       country_id: country,
       city_id: city,
       email,
-            account_status:status
-
+      account_status: status,
     };
 
     if (!edit || !password) {
@@ -131,30 +130,74 @@ setDisabled(true);
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         )
         .then(() => {
           toast.success("organization updated successfully");
           setTimeout(() => {
             navigate(-1);
           }, 3000);
-           setStatus("inactive")
-    setOrganization("");
-    setPhone("");
-    setCountry("");
-    setCity("");
-    setEmail("");
-    setPassword("");
-    setEdit(false);
-    setid("");
+          setStatus("inactive");
+          setOrganization("");
+          setPhone("");
+          setCountry("");
+          setCity("");
+          setEmail("");
+          setPassword("");
+          setEdit(false);
+          setid("");
         })
-          .catch((error) => {
+        .catch((error) => {
+          const errors = error?.response?.data;
+
+          if (errors && typeof errors === "object") {
+            const firstKey = Object.keys(errors)[0];
+            const firstMessage = errors[firstKey]?.[0];
+
+            if (firstMessage) {
+              toast.error(firstMessage);
+            } else {
+              toast.error("Something went wrong.");
+            }
+          } else {
+            toast.error("Something went wrong.");
+          }
+          setDisabled(false);
+        });
+      return;
+    }
+    axios
+      .post(
+        "https://backndVoo.voo-hub.com/api/admin/organization/add",
+        newUser,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(() => {
+        toast.success("organization  added successfully");
+        setTimeout(() => {
+          navigate(-1);
+        }, 3000);
+        setStatus("inactive");
+        setOrganization("");
+        setPhone("");
+        setCountry("");
+        setCity("");
+        setEmail("");
+        setPassword("");
+        setEdit(false);
+        setid("");
+      })
+      .catch((error) => {
         const errors = error?.response?.data;
-      
-        if (errors && typeof errors === 'object') {
-          const firstKey = Object.keys(errors)[0]; 
+
+        if (errors && typeof errors === "object") {
+          const firstKey = Object.keys(errors)[0];
           const firstMessage = errors[firstKey]?.[0];
-      
+
           if (firstMessage) {
             toast.error(firstMessage);
           } else {
@@ -164,52 +207,7 @@ setDisabled(true);
           toast.error("Something went wrong.");
         }
         setDisabled(false);
-          });
-            return;
-          }
-    axios
-      .post(
-        "https://backndVoo.voo-hub.com/api/admin/organization/add",
-        newUser,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then(() => {
-        toast.success("organization  added successfully");
-        setTimeout(() => {
-          navigate(-1);
-        }, 3000);
-         setStatus("inactive")
-    setOrganization("");
-    setPhone("");
-    setCountry("");
-    setCity("");
-    setEmail("");
-    setPassword("");
-    setEdit(false);
-    setid("");
-      })
-   .catch((error) => {
-     const errors = error?.response?.data;
-   
-     if (errors && typeof errors === 'object') {
-       const firstKey = Object.keys(errors)[0]; 
-       const firstMessage = errors[firstKey]?.[0];
-   
-       if (firstMessage) {
-         toast.error(firstMessage);
-       } else {
-         toast.error("Something went wrong.");
-       }
-     } else {
-       toast.error("Something went wrong.");
-     }
-     setDisabled(false);
-   });
-   
+      });
   };
 
   if (loading) {
@@ -272,17 +270,24 @@ setDisabled(true);
           value={password}
           onChange={handleChange}
         />
-        
       </div>
- <div className='flex justify-center m-5 items-end'>
-              <SwitchButton value={status} title='status' setValue={setStatus} />
+      <div className="flex justify-center m-5 items-end">
+        <SwitchButton value={status} title="status" setValue={setStatus} />
       </div>
       <div className="flex mt-6">
-        <button disabled={disabled}
-          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl"
+        <button
+          disabled={disabled}
           onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-         {disabled ? "Saving..." : "Done"}
+          {disabled ? (
+            <>
+              <span>Saving</span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            "Done"
+          )}
         </button>
       </div>
     </div>

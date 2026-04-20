@@ -5,17 +5,20 @@ import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const Zone = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
+
   const navigate = useNavigate();
+
+  const rowsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -23,102 +26,83 @@ const Zone = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     axios
       .get("https://backndVoo.voo-hub.com/api/admin/zone", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-        if (
-          response.data &&
-          Array.isArray(response.data) &&
-          response.data.length > 0
-        ) {
-          setData(response.data[0].zones);
-        } else {
-          setData([]);
-        }
+      .then((res) => {
+        const zones = res?.data?.[0]?.zones || [];
+        setData(zones);
       })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
+      .catch(() => toast.error("Error fetching data"));
   }, [update]);
 
-  const handleChange = (e) => {
-    setSelectedFilter(e.target.value);
-  };
+  const handleChange = (e) => setSelectedFilter(e.target.value);
 
-  const handleDelete = (userId, userName) => {
+  const handleDelete = (id, name) => {
     const token = localStorage.getItem("token");
 
     Swal.fire({
-      title: `Are you sure you want to delete ${userName}?`,
+      title: `Are you sure you want to delete ${name}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
-      cancelButtonText: "No",
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(
-            `https://backndVoo.voo-hub.com/api/admin/zone/delete/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
+          .delete(`https://backndVoo.voo-hub.com/api/admin/zone/delete/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
           .then(() => {
             setUpdate(!update);
-            Swal.fire(
-              "Deleted!",
-              `${userName} has been deleted successfully.`,
-              "success"
-            );
+            Swal.fire("Deleted!", "", "success");
           })
-          .catch(() => {
-            Swal.fire(
-              "Error!",
-              `There was an error while deleting ${userName}.`,
-              "error"
-            );
-          });
-      } else {
-        Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+          .catch(() => Swal.fire("Error!", "", "error"));
       }
     });
   };
+
+  const handleEdit = (id) => {
+    navigate("/admin/addzone", { state: { sendData: id } });
+  };
+
+  // 🔍 FILTER + SEARCH (نفس منطقك لكن متظبط)
   const filteredData = data.filter((item) => {
     const query = searchQuery.toLowerCase();
 
-    if (selectedFilter === "Filter" || selectedFilter === "") {
+    if (!selectedFilter || selectedFilter === "Filter") {
       return Object.values(item).some((value) =>
-        typeof value === "object"
-          ? Object.values(value).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
-            )
-          : value?.toString().toLowerCase().includes(query)
+        value?.toString().toLowerCase().includes(query),
       );
-    } else {
-      const keys = selectedFilter.split(".");
-      let value = item;
-      for (let key of keys) {
-        value = value?.[key];
-      }
-
-      return value?.toString().toLowerCase().includes(query);
     }
+
+    const keys = selectedFilter.split(".");
+    let value = item;
+
+    for (let key of keys) {
+      value = value?.[key];
+    }
+
+    return value?.toString().toLowerCase().includes(query);
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
+  const truncateText = (text, maxLength = 50) =>
+    !text
+      ? "N/A"
+      : text.length > maxLength
+        ? text.slice(0, maxLength) + "..."
+        : text;
+
   const cheose = ["Filter", "name", "city", "country_name"];
+
   const labelMap = {
     Filter: "Filter",
     name: "zone",
@@ -126,50 +110,75 @@ const Zone = () => {
     country_name: "country",
   };
 
-  const handleEdit = (id) => {
-    navigate("/admin/addzone", { state: { sendData: id } });
-  };
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
+  const columns = [
+    {
+      header: "S/N",
+      render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: "Zone",
+      render: (row) => truncateText(row?.name),
+    },
+    {
+      header: "City",
+      render: (row) => truncateText(row?.city_name),
+    },
+    {
+      header: "Country",
+      render: (row) => truncateText(row?.country_name),
+    },
+    {
+      header: "Action",
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div>
+      {/* 🔎 SEARCH + FILTER + ADD (نفس التصميم 100%) */}
       <div className="flex justify-between items-center">
-        <div className="relative items-center">
+        <div className="relative">
           <input
             placeholder="Search"
             className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
+          <CiSearch className="absolute left-2 top-3 text-three" />
         </div>
+
         <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+          <button className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
-              style={{
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                paddingRight: "20px",
-                backgroundImage: "none",
-              }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-20 text-[20px] h-9 text-white bg-one rounded-[8px]"
+              style={{ appearance: "none", backgroundImage: "none" }}
             >
-              {cheose.map((option, index) => (
-                <option key={index} value={option}>
+              {cheose.map((option) => (
+                <option key={option} value={option}>
                   {labelMap[option] || option}
                 </option>
               ))}
             </select>
           </button>
+
           <button
             onClick={() => navigate("/admin/addzone")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
             <span className="text-[16px] md:text-[20px] font-medium text-one">
@@ -179,69 +188,14 @@ const Zone = () => {
         </div>
       </div>
 
-   <div className="mt-10 block text-left">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead className="w-full">
-              <tr className="bg-four ">
-              <th className="py-4 px-3">
-                S/N
-              </th>
-              <th className="py-4 px-3">
-                Zone
-              </th>
-              <th className="py-4 px-3">
-                City
-              </th>
-              <th className="py-4 px-3">
-                Country
-              </th>
-
-              <th className="py-4 px-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.map((item, index) => (
-               <tr
-                  key={item.id}
-                  className="border-y hover:border-3 relative hover:bg-four"
-                >
-                  <td className="py-4 px-3 font-bold">
-                  {(currentPage - 1) * rowsPerPage + index + 1}
-                </td>
-                                <td className="py-4 px-3">{truncateText(item?.name)}</td>
-
-                <td className="py-4 px-3">
-                  {truncateText(item?.city_name)}
-                </td>
-                <td className="py-4 px-3">
-                  {truncateText(item?.country_name)}
-                </td>
-                <td className=" h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-                  <CiEdit
-                    className="w-[24px] h-[24px] text-six cursor-pointer"
-                    onClick={() => handleEdit(item.id)}
-                  />
-                  <RiDeleteBin6Line
-                    className="w-[24px] h-[24px] ml-2 text-five cursor-pointer"
-                    onClick={() => handleDelete(item.id, item.name)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      {/* 📊 TABLE */}
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
 
@@ -249,4 +203,5 @@ const Zone = () => {
     </div>
   );
 };
+
 export default Zone;

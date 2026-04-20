@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import AddAll from '../ui/AddAll'
-import InputField from '../ui/InputField'
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import FileUploadButton from '../ui/FileUploadButton';
-import UploadButton from '../ui/UploadButton';
+import React, { useEffect, useState } from "react";
+import AddAll from "../ui/AddAll";
+import InputField from "../ui/InputField";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import FileUploadButton from "../ui/FileUploadButton";
+import UploadButton from "../ui/UploadButton";
 
 const Addevaluation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
   const [image, setImage] = useState(null);
   const [checkImage, setCheckImage] = useState(null);
-  const [name, setName] = useState('');
-  const [title, setTitle] = useState('');
-  const [evaluationText, setEvaluationText] = useState('');
+  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
+  const [evaluationText, setEvaluationText] = useState("");
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [disabled, setDisabled] = useState(false);
-  
 
   // التعامل مع رفع الصورة
-const handleFileChange = (file) => {
-  setImage(file); // سيقوم بتخزين الـ File Object
-};
+  const handleFileChange = (file) => {
+    setImage(file); // سيقوم بتخزين الـ File Object
+  };
 
   useEffect(() => {
     const { sendData } = location.state || {};
@@ -33,25 +32,26 @@ const handleFileChange = (file) => {
       setId(sendData);
       setEdit(true);
 
-      const token = localStorage.getItem('token');
-      axios.get("https://backndvoo.voo-hub.com/api/admin/evaluation", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
-      .then(response => {
-        const item = response.data.evaulations.find(u => u.id === sendData);
-        if (item) {
-          setName(item.name || '');
-          setTitle(item.title || '');
-          setEvaluationText(item.evaulation || '');
-          setImage(item.image_link || null);
-          setCheckImage(item.image_link || null);
-        }
-      })
-      .catch(error => {
-        toast.error("Error fetching evaluation data");
-      });
+      const token = localStorage.getItem("token");
+      axios
+        .get("https://backndvoo.voo-hub.com/api/admin/evaluation", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const item = response.data.evaulations.find((u) => u.id === sendData);
+          if (item) {
+            setName(item.name || "");
+            setTitle(item.title || "");
+            setEvaluationText(item.evaulation || "");
+            setImage(item.image_link || null);
+            setCheckImage(item.image_link || null);
+          }
+        })
+        .catch((error) => {
+          toast.error("Error fetching evaluation data");
+        });
     }
 
     const timeout = setTimeout(() => {
@@ -62,33 +62,44 @@ const handleFileChange = (file) => {
   }, [location.state]);
 
   const validateForm = () => {
-    if (!name) { toast.error('Name is required'); return false; }
-    if (!title) { toast.error('Title is required'); return false; }
-    if (!evaluationText) { toast.error('Evaluation text is required'); return false; }
-    if (!image && !edit) { toast.error('Image is required'); return false; }
+    if (!name) {
+      toast.error("Name is required");
+      return false;
+    }
+    if (!title) {
+      toast.error("Title is required");
+      return false;
+    }
+    if (!evaluationText) {
+      toast.error("Evaluation text is required");
+      return false;
+    }
+    if (!image && !edit) {
+      toast.error("Image is required");
+      return false;
+    }
     return true;
   };
 
   const handleSave = () => {
     if (!validateForm()) return;
 
-    const token = localStorage.getItem('token');
-    
-  
+    const token = localStorage.getItem("token");
+
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('title', title);
-    formData.append('evaulation', evaluationText);
-    
-   if (checkImage !== image) {
-      formData.append('image', image);
+    formData.append("name", name);
+    formData.append("title", title);
+    formData.append("evaulation", evaluationText);
+
+    if (checkImage !== image) {
+      formData.append("image", image);
     }
-setDisabled(true);
-    const url = edit 
+    setDisabled(true);
+    const url = edit
       ? `https://backndvoo.voo-hub.com/api/admin/evaluation/update/${id}`
       : `https://backndvoo.voo-hub.com/api/admin/evaluation/add`;
 
-    const method = edit ? 'post' : 'post';
+    const method = edit ? "post" : "post";
 
     axios({
       method: method,
@@ -96,18 +107,19 @@ setDisabled(true);
       data: formData, // إذا كان الـ API يطلب JSON فقط استبدل formData بكائن عادي
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     })
-    .then(() => {
-      toast.success(edit ? 'Updated successfully' : 'Added successfully');
-      setTimeout(() => navigate(-1), 1500);
-    })
-    .catch((error) => {
-      const errorMsg = error?.response?.data?.message || "Something went wrong.";
-      toast.error(errorMsg);
-      setDisabled(false);
-    });
+      .then(() => {
+        toast.success(edit ? "Updated successfully" : "Added successfully");
+        setTimeout(() => navigate(-1), 1500);
+      })
+      .catch((error) => {
+        const errorMsg =
+          error?.response?.data?.message || "Something went wrong.";
+        toast.error(errorMsg);
+        setDisabled(false);
+      });
   };
 
   if (loading) {
@@ -126,7 +138,7 @@ setDisabled(true);
     <div>
       <ToastContainer />
       <AddAll name={edit ? "Edit Evaluation" : "Add Evaluation"} navGo={-1} />
-      
+
       <div className="flex flex-col gap-6 mt-6 max-w-[624px]">
         {/* حقل الاسم */}
         <InputField
@@ -162,12 +174,19 @@ setDisabled(true);
       </div>
 
       <div className="flex mt-10">
-        <button 
-          className='w-[300px] text-[28px] text-white transition-transform hover:scale-95 font-medium h-[64px] bg-one rounded-2xl' 
+        <button
+          disabled={disabled}
           onClick={handleSave}
+          className="transition-transform hover:scale-95 w-[300px] text-[32px] text-white font-medium h-[72px] bg-one rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70"
         >
-          {disabled ? "Saving" : "Done"}
-          
+          {disabled ? (
+            <>
+              <span>Saving</span>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            </>
+          ) : (
+            "Done"
+          )}
         </button>
       </div>
     </div>

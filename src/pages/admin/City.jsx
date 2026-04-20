@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const City = () => {
   const [data, setData] = useState([]);
@@ -58,21 +58,21 @@ const City = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -92,9 +92,9 @@ const City = () => {
       return Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -112,7 +112,7 @@ const City = () => {
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
   const cheose = ["Filter", "name", "country_name"];
   const labelMap = {
@@ -120,10 +120,33 @@ const City = () => {
     name: "city",
     country_name: "country",
   };
-  const truncateText = (text, maxLength = 15) => {
+  const truncateText = (text, maxLength = 5000) => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
+  const columns = [
+    {
+      header: "S/N",
+      render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: "City",
+      render: (row) => truncateText(row?.name),
+    },
+    {
+      header: "Country",
+      render: (row) => truncateText(row?.country_name),
+    },
+    {
+      header: 'Action',
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition" onClick={() => handleEdit(row.id)} />
+          <RiDeleteBin6Line className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition" onClick={() => handleDelete(row.id, row.name)} />
+        </div>
+      )
+    }
+  ];
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -170,63 +193,13 @@ const City = () => {
         </div>
       </div>
 
-      
-<div className="mt-10 block text-left">
-  <div className="min-w-[800px]">
-            <table className="w-full border-y border-x border-black">
-          <thead className="w-full">
-            <tr className='bg-four '>
-              <th className="py-4 px-3">
-                S/N
-              </th>
-
-              <th className="py-4 px-3">
-                City
-              </th>
-              <th className="py-4 px-3">
-                Country
-              </th>
-
-              <th className="py-4 px-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.map((item, index) => (
-                          <tr key={item.id} className='border-y hover:border-3 relative hover:bg-four'>
-
-                <td className="py-4 px-3">
-                  {index + 1}
-                </td>
-                                <td className="py-4 px-3">{truncateText(item?.name)}</td>
-
-                <td className="py-4 px-3">
-                  {truncateText(item?.country_name)}
-                </td>
-                <td className="h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-                  <CiEdit
-                    className="w-[24px] h-[24px] text-six cursor-pointer"
-                    onClick={() => handleEdit(item.id)}
-                  />
-                  <RiDeleteBin6Line
-                    className="w-[24px] h-[24px] ml-2 text-five cursor-pointer"
-                    onClick={() => handleDelete(item.id, item.name)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />

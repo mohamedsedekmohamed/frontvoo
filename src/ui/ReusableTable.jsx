@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Pagination from '@mui/material/Pagination';
+import { useTranslation } from "react-i18next";
 
 const ReusableTable = ({ 
   columns, 
@@ -8,21 +9,35 @@ const ReusableTable = ({
   pageCount, 
   onPageChange 
 }) => {
+
+  // 🔹 State للـ Popup
+  const [openPopup, setOpenPopup] = useState(false);
+  const [popupText, setPopupText] = useState('');
+  
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
+
+  // 🔹 عند الضغط على النص
+  const handleTextClick = (text) => {
+    if (text && text.length > 15) {
+      setPopupText(text);
+      setOpenPopup(true);
+    }
+  };
+
   return (
-    // الحاوية الخارجية: إضافة ظل (shadow) وإطار (border) ليعطي شكل Card أنيق
     <div className="w-full bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden flex flex-col">
       
-      {/* حاوية السكرول الأفقي: تضمن عدم خروج الجدول عن الشاشة */}
+      {/* جدول */}
       <div className="overflow-x-auto w-full">
-        {/* استخدام min-w-max بدلاً من 1000px ليتمدد الجدول حسب المحتوى ولا ينضغط */}
         <table className="w-full min-w-max border-collapse text-start">
-          {/* استبدلت bg-four بـ bg-gray-50، يمكنك إرجاعها إذا كانت لوناً مخصصاً في إعداداتك */}
+          
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               {columns.map((col, index) => (
                 <th 
                   key={index} 
-                  className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap"
+                  className="py-4 px-4 font-semibold text-start text-gray-700 whitespace-nowrap"
                 >
                   {col.header}
                 </th>
@@ -35,17 +50,44 @@ const ReusableTable = ({
               data.map((row, rowIndex) => (
                 <tr 
                   key={row.id || rowIndex} 
-                  // تأثير الـ hover لسهولة تتبع الصفوف بالعين
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200 h-[56px]"
                 >
-                  {columns.map((col, colIndex) => (
-                    <td 
-                      key={colIndex} 
-                      className="py-3 px-6 align-middle text-sm text-gray-600"
-                    >
-                      {col.render ? col.render(row, rowIndex) : row[col.accessor]}
-                    </td>
-                  ))}
+                  {columns.map((col, colIndex) => {
+
+                    const value = col.render 
+                      ? col.render(row, rowIndex) 
+                      : row[col.accessor];
+
+                    // 🔹 لو النص string
+                    if (typeof value === 'string') {
+                      const isLong = value.length > 15;
+                      const shortText = isLong ? value.slice(0, 15) + '...' : value;
+
+                      return (
+                        <td 
+                          key={colIndex} 
+                          className="py-3 px-4 align-middle text-sm text-gray-600"
+                        >
+                          <span
+                            className={isLong ? 'cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-200' : ''}
+                            onClick={() => handleTextClick(value)}
+                            title={isLong ? t("Click to read full text") : ""}
+                          >
+                            {shortText}
+                          </span>
+                        </td>
+                      );
+                    }
+
+                    return (
+                      <td 
+                        key={colIndex} 
+                        className="py-3 px-4 align-middle text-sm text-gray-600"
+                      >
+                        {value}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))
             ) : (
@@ -54,7 +96,7 @@ const ReusableTable = ({
                   colSpan={columns.length} 
                   className="text-center py-8 text-gray-500 font-medium"
                 >
-                  لا توجد بيانات متاحة
+                  {t("No data available")}
                 </td>
               </tr>
             )}
@@ -62,7 +104,7 @@ const ReusableTable = ({
         </table>
       </div>
 
-      {/* حاوية الـ Pagination */}
+      {/* Pagination */}
       {pageCount > 0 && (
         <div className="flex justify-center items-center py-4 bg-white border-t border-gray-200">
           <Pagination
@@ -72,6 +114,37 @@ const ReusableTable = ({
             color="secondary"
             shape="rounded"
           />
+        </div>
+      )}
+
+      {/* 🔥 Popup */}
+      {openPopup && (
+        <div 
+          className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4"
+          dir={isArabic ? "rtl" : "ltr"} // 🔹 ضبط الاتجاه حسب اللغة
+        >
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] shadow-xl relative flex flex-col">
+            
+            {/* 🔹 زر الإغلاق: ضبط مكانه حسب اللغة */}
+            <button
+              className={`absolute top-4 ${isArabic ? 'left-4' : 'right-4'} text-gray-400 hover:text-red-500 text-xl font-bold transition-colors`}
+              onClick={() => setOpenPopup(false)}
+            >
+              ✕
+            </button>
+
+            <h2 className="text-lg font-bold mb-4 text-gray-800 border-b border-gray-100 pb-3">
+              {t("Full Text")}
+            </h2>
+
+            {/* 🔹 النص كامل مع scroll */}
+            <div className="overflow-y-auto flex-1 pr-2">
+              <p className="text-gray-700 break-words whitespace-pre-wrap leading-relaxed">
+                {popupText}
+              </p>
+            </div>
+
+          </div>
         </div>
       )}
     </div>

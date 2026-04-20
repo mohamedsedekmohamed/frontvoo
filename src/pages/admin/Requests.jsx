@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const Requests = () => {
   const [data, setData] = useState([]);
@@ -16,8 +16,8 @@ const Requests = () => {
   const [active, setActive] = useState("task"); // task or event
   const [selectedFilter, setSelectedFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
-const [sortKey, setSortKey] = useState('');
-const [sortOrder, setSortOrder] = useState('');
+  const [sortKey, setSortKey] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,21 +62,21 @@ const [sortOrder, setSortOrder] = useState('');
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -85,27 +85,27 @@ const [sortOrder, setSortOrder] = useState('');
     });
   };
 
- const filteredData = data.filter((item) => {
-  const query = searchQuery.toLowerCase();
+  const filteredData = data.filter((item) => {
+    const query = searchQuery.toLowerCase();
 
-  if (selectedFilter === "Filter" || selectedFilter === "") {
-    return Object.values(item).some(value =>
-      typeof value === "object"
-        ? Object.values(value || {}).some(sub =>
-            sub?.toString().toLowerCase().includes(query)
-          )
-        : value?.toString().toLowerCase().includes(query)
-    );
-  } else {
-    const keys = selectedFilter.split(".");
-    let value = item;
-    for (let key of keys) {
-      value = value?.[key];
+    if (selectedFilter === "Filter" || selectedFilter === "") {
+      return Object.values(item).some((value) =>
+        typeof value === "object"
+          ? Object.values(value || {}).some((sub) =>
+              sub?.toString().toLowerCase().includes(query),
+            )
+          : value?.toString().toLowerCase().includes(query),
+      );
+    } else {
+      const keys = selectedFilter.split(".");
+      let value = item;
+      for (let key of keys) {
+        value = value?.[key];
+      }
+
+      return value?.toString().toLowerCase().includes(query);
     }
-
-    return value?.toString().toLowerCase().includes(query);
-  }
-});
+  });
 
   const accept = (id, userName) => {
     const token = localStorage.getItem("token");
@@ -126,7 +126,7 @@ const [sortOrder, setSortOrder] = useState('');
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate((prev) => !prev);
@@ -160,7 +160,7 @@ const [sortOrder, setSortOrder] = useState('');
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate((prev) => !prev);
@@ -196,17 +196,17 @@ const [sortOrder, setSortOrder] = useState('');
   const rowsPerPage = 10;
 
   const filteredByType = filteredData.filter(
-    (item) => item.request_type === active
+    (item) => item.request_type === active,
   );
   const pageCount = Math.ceil(filteredByType.length / rowsPerPage);
   const sortedData = useMemo(() => {
-      let sortableData = [...filteredByType]; 
-    
-      if (!sortKey || !sortOrder) {
-        return sortableData;
-      }
-    
-       return sortableData.sort((a, b) => {
+    let sortableData = [...filteredByType];
+
+    if (!sortKey || !sortOrder) {
+      return sortableData;
+    }
+
+    return sortableData.sort((a, b) => {
       const aSource = a.request_type === "event" ? a.event : a.task;
       const bSource = b.request_type === "event" ? b.event : b.task;
 
@@ -229,84 +229,177 @@ const [sortOrder, setSortOrder] = useState('');
       }
 
       return 0;
-      });
-    }, [filteredByType, sortKey, sortOrder]);
+    });
+  }, [filteredByType, sortKey, sortOrder]);
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
-  const truncateText = (text, maxLength = 15) => {
+  const truncateText = (text, maxLength = 5000) => {
     if (!text) return "N/A";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
 
- const handleBulkAction = (action) => {
-  const token = localStorage.getItem("token");
-  const label = action === "accept" ? "Accepted" : "Rejected";
+  const handleBulkAction = (action) => {
+    const token = localStorage.getItem("token");
+    const label = action === "accept" ? "Accepted" : "Rejected";
 
-  Swal.fire({
-    title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios.put(
-        `https://backndVoo.voo-hub.com/api/admin/request/${action}Group`,
-        { ids: selectedIds }, // نبعت IDs مرة واحدة
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-        .then(() => {
-          setUpdate((prev) => !prev);
-          setSelectedIds([]);
-          Swal.fire(
-            `${label}!`,
-            `All selected requests have been ${label.toLowerCase()}.`,
-            "success"
-          );
-        })
-        .catch(() => {
-          Swal.fire("Error", "One or more requests failed.", "error");
-        });
-    }
-  });
-};
+    Swal.fire({
+      title: `Are you sure you want to ${action} ${selectedIds.length} requests?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .put(
+            `https://backndVoo.voo-hub.com/api/admin/request/${action}Group`,
+            { ids: selectedIds }, // نبعت IDs مرة واحدة
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          )
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              `${label}!`,
+              `All selected requests have been ${label.toLowerCase()}.`,
+              "success",
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "One or more requests failed.", "error");
+          });
+      }
+    });
+  };
 
+  const handleBulkDelete = () => {
+    const token = localStorage.getItem("token");
 
-const handleBulkDelete = () => {
-  const token = localStorage.getItem("token");
-
-  Swal.fire({
-    title: `Are you sure you want to delete ${selectedIds.length} requests?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios.delete(
-        "https://backndVoo.voo-hub.com/api/admin/request/deleteGroup",
-{  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-  data: {
-    ids: selectedIds,  },
-})
-        .then(() => {
-          setUpdate((prev) => !prev);
-          setSelectedIds([]);
-          Swal.fire("Deleted!", "Selected requests have been deleted.", "success");
-        })
-        .catch(() => {
-          Swal.fire("Error", "Some deletions failed.", "error");
-        });
-    }
-  });
-};
-
+    Swal.fire({
+      title: `Are you sure you want to delete ${selectedIds.length} requests?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            "https://backndVoo.voo-hub.com/api/admin/request/deleteGroup",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              data: {
+                ids: selectedIds,
+              },
+            },
+          )
+          .then(() => {
+            setUpdate((prev) => !prev);
+            setSelectedIds([]);
+            Swal.fire(
+              "Deleted!",
+              "Selected requests have been deleted.",
+              "success",
+            );
+          })
+          .catch(() => {
+            Swal.fire("Error", "Some deletions failed.", "error");
+          });
+      }
+    });
+  };
+  const columns = [
+    {
+      header: "S/N",
+      render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: "Type",
+      render: (row) => truncateText(row.request_type),
+    },
+    {
+      header: "User",
+      render: (row) => (
+        <div className="flex flex-col">
+          <span>{truncateText(row?.user?.name)}</span>
+          <span className="text-gray-400">
+            {truncateText(row?.user?.email)}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: active === "task" ? "Task" : "Event",
+      render: (row) =>
+        active === "task"
+          ? truncateText(row?.task?.name)
+          : truncateText(row?.event?.name),
+    },
+    {
+      header: "Date",
+      render: (row) =>
+        active === "task"
+          ? truncateText(row?.task?.date)
+          : truncateText(row?.event?.date),
+    },
+    {
+      header: "Time",
+      render: (row) =>
+        active === "task"
+          ? truncateText(row?.task?.start_time)
+          : truncateText(row?.event?.start_time),
+    },
+    {
+      header: "Organization",
+      render: (row) => truncateText(row?.orgnization?.name),
+    },
+    {
+      header: "Action",
+      render: (row) => (
+        <select
+          className="border px-2 py-1 bg-one text-white"
+          onChange={(e) => {
+            if (e.target.value === "accept") accept(row.id);
+            if (e.target.value === "reject") reject(row.id);
+          }}
+        >
+          <option value="">Select</option>
+          <option value="accept">Accept</option>
+          <option value="reject">Reject</option>
+        </select>
+      ),
+    },
+    {
+      header: "Details",
+      render: (row) => (
+        <button
+          className="underline"
+          onClick={() =>
+            navigate("/admin/requestsdetails", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          Details
+        </button>
+      ),
+    },
+    {
+      header: "Delete",
+      render: (row) => (
+        <RiDeleteBin6Line
+          className="cursor-pointer"
+          onClick={() => handleDelete(row.id, row.request_type)}
+        />
+      ),
+    },
+  ];
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -319,22 +412,22 @@ const handleBulkDelete = () => {
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
-          <select
-  value={`${sortKey}:${sortOrder}`}
-  onChange={(e) => {
-    const [key, order] = e.target.value.split(':');
-    setSortKey(key || '');
-    setSortOrder(order || '');
-  }}
-  className="text-[14px] h-9 border border-one rounded-[8px] px-2"
->
-  <option value="">Sort By</option>
+        <select
+          value={`${sortKey}:${sortOrder}`}
+          onChange={(e) => {
+            const [key, order] = e.target.value.split(":");
+            setSortKey(key || "");
+            setSortOrder(order || "");
+          }}
+          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+        >
+          <option value="">Sort By</option>
 
-  <option value="start_time:asc"> Start Time ↑</option>
-  <option value="start_time:desc"> Start Time ↓</option>
-  <option value="date:asc"> Date ↑</option>
-  <option value="date:desc"> Date ↓</option>
-</select>
+          <option value="start_time:asc"> Start Time ↑</option>
+          <option value="start_time:desc"> Start Time ↓</option>
+          <option value="date:asc"> Date ↑</option>
+          <option value="date:desc"> Date ↓</option>
+        </select>
         <div className="flex justify-center items-center gap-2 ">
           <button
             onClick={() => {
@@ -389,195 +482,34 @@ const handleBulkDelete = () => {
         </div>
       </div>
       {selectedIds.length > 0 && (
-  <div className="flex gap-2 mt-4">
-    <button
-      className="bg-one/60 text-white px-4 py-2 rounded"
-      onClick={() => handleBulkAction("accept")}
-    >
-      Accept Selected
-    </button>
-    <button
-      className="bg-one/70 text-white px-4 py-2 rounded"
-      onClick={() => handleBulkAction("reject")}
-    >
-      Reject Selected
-    </button>
-    <button
-      className="bg-one/80 text-white px-4 py-2 rounded"
-      onClick={() => handleBulkDelete()}
-    >
-      Delete Selected
-    </button>
-  </div>
-)}
-      <div className="mt-10 block text-left">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead className="w-full">
-              <tr className="bg-four w-[1012px] h-[56px]">
-
-                <th className="py-4 px-3">S/N</th>
-                <th className="py-4 px-3 ">Type</th>
-                <th className="py-4 px-3 ">User</th>
-     {active==="task"&&   <th className="py-4 px-3 ">Task</th> }         
-     {active==="event"&&   <th className="py-4 px-3 ">Event</th> }         
-                <th className="py-4 px-3 ">Date</th>
-                <th className="py-4 px-3 ">time</th>
-                <th className="py-4 px-3 ">Orgnization</th>
-                <th className="py-4 px-3 ">Action</th>
-                <th className="py-4 px-3">Details</th>
-                <th className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(paginatedData.map(item => item.id));
-      } else {<th className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.length === paginatedData.length && paginatedData.length > 0}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(paginatedData.map(item => item.id));
-      } else {
-        setSelectedIds([]);
-      }
-    }}
-  />
-</th>
-
-        setSelectedIds([]);
-      }
-    }}
-  />
-</th>
-
-                <th className="py-4 px-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y hover:border-3 relative hover:bg-four"
-                >
-                  <td className="py-4 px-3 font-bold">
-                    {(currentPage - 1) * rowsPerPage + index + 1}
-                  </td>
-
-                  <td className="py-4 px-3">
-                    {truncateText(item?.request_type)}
-                  </td>
-                  <td className="py-2 px-3 text-[12px]">
-                    <div className="flex flex-col justify-center">
-                      <span className="">
-                        {truncateText(item?.user?.name)}
-                      </span>
-                      <span className=" ">
-                        {truncateText(item?.user?.email)}
-                      </span>
-                    </div>
-                  </td>
- {active==="task"&& <>
-                  <td className="py-2 px-3">
-                    {truncateText(item?.task?.name)}
-                  </td>
-                    <td className="py-2 px-3">
-                    {truncateText(item?.task?.date)}
-                  </td>
-                  <td className="py-2 px-3">
-                    {truncateText(item?.task?.start_time)}
-                  </td>
-                  </>
-}
- {active==="event"&& 
-<>
-                  <td className="py-2 px-3">
-                    {truncateText(item?.event?.name)}
-                  </td>
-                     <td className="py-2 px-3">
-                    {truncateText(item?.event?.date)}
-                  </td>
-                  <td className="py-2 px-3">
-                    {truncateText(item?.event?.start_time)}
-                  </td>
-</>
-}
-                
-                  <td className="py-2 px-3">
-                    {truncateText(item?.orgnization?.name)}
-                  </td>
-
-                  <td className="py-2 px-3">
-                    <select
-                      className="text-sm border px-2 py-1  bg-one text-white"
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value === "accept") {
-                          accept(item.id, item?.request_type);
-                        } else if (value === "reject") {
-                          reject(item.id, item?.request_type);
-                        }
-                      }}
-                      defaultValue="select"
-                    >
-                      <option value="select">select</option>
-                      <option value="accept">Accept</option>
-                      <option value="reject">Reject</option>
-                    </select>
-                  </td>
-
-                  <td className="py-2 px-3 text-[12px] align-middle">
-                    <button
-                      className="underline"
-                      onClick={() =>
-                        navigate("/admin/requestsdetails", {
-                          state: { sendData: item.id },
-                        })
-                      }
-                    >
-                      Details
-                    </button>
-                  </td>
-<td className="py-4 px-3">
-  <input
-    type="checkbox"
-    checked={selectedIds.includes(item.id)}
-    onChange={(e) => {
-      if (e.target.checked) {
-        setSelectedIds(prev => [...prev, item.id]);
-      } else {
-        setSelectedIds(prev => prev.filter(id => id !== item.id));
-      }
-    }}
-  />
-</td>
-
-                  <td className=" ">
-                    <div className="flex items-center">
-                      <RiDeleteBin6Line
-                        className="w-[24px] h-[24px] text-five cursor-pointer hover:text-red-600 transition"
-                        onClick={() =>
-                          handleDelete(item.id, item?.request_type)
-                        }
-                      />
-                    </div>
-                  </td>
-                  
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="flex gap-2 mt-4">
+          <button
+            className="bg-one/60 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("accept")}
+          >
+            Accept Selected
+          </button>
+          <button
+            className="bg-one/70 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkAction("reject")}
+          >
+            Reject Selected
+          </button>
+          <button
+            className="bg-one/80 text-white px-4 py-2 rounded"
+            onClick={() => handleBulkDelete()}
+          >
+            Delete Selected
+          </button>
         </div>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      )}
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />
