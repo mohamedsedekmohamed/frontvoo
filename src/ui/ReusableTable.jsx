@@ -9,29 +9,40 @@ const ReusableTable = ({
   onPageChange 
 }) => {
   return (
-    // السر هنا في max-w-full مع overflow-hidden للحاوية الأساسية
-    <div className="w-full max-w-full overflow-hidden">
-      {/* هنا بنعمل السكرول الأفقي الداخلي للجدول */}
-<div className="overflow-x-auto w-full max-w-full block rounded-[8px]">
-            <table className="w-full min-w-[1000px] border-collapse text-left bg-white">
-          <thead className="bg-four border-b border-black">
+    // الحاوية الخارجية: إضافة ظل (shadow) وإطار (border) ليعطي شكل Card أنيق
+    <div className="w-full bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+      
+      {/* حاوية السكرول الأفقي: تضمن عدم خروج الجدول عن الشاشة */}
+      <div className="overflow-x-auto w-full">
+        {/* استخدام min-w-max بدلاً من 1000px ليتمدد الجدول حسب المحتوى ولا ينضغط */}
+        <table className="w-full min-w-max border-collapse text-start">
+          {/* استبدلت bg-four بـ bg-gray-50، يمكنك إرجاعها إذا كانت لوناً مخصصاً في إعداداتك */}
+          <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               {columns.map((col, index) => (
-                <th key={index} className="py-4 px-3 font-semibold text-gray-800 whitespace-nowrap">
+                <th 
+                  key={index} 
+                  className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap"
+                >
                   {col.header}
                 </th>
               ))}
             </tr>
           </thead>
+          
           <tbody>
             {data.length > 0 ? (
               data.map((row, rowIndex) => (
                 <tr 
                   key={row.id || rowIndex} 
-                  className="border-b border-gray-200 hover:bg-four transition-colors h-[56px]"
+                  // تأثير الـ hover لسهولة تتبع الصفوف بالعين
+                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200 h-[56px]"
                 >
                   {columns.map((col, colIndex) => (
-                    <td key={colIndex} className="py-2 px-3 align-middle text-sm text-gray-700">
+                    <td 
+                      key={colIndex} 
+                      className="py-3 px-6 align-middle text-sm text-gray-600"
+                    >
                       {col.render ? col.render(row, rowIndex) : row[col.accessor]}
                     </td>
                   ))}
@@ -39,8 +50,11 @@ const ReusableTable = ({
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length} className="text-center py-6 text-gray-500 font-medium">
-                  No data available
+                <td 
+                  colSpan={columns.length} 
+                  className="text-center py-8 text-gray-500 font-medium"
+                >
+                  لا توجد بيانات متاحة
                 </td>
               </tr>
             )}
@@ -48,8 +62,9 @@ const ReusableTable = ({
         </table>
       </div>
 
+      {/* حاوية الـ Pagination */}
       {pageCount > 0 && (
-        <div className="flex justify-center mt-6 mb-4">
+        <div className="flex justify-center items-center py-4 bg-white border-t border-gray-200">
           <Pagination
             count={pageCount}
             page={currentPage}
