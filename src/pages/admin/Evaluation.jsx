@@ -106,11 +106,6 @@ const Evaluation = () => {
     evaulation: "Evaluation",
   };
 
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-
   const columns = [
     {
       header: "S/N",
@@ -118,15 +113,15 @@ const Evaluation = () => {
     },
     {
       header: "Name",
-      render: (row) => truncateText(row.name),
+      render: (row) => row.name,
     },
     {
       header: "Title",
-      render: (row) => truncateText(row.title),
+      render: (row) => row.title,
     },
     {
       header: "Evaluation",
-      render: (row) => truncateText(row.evaulation),
+      render: (row) => row.evaulation,
     },
     {
       header: "Image",
@@ -140,14 +135,20 @@ const Evaluation = () => {
       ),
     },
     {
-      header: 'Action',
+      header: "Action",
       render: (row) => (
         <div className="flex items-center">
-          <CiEdit className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition" onClick={() => handleEdit(row.id)} />
-          <RiDeleteBin6Line className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition" onClick={() => handleDelete(row.id, row.name)} />
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
         </div>
-      )
-    }
+      ),
+    },
   ];
   return (
     <div>

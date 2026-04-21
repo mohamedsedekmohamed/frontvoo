@@ -135,10 +135,7 @@ const User = () => {
     XLSX.writeFile(workbook, "Voousers.xlsx");
   };
 
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
+  
 
   const handleBulkDelete = () => {
     if (selectedIds.length === 0) return;
@@ -207,26 +204,26 @@ const User = () => {
       header: 'User',
       render: (row) => (
         <div className="flex flex-col justify-center">
-          <span>{truncateText(row?.name)}</span>
-          <span className="text-gray-500">{truncateText(row?.phone)}</span>
+          <span>{(row?.name)}</span>
+          <span className="text-gray-500">{(row?.phone)}</span>
         </div>
       )
     },
     {
       header: 'Age',
-      render: (row) => truncateText(row?.age)
+      render: (row) => (row?.age)
     },
     {
       header: 'Gmail',
-      render: (row) => truncateText(row?.email)
+      render: (row) => (row?.email)
     },
     {
       header: 'Country',
-      render: (row) => truncateText(row?.country?.name)
+      render: (row) => (row?.country?.name)
     },
     {
       header: 'City',
-      render: (row) => truncateText(row?.city?.name)
+      render: (row) => (row?.city?.name)
     },
     {
       header: 'Details',
@@ -238,7 +235,7 @@ const User = () => {
     },
     {
       header: 'Organization',
-      render: (row) => truncateText(row?.orgnization?.name)
+      render: (row) => (row?.orgnization?.name)
     },
     {
       header: 'Join Date',

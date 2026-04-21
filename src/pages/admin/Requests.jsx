@@ -235,10 +235,6 @@ const Requests = () => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
 
   const handleBulkAction = (action) => {
     const token = localStorage.getItem("token");
@@ -321,43 +317,33 @@ const Requests = () => {
     },
     {
       header: "Type",
-      render: (row) => truncateText(row.request_type),
+      render: (row) => row.request_type,
     },
     {
       header: "User",
       render: (row) => (
         <div className="flex flex-col">
-          <span>{truncateText(row?.user?.name)}</span>
-          <span className="text-gray-400">
-            {truncateText(row?.user?.email)}
-          </span>
+          <span>{row?.user?.name}</span>
+          <span className="text-gray-400">{row?.user?.email}</span>
         </div>
       ),
     },
     {
       header: active === "task" ? "Task" : "Event",
-      render: (row) =>
-        active === "task"
-          ? truncateText(row?.task?.name)
-          : truncateText(row?.event?.name),
+      render: (row) => (active === "task" ? row?.task?.name : row?.event?.name),
     },
     {
       header: "Date",
-      render: (row) =>
-        active === "task"
-          ? truncateText(row?.task?.date)
-          : truncateText(row?.event?.date),
+      render: (row) => (active === "task" ? row?.task?.date : row?.event?.date),
     },
     {
       header: "Time",
       render: (row) =>
-        active === "task"
-          ? truncateText(row?.task?.start_time)
-          : truncateText(row?.event?.start_time),
+        active === "task" ? row?.task?.start_time : row?.event?.start_time,
     },
     {
       header: "Organization",
-      render: (row) => truncateText(row?.orgnization?.name),
+      render: (row) => row?.orgnization?.name,
     },
     {
       header: "Action",

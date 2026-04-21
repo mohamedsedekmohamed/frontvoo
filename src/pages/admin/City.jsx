@@ -120,10 +120,7 @@ const City = () => {
     name: "city",
     country_name: "country",
   };
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
+ 
   const columns = [
     {
       header: "S/N",
@@ -131,11 +128,11 @@ const City = () => {
     },
     {
       header: "City",
-      render: (row) => truncateText(row?.name),
+      render: (row) => (row?.name),
     },
     {
       header: "Country",
-      render: (row) => truncateText(row?.country_name),
+      render: (row) => (row?.country_name),
     },
     {
       header: 'Action',

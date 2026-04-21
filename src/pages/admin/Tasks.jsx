@@ -158,10 +158,6 @@ const Tasks = () => {
     start_time: "time",
     description: "description",
   };
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
 
   const handleBulkDelete = () => {
     const token = localStorage.getItem("token");
@@ -198,11 +194,11 @@ const Tasks = () => {
     },
     {
       header: "Event",
-      render: (row) => truncateText(row?.name),
+      render: (row) => row?.name,
     },
     {
       header: "Date",
-      render: (row) => truncateText(row?.date),
+      render: (row) => row?.date,
     },
     {
       header: "Time",
@@ -210,7 +206,7 @@ const Tasks = () => {
     },
     {
       header: "Description",
-      render: (row) => truncateText(row?.description),
+      render: (row) => row?.description,
     },
     {
       header: "Details",

@@ -94,13 +94,6 @@ const Zone = () => {
     currentPage * rowsPerPage,
   );
 
-  const truncateText = (text, maxLength = 50) =>
-    !text
-      ? "N/A"
-      : text.length > maxLength
-        ? text.slice(0, maxLength) + "..."
-        : text;
-
   const cheose = ["Filter", "name", "city", "country_name"];
 
   const labelMap = {
@@ -117,15 +110,15 @@ const Zone = () => {
     },
     {
       header: "Zone",
-      render: (row) => truncateText(row?.name),
+      render: (row) => row?.name,
     },
     {
       header: "City",
-      render: (row) => truncateText(row?.city_name),
+      render: (row) => row?.city_name,
     },
     {
       header: "Country",
-      render: (row) => truncateText(row?.country_name),
+      render: (row) => row?.country_name,
     },
     {
       header: "Action",

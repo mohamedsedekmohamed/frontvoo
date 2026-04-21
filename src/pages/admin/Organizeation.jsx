@@ -192,10 +192,6 @@ const Organizeation = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "VooOrganizeation");
     XLSX.writeFile(workbook, "VooOrganizeation.xlsx");
   };
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
 
   const handleBulkDelete = () => {
     if (selectedIds.length === 0) return;
@@ -269,22 +265,22 @@ const Organizeation = () => {
       header: "Organization",
       render: (row) => (
         <div className="flex flex-col">
-          <span>{truncateText(row?.name)}</span>
-          <span className="text-gray-400">{truncateText(row?.phone)}</span>
+          <span>{row?.name}</span>
+          <span className="text-gray-400">{row?.phone}</span>
         </div>
       ),
     },
     {
       header: "Gmail",
-      render: (row) => truncateText(row?.email),
+      render: (row) => row?.email,
     },
     {
       header: "Country",
-      render: (row) => truncateText(row?.country?.name),
+      render: (row) => row?.country?.name,
     },
     {
       header: "City",
-      render: (row) => truncateText(row?.city?.name),
+      render: (row) => row?.city?.name,
     },
     {
       header: "Join Date",

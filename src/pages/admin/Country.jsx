@@ -120,10 +120,6 @@ const Country = () => {
     name: "country",
   };
 
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
   const columns = [
     {
       header: "S/N",
@@ -131,7 +127,7 @@ const Country = () => {
     },
     {
       header: "Country",
-      render: (row) => truncateText(row?.name),
+      render: (row) => row?.name,
     },
     {
       header: "Flag",
@@ -146,14 +142,20 @@ const Country = () => {
       ),
     },
     {
-      header: 'Action',
+      header: "Action",
       render: (row) => (
         <div className="flex items-center">
-          <CiEdit className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition" onClick={() => handleEdit(row.id)} />
-          <RiDeleteBin6Line className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition" onClick={() => handleDelete(row.id, row.name)} />
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
         </div>
-      )
-    }
+      ),
+    },
   ];
   return (
     <div>

@@ -155,10 +155,7 @@ const Events = () => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
-  const truncateText = (text, maxLength = 5000) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
+ 
   const handleBulkDelete = () => {
     const token = localStorage.getItem("token");
 
@@ -194,11 +191,11 @@ const Events = () => {
     },
     {
       header: "Tasks",
-      render: (row) => truncateText(row?.name),
+      render: (row) => (row?.name),
     },
     {
       header: "Date",
-      render: (row) => truncateText(row?.date),
+      render: (row) => (row?.date),
     },
     {
       header: "Start Time",
@@ -240,7 +237,7 @@ const Events = () => {
     },
     {
       header: "Location",
-      render: (row) => truncateText(row?.location),
+      render: (row) => (row?.location),
     },
     {
       header: (
