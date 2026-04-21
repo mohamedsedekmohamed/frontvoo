@@ -230,7 +230,7 @@ const TasksOr = () => {
             })
           }
         >
-          Details
+          {t("Details")}
         </button>
       ),
     },
@@ -245,7 +245,7 @@ const TasksOr = () => {
             })
           }
         >
-          Operation
+          {t("Operation")}
         </button>
       ),
     },

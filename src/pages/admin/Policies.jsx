@@ -7,12 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
-
+import ReusableTable from "../../ui/ReusableTable";
 const Policies = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
+ 
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
@@ -22,7 +22,7 @@ const Policies = () => {
         },
       })
       .then((response) => {
-  setData(response.data);
+        setData(response.data);
       })
       .catch(() => {
         toast.error("Error fetching data");
@@ -32,41 +32,46 @@ const Policies = () => {
   const handleEdit = () => {
     navigate("/admin/addpolicies", { state: { sendData: data } });
   };
-    const truncateText = (text, maxLength = 20) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
+
+  const columns = [
+    {
+      header: "S/N",
+      render: (row, i) => i + 1,
+    },
+    {
+      header: "Title",
+      render: (row) => row?.policy,
+    },
+    {
+      header: "Description",
+      render: (row) => row?.description,
+    },
+ 
+    {
+      header: "Action",
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer"
+            onClick={() => handleEdit(row.id)}
+          />
+        </div>
+      ),
+    },
+  ];
   return (
     <div>
-        
-
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead>
-              <tr className="bg-four">
-                <th className="py-4 px-3">S/N</th>
-                <th className="py-4 px-3">Title</th>
-                <th className="py-4 px-3">Description</th>
-                <th className="py-4 px-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]">
-                <td className="px-3">1</td>
-                <td className="px-3">{truncateText(data.policy)}</td>
-                <td className="px-3">{truncateText(data.description)}</td>
-                <td className="px-3 flex  mt-4 gap-2">
-                  <CiEdit
-                    className="w-[24px] h-[24px] text-six cursor-pointer"
-                    onClick={() => handleEdit()}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={Array.isArray(data) ? data : [data]}
+          currentPage={1}
+          pageCount={1}
+          onPageChange={() => {}}
+          forceEnglishTitle={true}
+        />
       </div>
+     
     </div>
   );
 };

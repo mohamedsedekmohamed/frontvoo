@@ -230,7 +230,7 @@ const EventsOr = () => {
             })
           }
         >
-          Details
+          {t("Details")}
         </button>
       ),
     },
@@ -245,7 +245,7 @@ const EventsOr = () => {
             })
           }
         >
-          Operation
+        {t("Operation")}
         </button>
       ),
     },

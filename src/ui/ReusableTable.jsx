@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import Pagination from '@mui/material/Pagination';
+import React, { useState } from "react";
+import Pagination from "@mui/material/Pagination";
 import { useTranslation } from "react-i18next";
 
-const ReusableTable = ({ 
-  columns, 
-  data, 
-  currentPage, 
-  pageCount, 
-  onPageChange 
+const ReusableTable = ({
+  columns,
+  data,
+  currentPage,
+  pageCount,
+  onPageChange,
+  forceEnglishTitle = false,
 }) => {
-
   // 🔹 State للـ Popup
   const [openPopup, setOpenPopup] = useState(false);
-  const [popupText, setPopupText] = useState('');
-  
+  const [popupText, setPopupText] = useState("");
+
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
 
@@ -27,16 +27,14 @@ const ReusableTable = ({
 
   return (
     <div className="w-full bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-      
       {/* جدول */}
       <div className="overflow-x-auto w-full">
         <table className="w-full min-w-max border-collapse text-start">
-          
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               {columns.map((col, index) => (
-                <th 
-                  key={index} 
+                <th
+                  key={index}
                   className="py-4 px-4 font-semibold text-start text-gray-700 whitespace-nowrap"
                 >
                   {col.header}
@@ -44,32 +42,37 @@ const ReusableTable = ({
               ))}
             </tr>
           </thead>
-          
+
           <tbody>
             {data.length > 0 ? (
               data.map((row, rowIndex) => (
-                <tr 
-                  key={row.id || rowIndex} 
+                <tr
+                  key={row.id || rowIndex}
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200 h-[56px]"
                 >
                   {columns.map((col, colIndex) => {
-
-                    const value = col.render 
-                      ? col.render(row, rowIndex) 
+                    const value = col.render
+                      ? col.render(row, rowIndex)
                       : row[col.accessor];
 
                     // 🔹 لو النص string
-                    if (typeof value === 'string') {
+                    if (typeof value === "string") {
                       const isLong = value.length > 15;
-                      const shortText = isLong ? value.slice(0, 15) + '...' : value;
+                      const shortText = isLong
+                        ? value.slice(0, 15) + "..."
+                        : value;
 
                       return (
-                        <td 
-                          key={colIndex} 
+                        <td
+                          key={colIndex}
                           className="py-3 px-4 align-middle text-sm text-gray-600"
                         >
                           <span
-                            className={isLong ? 'cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-200' : ''}
+                            className={
+                              isLong
+                                ? "cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                : ""
+                            }
                             onClick={() => handleTextClick(value)}
                             title={isLong ? t("Click to read full text") : ""}
                           >
@@ -80,8 +83,8 @@ const ReusableTable = ({
                     }
 
                     return (
-                      <td 
-                        key={colIndex} 
+                      <td
+                        key={colIndex}
                         className="py-3 px-4 align-middle text-sm text-gray-600"
                       >
                         {value}
@@ -92,8 +95,8 @@ const ReusableTable = ({
               ))
             ) : (
               <tr>
-                <td 
-                  colSpan={columns.length} 
+                <td
+                  colSpan={columns.length}
                   className="text-center py-8 text-gray-500 font-medium"
                 >
                   {t("No data available")}
@@ -119,22 +122,21 @@ const ReusableTable = ({
 
       {/* 🔥 Popup */}
       {openPopup && (
-        <div 
+        <div
           className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4"
           dir={isArabic ? "rtl" : "ltr"} // 🔹 ضبط الاتجاه حسب اللغة
         >
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] shadow-xl relative flex flex-col">
-            
             {/* 🔹 زر الإغلاق: ضبط مكانه حسب اللغة */}
             <button
-              className={`absolute top-4 ${isArabic ? 'left-4' : 'right-4'} text-gray-400 hover:text-red-500 text-xl font-bold transition-colors`}
+              className={`absolute top-4 ${isArabic ? "left-4" : "right-4"} text-gray-400 hover:text-red-500 text-xl font-bold transition-colors`}
               onClick={() => setOpenPopup(false)}
             >
               ✕
             </button>
 
             <h2 className="text-lg font-bold mb-4 text-gray-800 border-b border-gray-100 pb-3">
-              {t("Full Text")}
+              {forceEnglishTitle ? "Full Text" : t("Full Text")}
             </h2>
 
             {/* 🔹 النص كامل مع scroll */}
@@ -143,7 +145,6 @@ const ReusableTable = ({
                 {popupText}
               </p>
             </div>
-
           </div>
         </div>
       )}

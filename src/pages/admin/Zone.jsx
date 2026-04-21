@@ -189,6 +189,7 @@ const Zone = () => {
           currentPage={currentPage}
           pageCount={pageCount}
           onPageChange={setCurrentPage}
+          forceEnglishTitle={true}
         />
       </div>
 

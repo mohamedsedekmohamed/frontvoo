@@ -387,6 +387,7 @@ const User = () => {
         currentPage={currentPage} 
         pageCount={pageCount} 
         onPageChange={setCurrentPage} 
+        forceEnglishTitle={true}
       />
 
       <ToastContainer />

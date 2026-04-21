@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
 
 const Feedsor = () => {
   const [data, setData] = useState([]);
@@ -19,8 +19,9 @@ const Feedsor = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+  const [isVideo, setIsVideo] = useState(false);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -63,7 +64,7 @@ const Feedsor = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
@@ -71,7 +72,7 @@ const Feedsor = () => {
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch((error) => {
@@ -80,7 +81,7 @@ const Feedsor = () => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -99,7 +100,7 @@ const Feedsor = () => {
           return (
             value &&
             Object.values(value || {}).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
           );
         }
@@ -127,12 +128,82 @@ const Feedsor = () => {
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
   const handleEdit = (id) => {
     navigate("/organizeation/addFeedsor", { state: { sendData: id } });
   };
+  const columns = [
+    {
+      header: "S/N",
+      render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: t("Content"),
+      render: (row) => row?.content,
+    },
+    {
+      header: t("Image"),
+      render: (row) => {
+        const imageSrc = row?.image_link
+          ? row.image_link.includes("http")
+            ? row.image_link
+            : `data:image/png;base64,${row.image_link}`
+          : null;
 
+        return imageSrc ? (
+          <img
+            src={imageSrc}
+            className="w-20 h-12 object-cover cursor-pointer"
+            onClick={() => {
+              setModalContent(imageSrc);
+              setIsVideo(false);
+              setIsModalOpen(true);
+            }}
+          />
+        ) : (
+          <span>None</span>
+        );
+      },
+    },
+    {
+      header: t("Video"),
+      render: (row) => {
+        const videoSrc = row?.video_link || row?.video;
+
+        return videoSrc ? (
+          <video
+            className="w-20 h-12 object-cover cursor-pointer"
+            onClick={() => {
+              setModalContent(videoSrc);
+              setIsVideo(true);
+              setIsModalOpen(true);
+            }}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+        ) : (
+          <span>None</span>
+        );
+      },
+    },
+
+    {
+      header: t("Action"),
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] text-five cursor-pointer hover:text-red-600"
+            onClick={() => handleDelete(row.id, row.content)}
+          />
+        </div>
+      ),
+    },
+  ];
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -178,160 +249,40 @@ const Feedsor = () => {
           </button>
         </div>
       </div>
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-3">رقم</th>
-                    <th className="py-4 px-3">المحتوي</th>
-                    <th className="py-4 px-3">الصورة</th>
-                    <th className="py-4 px-3">الفديو</th>
-                    <th className="py-4 px-3">الإجراء</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-3">S/N</th>
-                    <th className="py-4 px-3">content</th>
-                    <th className="py-4 px-3">Image</th>
-                    <th className="py-4 px-3">Video</th>
-                    <th className="py-4 px-3">Action</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody dir={isArabic ? "rtl" : "ltr"}>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                >
-                  <td className="  px-2">
-                    {index + 1 + (currentPage - 1) * rowsPerPage}
-                  </td>
-                  <td className="  px-2">{item.content || "No Content"}</td>
-                  <td className="  px-2">
-                    <div
-                      className={`w-full h-full flex ${
-                        isArabic ? "justify-end" : "justify-start"
-                      } items-center`}
-                    >
-                      <img
-                        src={
-                          item.image_link == null
-                            ? `data:image/png;base64,${item.image_link}`
-                            : item.image_link
-                        }
-                        className="w-20 h-12 object-cover cursor-pointer"
-                        onClick={() => setSelectedImage(item.image_link)}
-                      />
-                    </div>
-                  </td>
-                  <td className=" px-2">
-                    <div
-                      className={`w-full h-full flex ${
-                        isArabic ? "justify-end" : "justify-start"
-                      } items-center`}
-                    >
-                      <video
-                        className="w-20 h-12 object-cover cursor-pointer"
-                        onClick={() =>
-                          setSelectedVideo(item.video_link || item.video)
-                        }
-                      >
-                        <source
-                          src={item.video_link || item.video}
-                          type="video/mp4"
-                        />
-                        {isArabic
-                          ? "المتصفح لا يدعم الفيديو"
-                          : "Your browser does not support the video tag"}
-                      </video>
-                    </div>
-                  </td>
-                  <td
-                    className={` h-[56px] lg:text-[12px] xl:text-[16px] ${
-                      isArabic ? "justify-end" : "justify-start"
-                    } flex  items-center px-1 `}
-                  >
-                    <div className=" h-[56px] lg:text-[12px] xl:text-[16px] flex gap-2  justify-end  items-center px-3">
-                      <RiDeleteBin6Line
-                        className="w-[24px] h-[24px] mr-2 text-five cursor-pointer hover:text-red-600 transition"
-                        onClick={() => handleDelete(item.id, item.content)}
-                      />
-                      <CiEdit
-                        className="w-[24px] h-[24px] text-six cursor-pointer"
-                        onClick={() => handleEdit(item.id)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
-      {selectedVideo && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-          onClick={() => setSelectedVideo(null)}
-        >
-          <div
-            className="bg-black p-2 rounded relative w-[90%] md:w-[70%] lg:w-[50%]"
-            onClick={(e) => e.stopPropagation()} // يمنع إغلاق المودال عند الضغط داخل الفيديو
-          >
-            <video
-              src={selectedVideo}
-              controls
-              autoPlay
-              className="w-full h-auto rounded"
-            />
-            <button
-              onClick={() => setSelectedVideo(null)}
-              className="absolute top-2 right-2 text-one text-6xl"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div
-            className="bg-black p-2 rounded relative w-[90%] md:w-[70%] lg:w-[50%]"
-            onClick={(e) => e.stopPropagation()} // يمنع الإغلاق عند الضغط داخل الصورة
-          >
-            <img
-              src={selectedImage}
-              alt="Full Size"
-              className="w-full h-auto rounded"
-            />
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-2 right-2 text-one text-6xl"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
       <ToastContainer />
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-4 rounded max-w-screen-md max-h-screen-md overflow-auto relative">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-2 right-2 bg-three text-white px-3 py-1 rounded text-sm"
+            >
+              ×
+            </button>
+            {isVideo ? (
+              <video controls className="max-w-lg max-h-lg object-contain">
+                <source src={modalContent} type="video/mp4" />
+              </video>
+            ) : (
+              <img
+                src={modalContent}
+                alt="Selected"
+                className="max-w-md max-h-md object-contain"
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

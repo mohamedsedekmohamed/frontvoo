@@ -315,6 +315,7 @@ const Pendingusers = () => {
           currentPage={currentPage}
           pageCount={pageCount}
           onPageChange={setCurrentPage}
+          forceEnglishTitle={true}
         />
       </div>
       <ToastContainer />
