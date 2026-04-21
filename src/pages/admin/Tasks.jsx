@@ -9,11 +9,15 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import api from "../../Api/axios";
+import Loader from '../../ui/Loader';
+import ErrorPage from '../../ui/ErrorPage';
 
 const Tasks = () => {
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState(false);
+  const { data, getAll, loading, error } = useCrud("/admin/task", "tasks");
   const [searchQuery, setSearchQuery] = useState("");
+  const [update, setUpdate] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState([]);
@@ -24,62 +28,43 @@ const Tasks = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/task", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data.tasks);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
-  }, [update]);
+    getAll();
+  }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
-  const handleDelete = (userId, userName) => {
-    const token = localStorage.getItem("token");
-
-    Swal.fire({
+  const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
       title: `Are you sure you want to delete ${userName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://backndVoo.voo-hub.com/api/admin/task/delete/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .then(() => {
-            setUpdate(!update);
-            Swal.fire(
-              "Deleted!",
-              `${userName} has been deleted successfully.`,
-              "success",
-            );
-          })
-          .catch(() => {
-            Swal.fire(
-              "Error!",
-              `There was an error while deleting ${userName}.`,
-              "error",
-            );
-          });
-      } else {
-        Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        // Direct API call to handle the specific /delete/ route
+        await api.delete(`/admin/task/delete/${userId}`);
+
+        // Refresh the list after deletion
+        getAll();
+
+        Swal.fire(
+          "Deleted!",
+          `${userName} has been deleted successfully.`,
+          "success",
+        );
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          `There was an error while deleting ${userName}.`,
+          "error",
+        );
+      }
+    } else {
+      Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+    }
   };
   const [selectedDate, setSelectedDate] = useState("");
 
@@ -285,6 +270,13 @@ const Tasks = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <ErrorPage onRetry={getAll} />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

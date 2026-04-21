@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
 import Swal from "sweetalert2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from '../../ui/Loader'; 
+import ErrorPage from '../../ui/ErrorPage';
+import api from "../../Api/axios";
 
 const Country = () => {
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState(false);
+ const { data, getAll, loading, error } = useCrud("/admin/country", "countries");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
@@ -20,67 +22,44 @@ const Country = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/country", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data.countries);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
-  }, [update]);
-
+  useEffect(() => {  getAll(); }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const handleDelete = (userId, userName) => {
-    const token = localStorage.getItem("token");
-
-    Swal.fire({
+   const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
       title: `Are you sure you want to delete ${userName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://backndVoo.voo-hub.com/api/admin/country/delete/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .then(() => {
-            setUpdate(!update);
-            Swal.fire(
-              "Deleted!",
-              `${userName} has been deleted successfully.`,
-              "success",
-            );
-          })
-          .catch(() => {
-            Swal.fire(
-              "Error!",
-              `There was an error while deleting ${userName}.`,
-              "error",
-            );
-          });
-      } else {
-        Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
-      }
     });
-  };
 
+    if (result.isConfirmed) {
+      try {
+        // Direct API call to handle the specific /delete/ route
+        await api.delete(`/admin/country/delete/${userId}`);
+
+        // Refresh the list after deletion
+        getAll();
+
+        Swal.fire(
+          "Deleted!",
+          `${userName} has been deleted successfully.`,
+          "success",
+        );
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          `There was an error while deleting ${userName}.`,
+          "error",
+        );
+      }
+    } else {
+      Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+    }
+  };
   const handleEdit = (id) => {
     navigate("/admin/addcountry", { state: { sendData: id } });
   };
@@ -157,6 +136,12 @@ const Country = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
+  if (error) {
+    return <ErrorPage message="Error fetching data" />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

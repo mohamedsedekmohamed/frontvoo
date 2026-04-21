@@ -4,88 +4,72 @@ import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
 import Swal from "sweetalert2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import api from "../../Api/axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from '../../ui/Loader'; 
+import ErrorPage from '../../ui/ErrorPage';
 
 const City = () => {
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
+  const { data: cities, getAll,loading,error } = useCrud("/admin/city", "cities");
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/city", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data.cities);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
-  }, [update]);
+    getAll();
+  }, []);
 
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const handleDelete = (userId, userName) => {
-    const token = localStorage.getItem("token");
-
-    Swal.fire({
+  const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
       title: `Are you sure you want to delete ${userName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://backndVoo.voo-hub.com/api/admin/city/delete/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .then(() => {
-            setUpdate(!update);
-            Swal.fire(
-              "Deleted!",
-              `${userName} has been deleted successfully.`,
-              "success",
-            );
-          })
-          .catch(() => {
-            Swal.fire(
-              "Error!",
-              `There was an error while deleting ${userName}.`,
-              "error",
-            );
-          });
-      } else {
-        Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
-      }
     });
-  };
 
+    if (result.isConfirmed) {
+      try {
+        // Direct API call to handle the specific /delete/ route
+        await api.delete(`/admin/city/delete/${userId}`);
+
+        // Refresh the list after deletion
+        getAll();
+
+        Swal.fire(
+          "Deleted!",
+          `${userName} has been deleted successfully.`,
+          "success",
+        );
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          `There was an error while deleting ${userName}.`,
+          "error",
+        );
+      }
+    } else {
+      Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+    }
+  };
   const handleEdit = (id) => {
     navigate("/admin/addcity", { state: { sendData: id } });
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredData = (cities ?? []).filter((item) => {
     const query = searchQuery.toLowerCase();
 
     if (selectedFilter === "Filter" || selectedFilter === "") {
@@ -107,7 +91,6 @@ const City = () => {
     }
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
@@ -120,7 +103,7 @@ const City = () => {
     name: "city",
     country_name: "country",
   };
- 
+
   const columns = [
     {
       header: "S/N",
@@ -128,22 +111,34 @@ const City = () => {
     },
     {
       header: "City",
-      render: (row) => (row?.name),
+      render: (row) => row?.name,
     },
     {
       header: "Country",
-      render: (row) => (row?.country_name),
+      render: (row) => row?.country_name,
     },
     {
-      header: 'Action',
+      header: "Action",
       render: (row) => (
         <div className="flex items-center">
-          <CiEdit className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition" onClick={() => handleEdit(row.id)} />
-          <RiDeleteBin6Line className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition" onClick={() => handleDelete(row.id, row.name)} />
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
         </div>
-      )
-    }
+      ),
+    },
   ];
+   // ==========================================
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) { return <ErrorPage onRetry={getAll} />;}
   return (
     <div>
       <div className="flex justify-between items-center">

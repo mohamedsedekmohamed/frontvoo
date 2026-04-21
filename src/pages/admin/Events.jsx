@@ -9,77 +9,62 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
+import api from "../../Api/axios";
 const Events = () => {
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [update, setUpdate] = useState(false);
+  const { data, getAll, loading, error } = useCrud("/admin/event", "events");
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/event", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data.events);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
-  }, [update]);
+    getAll();
+  }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const handleDelete = (userId, userName) => {
-    const token = localStorage.getItem("token");
-
-    Swal.fire({
+  const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
       title: `Are you sure you want to delete ${userName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://backndVoo.voo-hub.com/api/admin/event/delete/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .then(() => {
-            setUpdate(!update);
-            Swal.fire(
-              "Deleted!",
-              `${userName} has been deleted successfully.`,
-              "success",
-            );
-          })
-          .catch(() => {
-            Swal.fire(
-              "Error!",
-              `There was an error while deleting ${userName}.`,
-              "error",
-            );
-          });
-      } else {
-        Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        // Direct API call to handle the specific /delete/ route
+        await api.delete(`/admin/event/delete/${userId}`);
+
+        // Refresh the list after deletion
+        getAll();
+
+        Swal.fire(
+          "Deleted!",
+          `${userName} has been deleted successfully.`,
+          "success",
+        );
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          `There was an error while deleting ${userName}.`,
+          "error",
+        );
+      }
+    } else {
+      Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+    }
   };
   const handleEdit = (id) => {
     navigate("/admin/addevents", { state: { sendData: id } });
@@ -155,7 +140,7 @@ const Events = () => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
- 
+
   const handleBulkDelete = () => {
     const token = localStorage.getItem("token");
 
@@ -191,11 +176,11 @@ const Events = () => {
     },
     {
       header: "Tasks",
-      render: (row) => (row?.name),
+      render: (row) => row?.name,
     },
     {
       header: "Date",
-      render: (row) => (row?.date),
+      render: (row) => row?.date,
     },
     {
       header: "Start Time",
@@ -237,7 +222,7 @@ const Events = () => {
     },
     {
       header: "Location",
-      render: (row) => (row?.location),
+      render: (row) => row?.location,
     },
     {
       header: (
@@ -286,6 +271,13 @@ const Events = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <ErrorPage onRetry={getAll} />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">
