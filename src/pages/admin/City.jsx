@@ -16,7 +16,7 @@ import ErrorPage from '../../ui/ErrorPage';
 const City = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
-  const { data: cities, getAll,loading,error } = useCrud("/admin/city", "cities");
+  const { data, getAll,loading,error } = useCrud("/admin/city", "cities");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ const City = () => {
     navigate("/admin/addcity", { state: { sendData: id } });
   };
 
-  const filteredData = (cities ?? []).filter((item) => {
+  const filteredData = data.filter((item) => {
     const query = searchQuery.toLowerCase();
 
     if (selectedFilter === "Filter" || selectedFilter === "") {

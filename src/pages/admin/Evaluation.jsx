@@ -4,15 +4,18 @@ import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
 import Swal from "sweetalert2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import api from "../../Api/axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
 
 const Evaluation = () => {
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState(false);
+  const { data, getAll, loading, error } =
+  useCrud("/admin/evaluation", "evaulations");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,55 +28,44 @@ const Evaluation = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndvoo.voo-hub.com/api/admin/evaluation", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // لاحظ هنا استخدمت "evaulations" كما هي موجودة في الـ JSON الخاص بك
-        setData(response.data.evaulations || []);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
-  }, [update]);
-
+    getAll();
+  }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const handleDelete = (id, name) => {
-    const token = localStorage.getItem("token");
-
-    Swal.fire({
-      title: `Are you sure you want to delete evaluation of ${name}?`,
+  const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
+      title: `Are you sure you want to delete ${userName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://backndvoo.voo-hub.com/api/admin/evaluation/delete/${id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .then(() => {
-            setUpdate(!update);
-            Swal.fire("Deleted!", "Evaluation has been deleted.", "success");
-          })
-          .catch(() => {
-            Swal.fire("Error!", "Error occurred while deleting.", "error");
-          });
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        // Direct API call to handle the specific /delete/ route
+        await api.delete(`/admin/evaluation/delete/${userId}`);
+
+        // Refresh the list after deletion
+        getAll();
+
+        Swal.fire(
+          "Deleted!",
+          `${userName} has been deleted successfully.`,
+          "success",
+        );
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          `There was an error while deleting ${userName}.`,
+          "error",
+        );
+      }
+    } else {
+      Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+    }
   };
 
   const handleEdit = (id) => {
@@ -98,12 +90,13 @@ const Evaluation = () => {
     currentPage * rowsPerPage,
   );
 
-  const cheose = ["Filter", "name", "title", "evaulation"];
+  const cheose = ["Filter", "name", "title", "evaluation"];
+
   const labelMap = {
     Filter: "Filter",
     name: "Name",
     title: "Title",
-    evaulation: "Evaluation",
+    evaluation: "Evaluation",
   };
 
   const columns = [
@@ -121,7 +114,7 @@ const Evaluation = () => {
     },
     {
       header: "Evaluation",
-      render: (row) => row.evaulation,
+      render: (row) => row.evaluation,
     },
     {
       header: "Image",
@@ -150,6 +143,12 @@ const Evaluation = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
+  if (error) {
+    return <ErrorPage onRetry={getAll} />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaFileAlt } from "react-icons/fa";
+import Loader from "../ui/Loader";
 
 const Policy = () => {
+  const [loading, setLoading] = useState(false);
   const [policyContent, setPolicyContent] = useState({
     title: "",
     description: "",
@@ -13,11 +15,20 @@ const Policy = () => {
       .get("https://backndvoo.voo-hub.com/api/policies")
       .then((res) => {
         setPolicyContent(res.data);
+        setLoading(true);
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+
       });
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="w-screen h-screen flex flex-col">

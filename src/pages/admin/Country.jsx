@@ -140,7 +140,7 @@ const Country = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorPage message="Error fetching data" />;
+    return <ErrorPage onRetry={getAll} />;
   }
   return (
     <div>

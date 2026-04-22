@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SiStarlingbank } from "react-icons/si";
 import axios from 'axios';
+import Loader from '../../ui/Loader';
 
 const Newnotification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -8,10 +9,12 @@ const Newnotification = () => {
   const notificationsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [updata, setUpdata] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
 useEffect(() => {
+  setLoading(true);
   axios.get("https://backndvoo.voo-hub.com/api/admin/noti/view", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -24,6 +27,7 @@ useEffect(() => {
       } else if (item.request_type === "task") {
         title = `New request to join task "${item.task?.name || ''}"`;
       }
+      setLoading(false);
       return {
         id: item.id,
         text: title,
@@ -98,7 +102,7 @@ const handleOpenDetails = (notif) => {
   const goToPrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-
+if (loading) {return <Loader />;}
   return (
     <div className="w-full px-4 py-6" dir="ltr">
       <h1 className="text-one text-4xl text-center font-bold mb-6">Notifications</h1>

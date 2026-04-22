@@ -4,15 +4,20 @@ import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import filter from "../../assets/filter.svg";
 import Swal from "sweetalert2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
+import api from "../../Api/axios";
 
 const Feedsor = () => {
-  const [data, setData] = useState([]);
-  const [update, setUpdate] = useState(false);
+  const { data, getAll, loading, error } = useCrud(
+    "/admin/news_feeds",
+    "news_feeds",
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
@@ -25,67 +30,44 @@ const Feedsor = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/news_feeds", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data.news_feeds);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-        console.log(token);
-      });
-  }, [update]);
+    getAll();
+  }, []);
 
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
-  const handleDelete = (userId, userName) => {
-    const token = localStorage.getItem("token");
-
-    Swal.fire({
+  const handleDelete = async (userId, userName) => {
+    const result = await Swal.fire({
       title: `Are you sure you want to delete ${userName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            `https://backndVoo.voo-hub.com/api/admin/news_feeds/delete/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          )
-          .then(() => {
-            setUpdate(!update);
-            console.log(userId);
-            Swal.fire(
-              "Deleted!",
-              `${userName} has been deleted successfully.`,
-              "success",
-            );
-          })
-          .catch((error) => {
-            console.log(error);
-
-            Swal.fire(
-              "Error!",
-              `There was an error while deleting ${userName}.`,
-              "error",
-            );
-          });
-      } else {
-        Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        // Direct API call to handle the specific /delete/ route
+        await api.delete(`/admin/news_feeds/delete/${userId}`);
+
+        // Refresh the list after deletion
+        getAll();
+
+        Swal.fire(
+          "Deleted!",
+          `${userName} has been deleted successfully.`,
+          "success",
+        );
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          `There was an error while deleting ${userName}.`,
+          "error",
+        );
+      }
+    } else {
+      Swal.fire("Cancelled", `${userName} was not deleted.`, "info");
+    }
   };
   const filteredData = data.filter((item) => {
     const query = searchQuery.toLowerCase();
@@ -203,6 +185,8 @@ const Feedsor = () => {
       ),
     },
   ];
+  if (loading) {return <Loader />;}
+  if (error) {return <ErrorPage onRetry={getAll} />;}
   return (
     <div>
       <div className="flex justify-between items-center">

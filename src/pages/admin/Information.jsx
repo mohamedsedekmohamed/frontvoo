@@ -4,13 +4,16 @@ import { FaCrown } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from 'react-router-dom';
 import { FaUserEdit } from "react-icons/fa";
+import Loader from '../../ui/Loader';
 
 const Information = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
+    setLoading(true);
     axios.get("https://backndVoo.voo-hub.com/api/admin/profile", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -18,6 +21,7 @@ const Information = ({ setIsLoggedIn }) => {
     })
       .then(response => {
         setData(response.data.user)
+        setLoading(false);
       })
   }, []);
 
@@ -28,7 +32,7 @@ const Information = ({ setIsLoggedIn }) => {
     setIsLoggedIn(false);
     navigate('/login', { replace: true });
   };
-
+if (loading) {return <Loader />;}
   return (
     <div className='flex flex-col'>
       <div className='bg-seven w-full h-50 flex relative'>

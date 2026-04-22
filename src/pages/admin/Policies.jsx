@@ -3,30 +3,20 @@ import { CiSearch, CiEdit } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
 const Policies = () => {
-  const [data, setData] = useState([]);
+  const {data, getAll,loading,error } = useCrud("/admin/policy","data");
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
  
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndvoo.voo-hub.com/api/admin/policy", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
+    getAll();
   }, [update]);
 
   const handleEdit = () => {
@@ -59,6 +49,12 @@ const Policies = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
+  if (error) {
+    return <ErrorPage onRetry={getAll} />;
+  }
   return (
     <div>
       <div className="mt-6">

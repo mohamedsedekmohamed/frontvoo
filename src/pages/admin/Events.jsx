@@ -6,7 +6,6 @@ import filter from "../../assets/filter.svg";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
 import useCrud from "../../Hooks/useCrud";
@@ -20,7 +19,6 @@ const Events = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [update, setUpdate] = useState(false);
   const { data, getAll, loading, error } = useCrud("/admin/event", "events");
   useEffect(() => {
     setCurrentPage(1);
@@ -141,33 +139,34 @@ const Events = () => {
     currentPage * rowsPerPage,
   );
 
-  const handleBulkDelete = () => {
-    const token = localStorage.getItem("token");
+  const handleBulkDelete = async () => {
+    if (!selectedIds.length) return;
 
-    Swal.fire({
+    const result = await Swal.fire({
       title: `Are you sure you want to delete ${selectedIds.length} event?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete("https://backndVoo.voo-hub.com/api/admin/event/deleteGroup", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            data: {
-              ids: selectedIds,
-            },
-          })
-          .then(() => {
-            toast.success("Selected event deleted successfully");
-            setSelectedIds([]);
-            setUpdate((prev) => !prev);
-          })
-          .catch(() => toast.error("Error deleting some event"));
-      }
+      cancelButtonText: "No",
     });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await api.delete("/admin/event/deleteGroup", {
+        data: {
+          ids: selectedIds,
+        },
+      });
+
+      toast.success("Selected events deleted successfully");
+
+      setSelectedIds([]); // reset selection
+      setCurrentPage(1); // reset pagination
+      getAll(); // refresh data
+    } catch (err) {
+      toast.error("Error deleting selected events");
+    }
   };
   const columns = [
     {
