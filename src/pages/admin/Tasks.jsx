@@ -46,8 +46,7 @@ const Tasks = () => {
         await api.delete(`/admin/task/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
-
+        read();
         Swal.fire(
           "Deleted!",
           `${userName} has been deleted successfully.`,
