@@ -11,9 +11,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import * as XLSX from "xlsx";
 import { FaDownload } from "react-icons/fa";
 import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
 
 const Organizeation = () => {
-  const [data, setData] = useState([]);
+  const {data,read,loading,error } = useCrud("/admin/organization","orgnization");
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -26,19 +29,7 @@ const Organizeation = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/organization", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setData(response.data.orgnization);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
+   read();
   }, [update]);
 
   const handleChange = (e) => {
@@ -383,6 +374,12 @@ const Organizeation = () => {
       ),
     },
   ];
+  if(loading){
+    return (<Loader/>);
+  }
+  if (error){
+    return (<ErrorPage onRetry={read}/>);
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

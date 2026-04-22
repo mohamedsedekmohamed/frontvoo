@@ -8,11 +8,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
+import ReusableTable from "../../ui/ReusableTable";
+import useCrud from "../../Hooks/useCrud";
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
 
 const Notification = () => {
-  const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
+  const {data, read, loading, error } = useCrud("/admin/notification","notifications");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
@@ -21,20 +24,7 @@ const Notification = () => {
     setCurrentPage(1);
   }, [searchQuery]);
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://backndVoo.voo-hub.com/api/admin/notification", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const notifications = response.data.notifications;
-        setData(notifications);
-      })
-      .catch(() => {
-        toast.error("Error fetching data");
-      });
+   read();
   }, [update]);
 
   const handleChange = (e) => {
@@ -58,21 +48,21 @@ const Notification = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate(!update);
             Swal.fire(
               "Deleted!",
               `${userName} has been deleted successfully.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
             Swal.fire(
               "Error!",
               `There was an error while deleting ${userName}.`,
-              "error"
+              "error",
             );
           });
       } else {
@@ -92,9 +82,9 @@ const Notification = () => {
       return Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -108,39 +98,76 @@ const Notification = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
-  const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+  //const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-  const cheose = ["Filter", "notification","title"];
+
+  const cheose = ["Filter", "notification", "title"];
   const labelMap = {
     Filter: "Filter",
     notification: "notification",
     title: "title",
   };
   const [selectedViewers, setSelectedViewers] = useState([]);
-const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const handleView = (notificationId) => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  axios
-    .get(`https://backndVoo.voo-hub.com/api/admin/notification/item/${notificationId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((res) => {
-      setSelectedViewers(res.data?.notification?.users || []);
-      setShowModal(true);
-    })
-    .catch(() => {
-      toast.error("Failed to fetch viewers");
-    });
-};
-
+    axios
+      .get(
+        `https://backndVoo.voo-hub.com/api/admin/notification/item/${notificationId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((res) => {
+        setSelectedViewers(res.data?.notification?.users || []);
+        setShowModal(true);
+      })
+      .catch(() => {
+        toast.error("Failed to fetch viewers");
+      });
+  };
+  const columns = [
+    {
+      header: "S/N",
+      render: (_, index) => (currentPage - 1) * rowsPerPage + index + 1,
+    },
+    { header: "Title", accessor: "title" },
+    { header: "Name", accessor: "notification" },
+    {
+      header: "View",
+      render: (item) => (
+        <button
+          onClick={() => handleView(item.id)}
+          className="text-white px-2 py-1 rounded-2xl bg-one"
+        >
+          View
+        </button>
+      ),
+    },
+    {
+      header: "Action",
+      render: (row) => (
+        <div className="flex items-center">
+          <CiEdit
+            className="w-[24px] h-[24px] text-six cursor-pointer hover:text-blue-500 transition"
+            onClick={() => handleEdit(row.id)}
+          />
+          <RiDeleteBin6Line
+            className="w-[24px] h-[24px] ml-2 text-five cursor-pointer hover:text-red-600 transition"
+            onClick={() => handleDelete(row.id, row.name)}
+          />
+        </div>
+      ),
+    },
+  ];
+if (loading) {
+  return <Loader />;
+}
+if (error) {return <ErrorPage onRetry={read} />;}
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -186,93 +213,46 @@ const [showModal, setShowModal] = useState(false);
           </button>
         </div>
       </div>
-
-      <div className="mt-10 block text-left">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead className="w-full">
-              <tr className="bg-four ">
-                <th className="py-4 px-3">S/N</th>
-                <th className="py-4 px-3">title</th>
-                <th className="py-4 px-3">Name</th>
-                <th className="py-4 px-3">view</th>
-                <th className="py-4 px-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(paginatedData) &&
-                paginatedData.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="border-y border-x hover:border-3 relative hover:bg-four"
-                  >
-                    <td className="py-2 px-3 font-bold">
-                      {(currentPage - 1) * rowsPerPage + index + 1}
-                    </td>
-                    <td className="py-4 px-3">{truncateText(item?.title)}</td>
-                    <td className="py-4 px-3">{truncateText(item?.notification)}</td>
-<td className="py-4 px-3">
-  <button
-    onClick={() => handleView(item.id)}
-    className="text-white px-2 py-1 rounded-2xl bg-one"
-  >
-    View
-  </button>
-</td>
-                    <td className="w-[143px] h-[56px] lg:text-[12px] xl:text-[16px] flex justify-start items-center">
-                      <CiEdit
-                        className="w-[24px] h-[24px] text-six cursor-pointer"
-                        onClick={() => handleEdit(item.id)}
-                      />
-                      <RiDeleteBin6Line
-                        className="w-[24px] h-[24px] ml-2 text-five cursor-pointer"
-                        onClick={() => handleDelete(item.id, item.notification)}
-                      />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={1}
+          pageCount={1}
+          onPageChange={() => {}}
+          forceEnglishTitle={true}
         />
       </div>
-{showModal && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
-    <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
-      <h2 className="text-xl text-one font-bold mb-4 text-center">
-        Users who viewed this notification
-      </h2>
-      <ul className="max-h-[300px] overflow-y-auto divide-y">
-        {selectedViewers.length > 0 ? (
-          selectedViewers.map((user, i) => (
-            <li key={user.id} className="py-2 text-sm">
-              {i + 1}. {user.name} – {user.email}
-            </li>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No viewers found</p>
-        )}
-      </ul>
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => setShowModal(false)}
-          className="bg-one hover:bg-opacity-90 text-white py-1 px-6 rounded-full transition duration-200"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
 
+     
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
+          <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
+            <h2 className="text-xl text-one font-bold mb-4 text-center">
+              Users who viewed this notification
+            </h2>
+            <ul className="max-h-[300px] overflow-y-auto divide-y">
+              {selectedViewers.length > 0 ? (
+                selectedViewers.map((user, i) => (
+                  <li key={user.id} className="py-2 text-sm">
+                    {i + 1}. {user.name} – {user.email}
+                  </li>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">No viewers found</p>
+              )}
+            </ul>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-one hover:bg-opacity-90 text-white py-1 px-6 rounded-full transition duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
     </div>
