@@ -19,7 +19,7 @@ import useCrud from "../../Hooks/useCrud";
 import api from "../../Api/axios";
 
 const User = () => {
-  const { data, getAll, error, loading } = useCrud("/admin/users", "users");
+  const { data, read, error, loading } = useCrud("/admin/users", "users");
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -40,7 +40,7 @@ const User = () => {
 
   // دالة مخصصة لجلب البيانات حتى يمكننا تمريرها لزر "إعادة المحاولة"
   const fetchUsers = () => {
-    getAll();
+    read();
   };
 
   // استدعاء دالة الجلب في useEffect
@@ -65,7 +65,7 @@ const User = () => {
         await api.delete(`/admin/user/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
+        read();
 
         Swal.fire(
           "Deleted!",

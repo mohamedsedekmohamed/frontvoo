@@ -16,7 +16,7 @@ import ErrorPage from '../../ui/ErrorPage';
 const City = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
-  const { data, getAll,loading,error } = useCrud("/admin/city", "cities");
+  const { data, read,loading,error } = useCrud("/admin/city", "cities");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ const City = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    getAll();
+    read();
   }, []);
 
   const handleChange = (e) => {
@@ -47,7 +47,7 @@ const City = () => {
         await api.delete(`/admin/city/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
+        read();
 
         Swal.fire(
           "Deleted!",
@@ -138,7 +138,7 @@ const City = () => {
     return <Loader />;
   }
 
-  if (error) { return <ErrorPage onRetry={getAll} />;}
+  if (error) { return <ErrorPage onRetry={read} />;}
   return (
     <div>
       <div className="flex justify-between items-center">

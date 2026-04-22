@@ -14,7 +14,7 @@ import Loader from "../../ui/Loader";
 import ErrorPage from "../../ui/ErrorPage";
 
 const Tasks = () => {
-  const { data, getAll, loading, error } = useCrud("/admin/task", "tasks");
+  const { data, read, loading, error } = useCrud("/admin/task", "tasks");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Tasks = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    getAll();
+    read();
   }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
@@ -166,7 +166,7 @@ const Tasks = () => {
 
       setSelectedIds([]); // reset selection
       setCurrentPage(1); // reset pagination
-      getAll(); // refresh data
+      read(); // refresh data
     } catch (err) {
       toast.error("Error deleting selected tasks");
     }
@@ -274,7 +274,7 @@ const Tasks = () => {
   }
 
   if (error) {
-    return <ErrorPage onRetry={getAll} />;
+    return <ErrorPage onRetry={read} />;
   }
   return (
     <div>

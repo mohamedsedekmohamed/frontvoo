@@ -14,7 +14,7 @@ import ErrorPage from '../../ui/ErrorPage';
 import api from "../../Api/axios";
 
 const Country = () => {
- const { data, getAll, loading, error } = useCrud("/admin/country", "countries");
+ const { data, read, loading, error } = useCrud("/admin/country", "countries");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Country = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-  useEffect(() => {  getAll(); }, []);
+  useEffect(() => {  read(); }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
   };
@@ -42,7 +42,7 @@ const Country = () => {
         await api.delete(`/admin/country/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
+        read();
 
         Swal.fire(
           "Deleted!",
@@ -140,7 +140,7 @@ const Country = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorPage onRetry={getAll} />;
+    return <ErrorPage onRetry={read} />;
   }
   return (
     <div>

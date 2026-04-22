@@ -11,12 +11,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
 import useCrud from "../../Hooks/useCrud";
 const Policies = () => {
-  const {data, getAll,loading,error } = useCrud("/admin/policy","data");
+  const {data, read,loading,error } = useCrud("/admin/policy","data");
   const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
  
   useEffect(() => {
-    getAll();
+    read();
   }, [update]);
 
   const handleEdit = () => {
@@ -53,7 +53,7 @@ const Policies = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorPage onRetry={getAll} />;
+    return <ErrorPage onRetry={read} />;
   }
   return (
     <div>

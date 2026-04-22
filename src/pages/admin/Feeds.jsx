@@ -14,7 +14,7 @@ import ErrorPage from "../../ui/ErrorPage";
 import api from "../../Api/axios";
 
 const Feedsor = () => {
-  const { data, getAll, loading, error } = useCrud(
+  const { data, read, loading, error } = useCrud(
     "/admin/news_feeds",
     "news_feeds",
   );
@@ -30,7 +30,7 @@ const Feedsor = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    getAll();
+    read();
   }, []);
 
   const handleChange = (e) => {
@@ -51,7 +51,7 @@ const Feedsor = () => {
         await api.delete(`/admin/news_feeds/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
+        read();
 
         Swal.fire(
           "Deleted!",
@@ -186,7 +186,7 @@ const Feedsor = () => {
     },
   ];
   if (loading) {return <Loader />;}
-  if (error) {return <ErrorPage onRetry={getAll} />;}
+  if (error) {return <ErrorPage onRetry={read} />;}
   return (
     <div>
       <div className="flex justify-between items-center">

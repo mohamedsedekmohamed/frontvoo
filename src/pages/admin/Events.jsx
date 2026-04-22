@@ -19,13 +19,13 @@ const Events = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const { data, getAll, loading, error } = useCrud("/admin/event", "events");
+  const { data, read, loading, error } = useCrud("/admin/event", "events");
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 
   useEffect(() => {
-    getAll();
+    read();
   }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
@@ -46,7 +46,7 @@ const Events = () => {
         await api.delete(`/admin/event/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
+        read();
 
         Swal.fire(
           "Deleted!",
@@ -163,7 +163,7 @@ const Events = () => {
 
       setSelectedIds([]); // reset selection
       setCurrentPage(1); // reset pagination
-      getAll(); // refresh data
+     read(); // refresh data
     } catch (err) {
       toast.error("Error deleting selected events");
     }
@@ -275,7 +275,7 @@ const Events = () => {
   }
 
   if (error) {
-    return <ErrorPage onRetry={getAll} />;
+    return <ErrorPage onRetry={read} />;
   }
   return (
     <div>

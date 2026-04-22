@@ -14,7 +14,7 @@ import Loader from "../../ui/Loader";
 import ErrorPage from "../../ui/ErrorPage";
 
 const Evaluation = () => {
-  const { data, getAll, loading, error } =
+  const { data, read, loading, error } =
   useCrud("/admin/evaluation", "evaulations");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -28,7 +28,7 @@ const Evaluation = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    getAll();
+    read();
   }, []);
   const handleChange = (e) => {
     setSelectedFilter(e.target.value);
@@ -49,7 +49,7 @@ const Evaluation = () => {
         await api.delete(`/admin/evaluation/delete/${userId}`);
 
         // Refresh the list after deletion
-        getAll();
+         read();
 
         Swal.fire(
           "Deleted!",
@@ -147,7 +147,7 @@ const Evaluation = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorPage onRetry={getAll} />;
+    return <ErrorPage onRetry={read} />;
   }
   return (
     <div>
