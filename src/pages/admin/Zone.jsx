@@ -8,12 +8,14 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 
 const Zone = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -30,10 +32,13 @@ const Zone = () => {
     axios
       .get("https://backndVoo.voo-hub.com/api/admin/zone", {
         headers: { Authorization: `Bearer ${token}` },
+        
       })
       .then((res) => {
         const zones = res?.data?.[0]?.zones || [];
         setData(zones);
+        setLoading(false);
+
       })
       .catch(() => toast.error("Error fetching data"));
   }, [update]);
@@ -136,7 +141,9 @@ const Zone = () => {
       ),
     },
   ];
-
+if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       {/* 🔎 SEARCH + FILTER + ADD (نفس التصميم 100%) */}

@@ -10,6 +10,7 @@ import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 const UserOr = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
@@ -21,6 +22,7 @@ const UserOr = () => {
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -28,6 +30,7 @@ const UserOr = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     axios
       .get("https://backndVoo.voo-hub.com/api/ornization/users", {
         headers: {
@@ -40,6 +43,9 @@ const UserOr = () => {
       .catch(() => {
         toast.error("Error fetching data");
         console.log(token);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -126,7 +132,7 @@ const UserOr = () => {
   const labelMap = {
     Filter: t("Filter"),
     name: t("User"),
-    age: t("age"),
+    age: t("Age"),
     email: t("Email"),
     phone: t("Phone"),
     "country.name": t("Country"),
@@ -205,7 +211,7 @@ const UserOr = () => {
   };
   const columns = [
     {
-      header: "S/N",
+      header: t("S/N"),
       render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
     },
     {
@@ -310,6 +316,9 @@ const UserOr = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

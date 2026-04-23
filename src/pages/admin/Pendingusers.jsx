@@ -8,9 +8,11 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 
 const Pendingusers = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -22,6 +24,7 @@ const Pendingusers = () => {
   }, [searchQuery]);
 
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     axios
       .get("https://backndVoo.voo-hub.com/api/admin/bnyadm", {
@@ -34,6 +37,9 @@ const Pendingusers = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -244,6 +250,7 @@ const Pendingusers = () => {
       header: "Details",
       render: (row) => (
         <button
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/pendingusersDetaklis", {
               state: { sendData: row.id },
@@ -255,7 +262,9 @@ const Pendingusers = () => {
       ),
     },
   ];
-
+if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

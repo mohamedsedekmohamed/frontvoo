@@ -9,22 +9,24 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import ReusableTable from "../../ui/ReusableTable";
 import Swal from "sweetalert2";
+import Loader from "../../ui/Loader";
 
 const RequestsOr = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === "ar";
+  const { t } = useTranslation();
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [loading , setLoading] = useState(false);
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     axios
       .get("https://backndVoo.voo-hub.com/api/orgnization/request", {
@@ -37,6 +39,9 @@ const RequestsOr = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -76,7 +81,7 @@ const RequestsOr = () => {
   ];
   const labelMap = {
     Filter: t("Filter"),
-    request_type: t("type"),
+    request_type: t("Type"),
     "user.email": t("Email"),
     "task.name": t("Task"),
     "event.name": t("Event"),
@@ -289,7 +294,7 @@ const RequestsOr = () => {
     ),
   },
   {
-    header: t("Actions"),
+    header: t("Action"),
     render: (item) => (
       <select
         className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
@@ -308,6 +313,9 @@ const RequestsOr = () => {
     ),
   },
 ]; 
+if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

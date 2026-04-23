@@ -1,74 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { FaCrown } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
-import { useNavigate } from 'react-router-dom';
 import { FaUserEdit } from "react-icons/fa";
-import Loader from '../../ui/Loader';
+import { useNavigate } from "react-router-dom";
 
 const Information = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
-  const [data, setData] = useState([]);
+
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
-  
+
+  // Fetch admin profile
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setLoading(true);
-    axios.get("https://backndVoo.voo-hub.com/api/admin/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    })
-      .then(response => {
-        setData(response.data.user)
-        setLoading(false);
+
+    axios
+      .get("https://backndVoo.voo-hub.com/api/admin/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
+      .then((res) => setData(res.data.user))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   }, []);
 
-
-
   const handleLogout = () => {
-    sessionStorage.removeItem('token');
+    sessionStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate('/login', { replace: true });
+    navigate("/login", { replace: true });
   };
-if (loading) {return <Loader />;}
-  return (
-    <div className='flex flex-col'>
-      <div className='bg-seven w-full h-50 flex relative'>
-        <div className='flex justify-center items-center m-6'>
-        <img src={data?.avatar_image_link??null} className='w-[152px] h-[152px]'  />
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="relative w-24 h-24">
+          <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-b-transparent border-one animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-4 border-t-transparent border-b-transparent border-three animate-spin-reverse"></div>
+          <div className="absolute inset-6 rounded-full bg-one opacity-40"></div>
         </div>
-        <div className='flex flex-col my-6'>
-          <span className='text-[32px] font-medium text-one mb-3'>{data.name || "no name"}</span>
-          <span className='text-[16px] font-light text-one mb-5'>{data.email || "no email"}</span>
-          <span className='text-[16px] font-light py-1 px-2 text-one bg-eight items-center justify-center mb-3 flex gap-1'>
+      </div>
+    );
+  }
+  return (
+    <div className="bg-gray-50 min-h-screen p-4 md:p-8">
+      {/* PROFILE CARD */}
+      <div className="bg-white shadow-sm rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6">
+        {/* Avatar */}
+        <img
+          src={data?.avatar_image_link}
+          alt="avatar"
+          className="w-28 h-28 rounded-full object-cover border-4 border-one"
+        />
+
+        {/* Info */}
+        <div className="flex-1 text-center md:text-left">
+          <h2 className="text-2xl font-semibold text-one">
+            {data.name || "No Name"}
+          </h2>
+
+          <p className="text-gray-500">{data.email || "No Email"}</p>
+
+          <span className="inline-flex items-center gap-2 mt-2 text-sm bg-purple-100 text-one px-3 py-1 rounded-full">
             <FaCrown />
-            <span>Super Admin</span>
+            Super Admin
           </span>
         </div>
-        <button onClick={handleLogout} className='absolute top-4 right-3'>
-          <CiLogout className="text-one text-3xl" />
-        </button>
-          <button onClick={() => navigate('/admin/AddInformation')} className={`absolute top-16 right-3`}>
-                  <FaUserEdit className="text-one text-3xl" />
-                </button>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={handleLogout}
+            className="p-2 rounded-full hover:bg-red-100"
+          >
+            <CiLogout className="text-2xl text-red-500" />
+          </button>
+
+          <button
+            onClick={() => navigate("/admin/AddInformation")}
+            className="p-2 rounded-full hover:bg-blue-100"
+          >
+            <FaUserEdit className="text-2xl text-blue-500" />
+          </button>
+        </div>
       </div>
 
-      <div className='mt-5 w-full flex-wrap flex gap-2'>
-        <div className='bg-seven w-full h-fit flex flex-col p-5'>
-          <div className='flex gap-1 items-center'>
-          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13 0C5.81875 0 0 5.81875 0 13C0 20.1812 5.81875 26 13 26C20.1812 26 26 20.1812 26 13C26 5.81875 20.1812 0 13 0ZM12.7188 6.5C13.4125 6.5 13.9688 7.0625 13.9688 7.75C13.9688 8.4375 13.4062 9 12.7188 9C12.0312 9 11.4688 8.4375 11.4688 7.75C11.4688 7.0625 12.025 6.5 12.7188 6.5ZM15 19H11V18.5H12V11H11V10.5H14V18.5H15V19Z" fill="#730FC9"/>
-</svg>
-            <span className='text-2xl font-medium text-one'>Personal Information</span>
+      {/* INFO CARD */}
+      <div className="bg-white shadow-sm rounded-2xl mt-6 p-6">
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-4">
+          <svg width="24" height="24" viewBox="0 0 26 26" fill="none">
+            <path
+              d="M13 0C5.8 0 0 5.8 0 13C0 20.2 5.8 26 13 26C20.2 26 26 20.2 26 13C26 5.8 20.2 0 13 0ZM12.7 6.5C13.4 6.5 13.9 7.06 13.9 7.75C13.9 8.43 13.4 9 12.7 9C12 9 11.4 8.43 11.4 7.75C11.4 7.06 12 6.5 12.7 6.5ZM15 19H11V18.5H12V11H11V10.5H14V18.5H15V19Z"
+              fill="#730FC9"
+            />
+          </svg>
+
+          <h3 className="text-xl font-semibold text-one">
+            Personal Information
+          </h3>
+        </div>
+
+        {/* Grid Info */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-gray-50 p-4 rounded-xl border">
+            <p className="text-sm text-gray-500">Phone Number</p>
+            <p className="text-lg font-medium text-one">
+              {data.phone || "No phone"}
+            </p>
           </div>
 
-          <div className='flex flex-col gap-2 my-2'>
-            <span className='text-[20px] font-normal text-one'>Phone Number: {data.phone || "No phone"}</span>
-            {/* <span className='text-[20px] font-normal text-one'>Birth Date: {data.birth || "No birthdate"}</span> */}
-            <span className='text-[20px] font-normal text-one'>Gender: {data.gender || "No gender"}</span>
-             </div>
+          <div className="bg-gray-50 p-4 rounded-xl border">
+            <p className="text-sm text-gray-500">Gender</p>
+            <p className="text-lg font-medium text-one">
+              {data.gender || "No gender"}
+            </p>
+          </div>
         </div>
       </div>
     </div>

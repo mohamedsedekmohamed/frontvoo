@@ -13,8 +13,7 @@ import React, { useState } from 'react'
      const navigate = useNavigate();
 
     const { sendData } = location.state || {};
- const { t, i18n } = useTranslation();
-      const isArabic = i18n.language === 'ar';
+ const { t } = useTranslation();
     const renderContent = () => {
       switch (activeTab) {
         case 'EventDetails':

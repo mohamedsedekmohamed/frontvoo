@@ -195,7 +195,7 @@ const Tasks = () => {
       header: "Details",
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/tasksDetails", {
               state: { sendData: row.id },
@@ -210,7 +210,7 @@ const Tasks = () => {
       header: "Operation",
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/operationTasks", {
               state: { sendData: row.id },

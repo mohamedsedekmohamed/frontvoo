@@ -10,20 +10,23 @@ import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
 import { useTranslation } from "react-i18next";
+import Loader from "../../ui/Loader";
 
 const ProjectOr = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === "ar";
+  const { t, } = useTranslation();
+  
 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     axios
       .get("https://backndVoo.voo-hub.com/api/ornization/project", {
@@ -36,6 +39,8 @@ const ProjectOr = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      }).finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -124,7 +129,7 @@ const ProjectOr = () => {
 
   const columns = [
     {
-      header: "S/N",
+      header: t("S/N"),
       render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
     },
     {
@@ -152,7 +157,9 @@ const ProjectOr = () => {
       ),
     },
   ];
-
+if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

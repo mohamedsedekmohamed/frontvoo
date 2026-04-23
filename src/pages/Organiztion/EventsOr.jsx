@@ -10,6 +10,7 @@ import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 
 const EventsOr = () => {
   const [data, setData] = useState([]);
@@ -22,8 +23,10 @@ const EventsOr = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     axios
       .get("https://backndVoo.voo-hub.com/api/ornization/event", {
         headers: {
@@ -35,6 +38,9 @@ const EventsOr = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
   const handleChange = (e) => {
@@ -200,7 +206,7 @@ const EventsOr = () => {
   };
   const columns = [
     {
-      header: "S/N",
+      header: t("S/N"),
       render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
     },
     {
@@ -223,7 +229,7 @@ const EventsOr = () => {
       header: t("Details"),
       render: (row) => (
         <button
-          className="underline"
+          className=" underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/organizeation/eventsdetails", {
               state: { sendData: row.id },
@@ -238,7 +244,7 @@ const EventsOr = () => {
       header: t("Operation"),
       render: (row) => (
         <button
-          className="underline"
+          className="underline   text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/organizeation/OperationOr", {
               state: { sendData: row.id },
@@ -298,13 +304,14 @@ const EventsOr = () => {
       ),
     },
   ];
-
+if (loading) {    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">
         <div className="relative items-center">
           <input
-            placeholder="Search"
+            placeholder={t("Search")}
             className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

@@ -99,7 +99,7 @@ const ReusableTable = ({
                   colSpan={columns.length}
                   className="text-center py-8 text-gray-500 font-medium"
                 >
-                  {t("No data available")}
+                  {forceEnglishTitle ? "No data available" : t("No data available")}
                 </td>
               </tr>
             )}

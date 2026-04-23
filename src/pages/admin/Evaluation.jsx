@@ -114,7 +114,7 @@ const Evaluation = () => {
     },
     {
       header: "Evaluation",
-      render: (row) => row.evaluation,
+      render: (row) => row.evaulation,
     },
     {
       header: "Image",

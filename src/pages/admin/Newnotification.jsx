@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { SiStarlingbank } from "react-icons/si";
-import axios from 'axios';
-import Loader from '../../ui/Loader';
+import axios from "axios";
+
 
 const Newnotification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -13,83 +13,87 @@ const Newnotification = () => {
 
   const token = localStorage.getItem("token");
 
-useEffect(() => {
-  setLoading(true);
-  axios.get("https://backndvoo.voo-hub.com/api/admin/noti/view", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  }).then((res) => {
-    const formatted = res.data.requests_data.map(item => {
-      let title = "";
-      if (item.request_type === "event") {
-        title = `New request to join event "${item.event?.name || ''}"`;
-      } else if (item.request_type === "task") {
-        title = `New request to join task "${item.task?.name || ''}"`;
-      }
-      setLoading(false);
-      return {
-        id: item.id,
-        text: title,
-        is_read: item.view_request === 1,
-        details: `
-          Request by: ${item.user?.name || 'Unknown'}\n
-          Organization: ${item.orgnization?.name || 'Unknown'}\n
-          Status: ${item.status}
-        `
-      };
-    });
-
-    setNotifications(formatted);
-
-    const unreadCount = formatted.filter(n => !n.is_read).length;
-    if (unreadCount > 0) {
-      axios.post("https://backndvoo.voo-hub.com/api/admin/noti/view_notification", {
-        notification_num: unreadCount
-      }, {
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("https://backndvoo.voo-hub.com/api/admin/noti/view", {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }).catch((err) => {
-        console.error("Failed to send unread notification count", err);
-      });
-    }
-  });
-}, [updata]);
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        const formatted = res.data.requests_data.map((item) => {
+          let title = "";
+          if (item.request_type === "event") {
+            title = `New request to join event "${item.event?.name || ""}"`;
+          } else if (item.request_type === "task") {
+            title = `New request to join task "${item.task?.name || ""}"`;
+          }
+          setLoading(false);
+          return {
+            id: item.id,
+            text: title,
+            is_read: item.view_request === 1,
+            details: `
+          Request by: ${item.user?.name || "Unknown"}\n
+          Organization: ${item.orgnization?.name || "Unknown"}\n
+          Status: ${item.status}
+        `,
+          };
+        });
 
+        setNotifications(formatted);
+
+        const unreadCount = formatted.filter((n) => !n.is_read).length;
+        if (unreadCount > 0) {
+          axios
+            .post(
+              "https://backndvoo.voo-hub.com/api/admin/noti/view_notification",
+              {
+                notification_num: unreadCount,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            )
+            .catch((err) => {
+              console.error("Failed to send unread notification count", err);
+            });
+        }
+      });
+  }, [updata]);
 
   const indexOfLast = currentPage * notificationsPerPage;
   const indexOfFirst = indexOfLast - notificationsPerPage;
   const currentNotifications = notifications.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(notifications.length / notificationsPerPage);
 
-const handleOpenDetails = (notif) => {
-  setSelectedNotification(notif);
+  const handleOpenDetails = (notif) => {
+    setSelectedNotification(notif);
 
-  if (notif.is_read) return; // ✅ متبعتش API لو كانت مقروءة
+    if (notif.is_read) return; // ✅ متبعتش API لو كانت مقروءة
 
-  axios
-    .post(
-      `https://backndvoo.voo-hub.com/api/admin/noti/view_request/${notif.id}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+    axios
+      .post(
+        `https://backndvoo.voo-hub.com/api/admin/noti/view_request/${notif.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      }
-    )
-    .then(() => {
-      setNotifications(prev =>
-        prev.map(n =>
-          n.id === notif.id ? { ...n, is_read: true } : n
-        )
-      );
-    })
-    .catch((err) => {
-      console.error("Failed to mark notification as read", err);
-    });
-};
-
+      )
+      .then(() => {
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === notif.id ? { ...n, is_read: true } : n)),
+        );
+      })
+      .catch((err) => {
+        console.error("Failed to mark notification as read", err);
+      });
+  };
 
   const handleCloseDetails = () => {
     setSelectedNotification(null);
@@ -102,10 +106,22 @@ const handleOpenDetails = (notif) => {
   const goToPrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-if (loading) {return <Loader />;}
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="relative w-24 h-24">
+          <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-b-transparent border-one animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-4 border-t-transparent border-b-transparent border-three animate-spin-reverse"></div>
+          <div className="absolute inset-6 rounded-full bg-one opacity-40"></div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="w-full px-4 py-6" dir="ltr">
-      <h1 className="text-one text-4xl text-center font-bold mb-6">Notifications</h1>
+      <h1 className="text-one text-4xl text-center font-bold mb-6">
+        Notifications
+      </h1>
 
       <div className="flex flex-col gap-4">
         {currentNotifications.map((notif) => (
@@ -113,7 +129,7 @@ if (loading) {return <Loader />;}
             key={notif.id}
             onClick={() => handleOpenDetails(notif)}
             className={`p-4 rounded-xl cursor-pointer transition-all duration-300 shadow-md flex gap-2 items-center ${
-              notif.is_read ? 'bg-gray-100 text-gray-600' : 'bg-seven text-one'
+              notif.is_read ? "bg-gray-100 text-gray-600" : "bg-seven text-one"
             }`}
           >
             <SiStarlingbank className="text-xl" />
@@ -131,7 +147,9 @@ if (loading) {return <Loader />;}
         >
           Previous
         </button>
-        <span className="font-bold text-one">Page {currentPage} of {totalPages}</span>
+        <span className="font-bold text-one">
+          Page {currentPage} of {totalPages}
+        </span>
         <button
           onClick={goToNext}
           disabled={currentPage === totalPages}
@@ -146,8 +164,12 @@ if (loading) {return <Loader />;}
         <div className="fixed top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-2xl flex items-center gap-4 p-6 w-[90%] max-w-2xl border-[3px] border-one">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-2 text-one">Notification Details</h2>
-              <pre className="text-gray-700 whitespace-pre-wrap mb-4">{selectedNotification.details}</pre>
+              <h2 className="text-2xl font-bold mb-2 text-one">
+                Notification Details
+              </h2>
+              <pre className="text-gray-700 whitespace-pre-wrap mb-4">
+                {selectedNotification.details}
+              </pre>
               <button
                 onClick={handleCloseDetails}
                 className="bg-one text-white font-medium py-2 px-4 rounded-lg hover:opacity-90 transition"

@@ -347,7 +347,7 @@ const Organizeation = () => {
       header: "Details",
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/organizeationdatali", {
               state: { sendData: row.id },

@@ -14,6 +14,8 @@ import Loader from "../../ui/Loader";
 const Home = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [EnglisArabic, setEnglisArabic] = useState(false);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -77,7 +79,7 @@ const Home = () => {
       </div>
 
       <div>
-        <BarChart All={data.user_year} />
+        <BarChart All={data.user_year} EnglisArabic={EnglisArabic} />
       </div>
       <div className="flex justify-start pl-2 flex-wrap">
         <div className="flex flex-col">
@@ -106,7 +108,7 @@ const Home = () => {
               <h2 className="p-3 text-three">Top countries</h2>
             </div>
           </div>
-          <div className="space-y-2 p-4 bg-white rounded shadow-md">
+          <div className="space-y-2 ml-3.5 p-4 bg-white rounded shadow-md">
             {data?.countries?.slice(0, 3)?.map((item) => (
               <div key={item.id} className="flex items-center space-x-2">
                 <span className="text-gray-800">{item.name}</span>

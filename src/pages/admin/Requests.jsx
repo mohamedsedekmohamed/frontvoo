@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 
 const Requests = () => {
   const [data, setData] = useState([]);
@@ -15,6 +16,7 @@ const Requests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [active, setActive] = useState("task"); // task or event
   const [selectedFilter, setSelectedFilter] = useState("");
+  const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
@@ -25,6 +27,7 @@ const Requests = () => {
   }, [searchQuery]);
 
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     axios
       .get("https://backndVoo.voo-hub.com/api/admin/request", {
@@ -37,6 +40,9 @@ const Requests = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -365,7 +371,7 @@ const Requests = () => {
       header: "Details",
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/requestsdetails", {
               state: { sendData: row.id },
@@ -386,6 +392,9 @@ const Requests = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

@@ -11,7 +11,7 @@ const OperationTasksOr = () => {
    const [activeTab, setActiveTab] = useState('EventDetails');
    const location = useLocation();
    const { sendData } = location.state || {};
- const { t, i18n } = useTranslation();
+ const { t } = useTranslation();
      const navigate = useNavigate();
 
    const renderContent = () => {

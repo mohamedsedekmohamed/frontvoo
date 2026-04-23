@@ -10,12 +10,14 @@ import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTranslation } from "react-i18next";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 
 const Feedsor = () => {
   const [data, setData] = useState([]);
   const [update, setUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -27,6 +29,7 @@ const Feedsor = () => {
     setCurrentPage(1);
   }, [searchQuery]);
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     axios
       .get("https://backndVoo.voo-hub.com/api/ornization/news_feeds", {
@@ -40,6 +43,9 @@ const Feedsor = () => {
       .catch(() => {
         toast.error("Error fetching data");
         console.log(token);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -121,7 +127,7 @@ const Feedsor = () => {
   const cheose = ["Filter", "content"];
   const labelMap = {
     Filter: t("Filter"),
-    content: t("content"),
+    content: t("Content"),
   };
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -135,7 +141,7 @@ const Feedsor = () => {
   };
   const columns = [
     {
-      header: "S/N",
+      header: t("S/N"),
       render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
     },
     {
@@ -204,6 +210,9 @@ const Feedsor = () => {
       ),
     },
   ];
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">

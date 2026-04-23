@@ -193,7 +193,7 @@ const Events = () => {
       header: "Details",
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/eventDetalis", {
               state: { sendData: row.id },
@@ -208,7 +208,7 @@ const Events = () => {
       header: "Operation",
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/admin/operation", {
               state: { sendData: row.id },

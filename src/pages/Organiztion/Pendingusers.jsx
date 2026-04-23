@@ -7,8 +7,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import Pagination from "@mui/material/Pagination";
 import { useTranslation } from "react-i18next";
+import Loader from "../../ui/Loader";
+import ReusableTable from "../../ui/ReusableTable";
 
 const Pendingusers = () => {
   const [data, setData] = useState([]);
@@ -16,16 +17,16 @@ const Pendingusers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === "ar";
+  const { t } = useTranslation();
   const [selectedIds, setSelectedIds] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     axios
       .get("https://backndVoo.voo-hub.com/api/orgnization/bnyadm", {
         headers: {
@@ -37,6 +38,9 @@ const Pendingusers = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
 
@@ -51,9 +55,9 @@ const Pendingusers = () => {
       return Object.values(item).some((value) =>
         typeof value === "object"
           ? Object.values(value).some((sub) =>
-              sub?.toString().toLowerCase().includes(query)
+              sub?.toString().toLowerCase().includes(query),
             )
-          : value?.toString().toLowerCase().includes(query)
+          : value?.toString().toLowerCase().includes(query),
       );
     } else {
       const keys = selectedFilter.split(".");
@@ -85,7 +89,7 @@ const Pendingusers = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate((prev) => !prev);
@@ -119,7 +123,7 @@ const Pendingusers = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           )
           .then(() => {
             setUpdate((prev) => !prev);
@@ -139,7 +143,7 @@ const Pendingusers = () => {
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const cheose = [
@@ -155,15 +159,6 @@ const Pendingusers = () => {
     "orgnization.name": t("Orgnization"),
     "user.email": t("Email"),
     status: t("Status"),
-  };
-
-  const truncateText = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-  const truncateTextar = (text, maxLength = 15) => {
-    if (!text) return "N/A";
-    return text.length > maxLength ? "..." + text.slice(0, maxLength) : text;
   };
 
   const handleBulkAction = (action) => {
@@ -185,8 +180,8 @@ const Pendingusers = () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
-          )
+            },
+          ),
         );
 
         Promise.all(requests)
@@ -196,7 +191,7 @@ const Pendingusers = () => {
             Swal.fire(
               `${label}!`,
               `All selected requests have been ${label.toLowerCase()}.`,
-              "success"
+              "success",
             );
           })
           .catch(() => {
@@ -205,6 +200,97 @@ const Pendingusers = () => {
       }
     });
   };
+  const columns = [
+    {
+      header: t("S/N"),
+      render: (row, i) => (currentPage - 1) * rowsPerPage + i + 1,
+    },
+    {
+      header: t("User"),
+      render: (row) => (
+        <div>
+          <div>{row?.user?.name || "N/A"}</div>
+          <div className="text-xs">{row?.user?.email}</div>
+        </div>
+      ),
+    },
+    {
+      header: t("Organization"),
+      render: (row) => row?.orgnization?.name || "N/A",
+    },
+    {
+      header: t("Status"),
+      render: (row) => row.status || "N/A",
+    },
+    {
+      header: t("Accept"),
+      render: (row) => (
+        <button onClick={() => accept(row.id, row?.user?.name)}>Accept</button>
+      ),
+    },
+    {
+      header: t("Reject"),
+      render: (row) => (
+        <button onClick={() => reject(row.id, row?.user?.name)}>Reject</button>
+      ),
+    },
+    {
+      header: (
+        <input
+          type="checkbox"
+          checked={
+            selectedIds.length === paginatedData.length &&
+            paginatedData.length > 0
+          }
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(
+                paginatedData.map((i) => ({
+                  id: i.id,
+                  status: i.account_status,
+                })),
+              );
+            } else setSelectedIds([]);
+          }}
+        />
+      ),
+      render: (row) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.some((u) => u.id === row.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds((p) => [
+                ...p,
+                { id: row.id, status: row.account_status },
+              ]);
+            } else {
+              setSelectedIds((p) => p.filter((u) => u.id !== row.id));
+            }
+          }}
+        />
+      ),
+    },
+    {
+      header: t("Details"),
+      render: (row) => (
+        <button
+          className="underline  text-blue-600 hover:text-blue-800"
+          onClick={() =>
+            navigate("/admin/pendingusersDetaklis", {
+              state: { sendData: row.id },
+            })
+          }
+        >
+          t("Details")
+        </button>
+      ),
+    },
+  ];
+
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -257,267 +343,13 @@ const Pendingusers = () => {
           </button>
         </div>
       )}
-      <div className="mt-10 block text-left overflow-x-auto">
-        <div className="min-w-[800px]">
-          <table className="w-full border-y border-x border-black">
-            <thead dir={isArabic ? "rtl" : "ltr"}>
-              <tr className="bg-four">
-                {isArabic ? (
-                  <>
-                    <th className="py-4 px-1">رقم</th>
-                    <th className="py-4 px-3">المستخدم</th>
-                    <th className="py-4 px-3">المؤسسة</th>
-                    <th className="py-4 px-3">القبول</th>
-                    <th className="py-4 px-3">الرفض</th>
-                    <th className="py-4 px-3">الحالة</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">تفاصيل</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-4 px-1">S/N</th>
-                    <th className="py-4 px-3">User</th>
-                    <th className="py-4 px-3">Orgnization</th>
-                    <th className="py-4 px-3">Accept</th>
-                    <th className="py-4 px-3">Reject</th>
-                    <th className="py-4 px-3">Status</th>
-                    <th className="py-4 px-3">
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedIds.length === paginatedData.length &&
-                          paginatedData.length > 0
-                        }
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds(
-                              paginatedData.map((item) => item.id)
-                            );
-                          } else {
-                            <th className="py-4 px-3">
-                              <input
-                                type="checkbox"
-                                checked={
-                                  selectedIds.length === paginatedData.length &&
-                                  paginatedData.length > 0
-                                }
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedIds(
-                                      paginatedData.map((item) => item.id)
-                                    );
-                                  } else {
-                                    setSelectedIds([]);
-                                  }
-                                }}
-                              />
-                            </th>;
-
-                            setSelectedIds([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="py-4 px-3">Details</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody dir={isArabic ? "rtl" : "ltr"}>
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="border-y border-x hover:border-3 relative hover:bg-four h-[56px]"
-                >
-                  {isArabic ? (
-                    <>
-                      <td className=" h-[56px] font-bold px-1 ">
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </td>
-
-                      <td className="py-2 px-3">
-                        <div className="flex flex-col ">
-                          <span className="text-[12px]">
-                            {truncateTextar(item?.user?.name)}
-                          </span>
-                          <span className="text-[10px]">
-                            {truncateTextar(item?.user?.email)}
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="py-2 px-3">
-                        {truncateTextar(item?.orgnization?.name)}
-                      </td>
-
-                      <td className="py-2 px-3">
-                        <button
-                          className="text-white bg-three px-2 py-1 rounded-full"
-                          onClick={() => accept(item.id, item?.user?.name)}
-                        >
-                          قبول
-                        </button>
-                      </td>
-
-                      <td className="py-2 px-3 h-[56px] text-strat">
-                        <button
-                          className="text-white bg-three px-2 py-1 rounded-full"
-                          onClick={() => reject(item.id, item?.user?.name)}
-                        >
-                          رفض
-                        </button>
-                      </td>
-
-                      <td className="py-2 px-3 h-[56px] text-strat">
-                        <span className="bg-eight text-one  rounded-full px-2 py-1">
-                          {item?.status ?? "N/A"}
-                        </span>
-                      </td>
-
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              );
-                            }
-                          }}
-                        />
-                      </td>
-                      <td className="py-2 px-3 h-[56px] text-strat">
-                        <button
-                          className="underline"
-                          onClick={() =>
-                            navigate("/organizeation/pendingusersDetaklis", {
-                              state: { sendData: item.id },
-                            })
-                          }
-                        >
-                          تفاصيل
-                        </button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="py-2 px-3">
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </td>
-                      <td className="py-2 px-3">
-                        <span className="text-[12px]">
-                          {truncateText(item?.user?.name)}
-                        </span>
-                        <span className="text-[10px]">
-                          {truncateText(item?.user?.email)}
-                        </span>
-                      </td>
-                      <td className="py-2 px-3">
-                        {truncateText(item?.orgnization?.name)}
-                      </td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="text-white bg-three px-2 py-1 rounded-full"
-                          onClick={() => accept(item.id, item?.user?.name)}
-                        >
-                          Accept
-                        </button>
-                      </td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="text-white bg-three px-2 py-1 rounded-full"
-                          onClick={() => reject(item.id, item?.user?.name)}
-                        >
-                          Reject
-                        </button>
-                      </td>
-                      <td className="py-2 px-3">
-                        {" "}
-                        <span className="bg-eight rounded-circle px-2 py-1">
-                          {item?.status ?? "N/A"}
-                        </span>
-                      </td>
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) =>
-                                prev.filter((id) => id !== item.id)
-                              );
-                            }
-                          }}
-                        />
-                      </td>
-                      <td className="py-2 px-3">
-                        <button
-                          className="underline "
-                          onClick={() =>
-                            navigate("/organizeation/pendingusersDetaklis", {
-                              state: { sendData: item.id },
-                            })
-                          }
-                        >
-                          Details
-                        </button>
-                      </td>
-                    </>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={(e, page) => setCurrentPage(page)}
-          color="secondary"
-          shape="rounded"
+      <div className="mt-6">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
         />
       </div>
       <ToastContainer />

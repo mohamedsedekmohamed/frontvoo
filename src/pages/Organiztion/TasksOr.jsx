@@ -10,6 +10,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
+import Loader from "../../ui/Loader";
 
 const TasksOr = () => {
   const [data, setData] = useState([]);
@@ -22,8 +23,10 @@ const TasksOr = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     axios
       .get("https://backndVoo.voo-hub.com/api/ornization/task", {
         headers: {
@@ -35,6 +38,9 @@ const TasksOr = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [update]);
   const handleChange = (e) => {
@@ -200,7 +206,7 @@ const TasksOr = () => {
   };
   const columns = [
     {
-      header: "S/N",
+      header: t("S/N"),
       render: (_, i) => (currentPage - 1) * rowsPerPage + i + 1,
     },
     {
@@ -223,7 +229,7 @@ const TasksOr = () => {
       header: t("Details"),
       render: (row) => (
         <button
-          className="underline"
+          className="underline   text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/organizeation/tasksdetails", {
               state: { sendData: row.id },
@@ -238,7 +244,7 @@ const TasksOr = () => {
       header: t("Operation"),
       render: (row) => (
         <button
-          className="underline"
+          className="underline  text-blue-600 hover:text-blue-800"
           onClick={() =>
             navigate("/organizeation/operationTasksOr", {
               state: { sendData: row.id },
@@ -294,7 +300,9 @@ const TasksOr = () => {
       ),
     },
   ];
-
+if (loading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex justify-between items-center">
