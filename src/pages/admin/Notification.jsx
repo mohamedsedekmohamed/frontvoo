@@ -168,95 +168,105 @@ if (loading) {
   return <Loader />;
 }
 if (error) {return <ErrorPage onRetry={read} />;}
-  return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
-          <input
-            placeholder="Search"
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
-        </div>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
-            <select
-              style={{
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                paddingRight: "20px",
-                backgroundImage: "none",
-              }}
-              value={selectedFilter}
-              onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
-            >
-              {cheose.map((option, index) => (
-                <option key={index} value={option}>
-                  {labelMap[option] || option}
-                </option>
-              ))}
-            </select>
-          </button>
-          <button
-            onClick={() => navigate("/admin/addotification")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
-          >
-            <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
-              Add
-            </span>
-          </button>
-        </div>
-      </div>
-      <div className="mt-6">
-        <ReusableTable
-          columns={columns}
-          data={paginatedData}
-          currentPage={1}
-          pageCount={1}
-          onPageChange={() => {}}
-          forceEnglishTitle={true}
+ return (
+  <div className="w-full">
+
+    {/* Top Controls */}
+    <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+
+      {/* Search */}
+      <div className="relative w-full md:w-auto">
+        <input
+          placeholder="Search"
+          className="w-full md:min-w-[250px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
       </div>
 
-     
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10">
-          <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
-            <h2 className="text-xl text-one font-bold mb-4 text-center">
-              Users who viewed this notification
-            </h2>
-            <ul className="max-h-[300px] overflow-y-auto divide-y">
-              {selectedViewers.length > 0 ? (
-                selectedViewers.map((user, i) => (
-                  <li key={user.id} className="py-2 text-sm">
-                    {i + 1}. {user.name} – {user.email}
-                  </li>
-                ))
-              ) : (
-                <p className="text-center text-gray-500">No viewers found</p>
-              )}
-            </ul>
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="bg-one hover:bg-opacity-90 text-white py-1 px-6 rounded-full transition duration-200"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Filter + Add */}
+      <div className="flex gap-2 flex-wrap w-full md:w-auto">
 
-      <ToastContainer />
+        {/* Filter */}
+        <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10 w-full md:w-auto">
+          <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
+          <select
+            value={selectedFilter}
+            onChange={handleChange}
+            className="w-full md:w-24 text-[14px] md:text-[16px] bg-transparent text-white outline-none cursor-pointer"
+            style={{ appearance: "none" }}
+          >
+            {cheose.map((option, index) => (
+              <option key={index} value={option} className="text-black bg-white">
+                {labelMap[option] || option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Add */}
+        <button
+          onClick={() => navigate("/admin/addotification")}
+          className="flex justify-center items-center h-10 bg-white border-one border py-1 px-3 rounded-[8px] gap-1 hover:bg-gray-50 transition w-full md:w-auto"
+        >
+          <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
+          <span className="text-[16px] font-medium text-one">Add</span>
+        </button>
+
+      </div>
     </div>
-  );
+
+    {/* Table */}
+    <div className="w-full overflow-x-auto">
+      <ReusableTable
+        columns={columns}
+        data={paginatedData}
+        currentPage={1}
+        pageCount={1}
+        onPageChange={() => {}}
+        forceEnglishTitle={true}
+      />
+    </div>
+
+    {/* Modal */}
+    {showModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/10 p-4">
+        <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
+
+          <h2 className="text-xl text-one font-bold mb-4 text-center">
+            Users who viewed this notification
+          </h2>
+
+          <ul className="max-h-[300px] overflow-y-auto divide-y">
+            {selectedViewers.length > 0 ? (
+              selectedViewers.map((user, i) => (
+                <li key={user.id} className="py-2 text-sm">
+                  {i + 1}. {user.name} – {user.email}
+                </li>
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No viewers found</p>
+            )}
+          </ul>
+
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setShowModal(false)}
+              className="bg-one hover:bg-opacity-90 text-white py-1 px-6 rounded-full transition"
+            >
+              Close
+            </button>
+          </div>
+
+        </div>
+      </div>
+    )}
+
+    <ToastContainer />
+  </div>
+);
 };
 
 export default Notification;

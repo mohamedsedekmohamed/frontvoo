@@ -163,7 +163,7 @@ const Events = () => {
 
       setSelectedIds([]); // reset selection
       setCurrentPage(1); // reset pagination
-     read(); // refresh data
+      read(); // refresh data
     } catch (err) {
       toast.error("Error deleting selected events");
     }
@@ -278,26 +278,29 @@ const Events = () => {
     return <ErrorPage onRetry={read} />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* Top Controls */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        {/* Search */}
+        <div className="relative w-full md:w-auto">
           <input
             placeholder="Search"
-            className="w-[100px] md:min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full md:min-w-[250px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
-        <div className="flex items-center gap-4 my-4">
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={handleChangedata}
-            className="px-3 py-2border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
 
+        {/* Date */}
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={handleChangedata}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        {/* Sort */}
         <select
           value={`${sortKey}:${sortOrder}`}
           onChange={(e) => {
@@ -305,58 +308,69 @@ const Events = () => {
             setSortKey(key || "");
             setSortOrder(order || "");
           }}
-          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+          className="text-[14px] h-10 border border-one rounded-[8px] px-2"
         >
           <option value="">Sort By</option>
-
-          <option value="date:asc"> Date ↑</option>
-          <option value="date:desc"> Date ↓</option>
+          <option value="date:asc">Date ↑</option>
+          <option value="date:desc">Date ↓</option>
         </select>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+
+        {/* Right Controls */}
+        <div className="flex flex-wrap gap-2 items-center">
+          {/* Filter */}
+          <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
+              value={selectedFilter}
+              onChange={handleChange}
               style={{
                 appearance: "none",
                 WebkitAppearance: "none",
                 MozAppearance: "none",
-                paddingRight: "20px",
                 backgroundImage: "none",
               }}
-              value={selectedFilter}
-              onChange={handleChange}
-              className="flex justify-center w-15 md:w-20 text-[10px] md:text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-16 md:w-20 text-[12px] md:text-[16px] bg-one text-white outline-none"
             >
               {cheose.map((option, index) => (
-                <option key={index} value={option}>
+                <option
+                  key={index}
+                  value={option}
+                  className="text-black bg-white"
+                >
                   {labelMap[option] || option}
                 </option>
               ))}
             </select>
-          </button>
+          </div>
 
+          {/* Add Button */}
           <button
             onClick={() => navigate("/admin/addevents")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex justify-center items-center bg-white border-one border py-1 px-3 rounded-[8px] gap-1 hover:bg-gray-50 transition"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
+            <span className="text-[16px] md:text-[18px] font-medium text-one">
               Add
             </span>
           </button>
         </div>
       </div>
+
+      {/* Bulk Actions */}
       {selectedIds.length > 0 && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mb-4">
           <button
             className="bg-one/80 text-white px-4 py-2 rounded"
-            onClick={() => handleBulkDelete()}
+            onClick={handleBulkDelete}
           >
             Delete Selected
           </button>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* TABLE WRAPPER → FIX OVERFLOW */}
+      <div className="w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -366,6 +380,7 @@ const Events = () => {
           forceEnglishTitle={true}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

@@ -32,13 +32,11 @@ const Zone = () => {
     axios
       .get("https://backndVoo.voo-hub.com/api/admin/zone", {
         headers: { Authorization: `Bearer ${token}` },
-        
       })
       .then((res) => {
         const zones = res?.data?.[0]?.zones || [];
         setData(zones);
         setLoading(false);
-
       })
       .catch(() => toast.error("Error fetching data"));
   }, [update]);
@@ -141,55 +139,61 @@ const Zone = () => {
       ),
     },
   ];
-if (loading) {
+  if (loading) {
     return <Loader />;
   }
   return (
-    <div>
-      {/* 🔎 SEARCH + FILTER + ADD (نفس التصميم 100%) */}
-      <div className="flex justify-between items-center">
-        <div className="relative">
+    <div className="w-full">
+      {/* Top Controls */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        {/* Search */}
+        <div className="relative w-full md:w-auto">
           <input
             placeholder="Search"
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full md:min-w-[250px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="absolute left-2 top-3 text-three" />
+          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
 
-        <div className="flex gap-2">
-          <button className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1">
+        {/* Filter + Add */}
+        <div className="flex gap-2 flex-wrap w-full md:w-auto">
+          {/* Filter */}
+          <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10 w-full md:w-auto">
             <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
 
             <select
               value={selectedFilter}
               onChange={handleChange}
-              className="w-20 text-[20px] h-9 text-white bg-one rounded-[8px]"
-              style={{ appearance: "none", backgroundImage: "none" }}
+              className="w-full md:w-24 text-[14px] md:text-[16px] bg-transparent text-white outline-none cursor-pointer"
+              style={{ appearance: "none" }}
             >
               {cheose.map((option) => (
-                <option key={option} value={option}>
+                <option
+                  key={option}
+                  value={option}
+                  className="text-black bg-white"
+                >
                   {labelMap[option] || option}
                 </option>
               ))}
             </select>
-          </button>
+          </div>
 
+          {/* Add */}
           <button
             onClick={() => navigate("/admin/addzone")}
-            className="flex items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex justify-center items-center h-10 bg-white border-one border py-1 px-3 rounded-[8px] gap-1 hover:bg-gray-50 transition w-full md:w-auto"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
-              Add
-            </span>
+            <span className="text-[16px] font-medium text-one">Add</span>
           </button>
         </div>
       </div>
 
-      {/* 📊 TABLE */}
-      <div className="mt-6">
+      {/* Table */}
+      <div className="w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}

@@ -20,7 +20,7 @@ const RequestsOr = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortKey, setSortKey] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [loading , setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
@@ -170,7 +170,6 @@ const RequestsOr = () => {
       });
   };
 
-
   const handleBulkAction = (action) => {
     const token = localStorage.getItem("token");
     const label = action === "accept" ? "Accepted" : "Rejected";
@@ -208,144 +207,141 @@ const RequestsOr = () => {
     });
   };
   const columns = [
-  {
-    header: t("S/N"),
-    render: (_, __, index) =>
-      (currentPage - 1) * rowsPerPage + index + 1,
-  },
-  {
-    header: t("Type"),
-    accessor: "request_type",
-    render: (item) => (item?.request_type),
-  },
-  {
-    header: t("User"),
-    render: (item) => (
-      <div className="flex flex-col gap-0.5">
-        <span className="text-[12px]">
-          {(item?.user?.name)}
+    {
+      header: t("S/N"),
+      render: (_, __, index) => (currentPage - 1) * rowsPerPage + index + 1,
+    },
+    {
+      header: t("Type"),
+      accessor: "request_type",
+      render: (item) => item?.request_type,
+    },
+    {
+      header: t("User"),
+      render: (item) => (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[12px]">{item?.user?.name}</span>
+          <span className="text-[10px]">{item?.user?.email}</span>
+        </div>
+      ),
+    },
+    {
+      header: t("Event/Task"),
+      render: (item) =>
+        item?.event?.name ? item?.event?.name : item?.task?.name,
+    },
+    {
+      header: t("Date"),
+      render: (item) => item?.event?.date || item?.task?.date,
+    },
+    {
+      header: t("Time"),
+      render: (item) => item?.event?.start_time || item?.task?.start_time,
+    },
+    {
+      header: t("Organization"),
+      render: (item) => item?.orgnization?.name,
+    },
+    {
+      header: t("Status"),
+      render: (item) => (
+        <span className="bg-eight rounded-circle px-2 py-1 text-three">
+          {item?.status ?? "N/A"}
         </span>
-        <span className="text-[10px]">
-          {(item?.user?.email)}
-        </span>
-      </div>
-    ),
-  },
-  {
-    header: t("Event/Task"),
-    render: (item) =>
-      item?.event?.name
-        ? (item?.event?.name)
-        : (item?.task?.name),
-  },
-  {
-    header: t("Date"),
-    render: (item) =>
-      item?.event?.date || item?.task?.date,
-  },
-  {
-    header: t("Time"),
-    render: (item) =>
-      item?.event?.start_time || item?.task?.start_time,
-  },
-  {
-    header: t("Organization"),
-    render: (item) => (item?.orgnization?.name),
-  },
-  {
-    header: t("Status"),
-    render: (item) => (
-      <span className="bg-eight rounded-circle px-2 py-1 text-three">
-        {item?.status ?? "N/A"}
-      </span>
-    ),
-  },
-  {
-    header: (
-      <input
-        type="checkbox"
-        checked={
-          selectedIds.length === paginatedData.length &&
-          paginatedData.length > 0
-        }
-        onChange={(e) => {
-          if (e.target.checked) {
-            setSelectedIds(paginatedData.map((i) => i.id));
-          } else {
-            setSelectedIds([]);
+      ),
+    },
+    {
+      header: (
+        <input
+          type="checkbox"
+          checked={
+            selectedIds.length === paginatedData.length &&
+            paginatedData.length > 0
           }
-        }}
-      />
-    ),
-    render: (item) => (
-      <input
-        type="checkbox"
-        checked={selectedIds.includes(item.id)}
-        onChange={(e) => {
-          if (e.target.checked) {
-            setSelectedIds((prev) => [...prev, item.id]);
-          } else {
-            setSelectedIds((prev) =>
-              prev.filter((id) => id !== item.id)
-            );
-          }
-        }}
-      />
-    ),
-  },
-  {
-    header: t("Action"),
-    render: (item) => (
-      <select
-        className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
-        onChange={(e) => {
-          if (e.target.value === "accept") handleAccept(item.id);
-          if (e.target.value === "reject") handleReject(item.id);
-        }}
-        defaultValue=""
-      >
-        <option value="" disabled>
-          Select
-        </option>
-        <option value="accept">Accept</option>
-        <option value="reject">Reject</option>
-      </select>
-    ),
-  },
-]; 
-if (loading) {
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(paginatedData.map((i) => i.id));
+            } else {
+              setSelectedIds([]);
+            }
+          }}
+        />
+      ),
+      render: (item) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.includes(item.id)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds((prev) => [...prev, item.id]);
+            } else {
+              setSelectedIds((prev) => prev.filter((id) => id !== item.id));
+            }
+          }}
+        />
+      ),
+    },
+    {
+      header: t("Action"),
+      render: (item) => (
+        <select
+          className="text-white bg-one px-4 py-2 rounded-md text-[12px]"
+          onChange={(e) => {
+            if (e.target.value === "accept") handleAccept(item.id);
+            if (e.target.value === "reject") handleReject(item.id);
+          }}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select
+          </option>
+          <option value="accept">Accept</option>
+          <option value="reject">Reject</option>
+        </select>
+      ),
+    },
+  ];
+  if (loading) {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* Top Controls */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        {/* Search */}
+        <div className="relative w-full md:w-auto">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full md:min-w-[250px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
+          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:top-3" />
         </div>
-        <select
-          value={`${sortKey}:${sortOrder}`}
-          onChange={(e) => {
-            const [key, order] = e.target.value.split(":");
-            setSortKey(key || "");
-            setSortOrder(order || "");
-          }}
-          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
-        >
-          <option value="">{t("SortBy")}</option>
-          <option value="start_time:asc">{t("StartTimeup")}</option>
-          <option value="start_time:desc">{t("StartTimedown")}</option>
-          <option value="date:asc">{t("Dateup")}</option>
-          <option value="date:desc">{t("Datedown")}</option>
-        </select>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+
+        {/* Right Controls */}
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          {/* Sort */}
+          <select
+            value={`${sortKey}:${sortOrder}`}
+            onChange={(e) => {
+              const [key, order] = e.target.value.split(":");
+              setSortKey(key || "");
+              setSortOrder(order || "");
+            }}
+            className="text-[14px] h-10 border border-one rounded-[8px] px-2 w-full sm:w-auto"
+          >
+            <option value="">{t("SortBy")}</option>
+            <option value="start_time:asc">{t("StartTimeup")}</option>
+            <option value="start_time:desc">{t("StartTimedown")}</option>
+            <option value="date:asc">{t("Dateup")}</option>
+            <option value="date:desc">{t("Datedown")}</option>
+          </select>
+
+          {/* Filter */}
+          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
               style={{
                 appearance: "none",
@@ -356,7 +352,7 @@ if (loading) {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-24 md:w-20 text-[14px] md:text-[16px] h-9 text-white bg-one px-1 rounded-[8px] outline-none"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -367,14 +363,17 @@ if (loading) {
           </button>
         </div>
       </div>
+
+      {/* Bulk Actions */}
       {selectedIds.length > 0 && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mt-4">
           <button
             className="bg-one/60 text-white px-4 py-2 rounded"
             onClick={() => handleBulkAction("accept")}
           >
             {t("AcceptSelected")}
           </button>
+
           <button
             className="bg-one/70 text-white px-4 py-2 rounded"
             onClick={() => handleBulkAction("reject")}
@@ -384,7 +383,8 @@ if (loading) {
         </div>
       )}
 
-      <div className="mt-6">
+      {/* Table */}
+      <div className="mt-6 w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -393,6 +393,7 @@ if (loading) {
           onPageChange={setCurrentPage}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

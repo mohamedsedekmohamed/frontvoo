@@ -292,49 +292,58 @@ const Pendingusers = () => {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* TOP BAR */}
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+        {/* SEARCH */}
+        <div className="relative w-full lg:w-[30%]">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
+          <CiSearch className="w-4 h-4 md:w-6 text-three absolute left-2 top-3" />
         </div>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
-            <select
-              style={{
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                paddingRight: "20px",
-                backgroundImage: "none",
-              }}
-              value={selectedFilter}
-              onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
-            >
-              {cheose.map((option, index) => (
-                <option key={index} value={option}>
-                  {labelMap[option] || option}
-                </option>
-              ))}
-            </select>
-          </button>
+
+        {/* FILTER */}
+        <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10 w-full sm:w-auto">
+          <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
+          <select
+            style={{
+              appearance: "none",
+              WebkitAppearance: "none",
+              MozAppearance: "none",
+              backgroundImage: "none",
+            }}
+            value={selectedFilter}
+            onChange={handleChange}
+            className="w-full sm:w-24 text-[16px] bg-one text-white outline-none rounded-[8px] px-2"
+          >
+            {cheose.map((option, index) => (
+              <option
+                key={index}
+                value={option}
+                className="text-black bg-white"
+              >
+                {labelMap[option] || option}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
+
+      {/* BULK ACTIONS */}
       {selectedIds.length > 0 && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           <button
             className="bg-one/60 text-white px-4 py-2 rounded"
             onClick={() => handleBulkAction("accept")}
           >
             {t("AcceptSelected")}
           </button>
+
           <button
             className="bg-one/70 text-white px-4 py-2 rounded"
             onClick={() => handleBulkAction("reject")}
@@ -343,7 +352,9 @@ const Pendingusers = () => {
           </button>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* TABLE */}
+      <div className="w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -352,6 +363,7 @@ const Pendingusers = () => {
           onPageChange={setCurrentPage}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

@@ -65,6 +65,7 @@ const Tasks = () => {
   };
   const [selectedDate, setSelectedDate] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
   const handleChangedata = (e) => {
     setSelectedDate(e.target.value); // value هي بصيغة YYYY-MM-DD
   };
@@ -99,7 +100,6 @@ const Tasks = () => {
     return isDateMatch && isSearchMatch;
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const pageCount = Math.ceil(filteredData.length / rowsPerPage);
   const sortedData = useMemo(() => {
@@ -277,24 +277,28 @@ const Tasks = () => {
   }
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+      {/* Top Controls */}
+      <div className="flex justify-between items-center flex-wrap gap-3">
+        {/* Search */}
+        <div className="relative items-center w-full sm:w-auto">
           <input
             placeholder="Search"
-            className="w-[100px] md:min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full sm:min-w-[250px] md:min-w-[300px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
-        <div className="flex items-center gap-4 my-4">
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={handleChangedata}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+
+        {/* Date */}
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={handleChangedata}
+          className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        {/* Sort */}
         <select
           value={`${sortKey}:${sortOrder}`}
           onChange={(e) => {
@@ -302,29 +306,24 @@ const Tasks = () => {
             setSortKey(key || "");
             setSortOrder(order || "");
           }}
-          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
+          className="w-full sm:w-auto text-[14px] h-9 border border-one rounded-[8px] px-2"
         >
           <option value="">Sort By</option>
-
-          <option value="start_time:asc"> Start Time ↑</option>
-          <option value="start_time:desc"> Start Time ↓</option>
-          <option value="date:asc"> Date ↑</option>
-          <option value="date:desc"> Date ↓</option>
+          <option value="start_time:asc">Start Time ↑</option>
+          <option value="start_time:desc">Start Time ↓</option>
+          <option value="date:asc">Date ↑</option>
+          <option value="date:desc">Date ↓</option>
         </select>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+
+        {/* Filter + Add */}
+        <div className="flex gap-2 flex-wrap w-full sm:w-auto">
+          {/* Filter */}
+          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1 w-full sm:w-auto">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
             <select
-              style={{
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                paddingRight: "20px",
-                backgroundImage: "none",
-              }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-15 md:w-20 text-[10px] md:text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="flex justify-center w-full sm:w-24 text-[14px] md:text-[16px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px]"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -333,28 +332,34 @@ const Tasks = () => {
               ))}
             </select>
           </button>
+
+          {/* Add */}
           <button
             onClick={() => navigate("/admin/addtasks")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex justify-center items-center bg-white border-one border py-1 px-2 rounded-[8px] gap-1 w-full sm:w-auto"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
+            <span className="text-[14px] md:text-[20px] font-medium text-one">
               Add
             </span>
           </button>
         </div>
       </div>
+
+      {/* Bulk Delete */}
       {selectedIds.length > 0 && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mt-4 w-full">
           <button
-            className="bg-one/80 text-white px-4 py-2 rounded"
-            onClick={() => handleBulkDelete()}
+            className="bg-one/80 text-white px-4 py-2 rounded w-full sm:w-auto"
+            onClick={handleBulkDelete}
           >
             Delete Selected
           </button>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* Table */}
+      <div className="mt-6 overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -364,6 +369,7 @@ const Tasks = () => {
           forceEnglishTitle={true}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

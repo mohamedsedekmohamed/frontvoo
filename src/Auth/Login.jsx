@@ -97,56 +97,59 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
   };
 
   return (
-    <div className="w-screen h-screen grid md:grid-cols-2 gap-2">
-      <div className="flex justify-between items-start">
-        <div className="flex flex-col mt-[10%] ml-[8%]">
-          <span className="text-2xl lg:text-5xl text-one font-medium">
-            Welcome back
-          </span>
-          <div className="flex items-center text-[24px] lg:text-[80px] pt-5 text-one">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-100 px-4">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 bg-white rounded-2xl shadow-xl overflow-hidden">
+        {/* LEFT SIDE (FORM) */}
+        <div className="p-8 md:p-12 flex flex-col justify-center">
+          {/* Logo */}
+          <div className="flex items-center gap-2 mb-6">
             <button onClick={() => navigate("/")}>
-              <img src={Voologo} alt="logo" />
+              <img src={Voologo} alt="logo" className="h-10" />
             </button>
+            <span className="text-xl font-semibold text-one">Voo</span>
           </div>
-          <span className="text-[16px] lg:text-[24px] mt-1">
-            Log in to your account
-          </span>
+
+          {/* Title */}
+          <h1 className="text-3xl font-bold text-gray-800">Welcome back 👋</h1>
+          <p className="text-gray-500 mt-2 mb-6">Login to continue</p>
 
           {/* Email */}
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-[300px] md:w-[450px] h-[72px] border-one border rounded-[8px] mt-2 lg:mt-5 pl-3"
-            placeholder="Email"
+            placeholder="Email address"
+            className="w-full h-14 px-4 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-one transition"
           />
 
           {/* Password */}
-          <div className="relative mt-2">
+          <div className="relative mb-4">
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-[300px] md:w-[450px] h-[72px] border border-one rounded-[8px] pl-3 pr-12"
               placeholder="Password"
+              className="w-full h-14 px-4 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-one transition"
             />
+
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
             >
-              {/* {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />} */}
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
             </button>
           </div>
 
+          {/* Button */}
           <button
             disabled={loading}
             onClick={handleLogin}
-            className="w-[300px] md:w-[450px] h-[72px] bg-one rounded-[8px] mt-5 text-white font-medium transition transform hover:scale-90 flex items-center justify-center gap-2 disabled:opacity-70"
+            className="w-full h-14 bg-one text-white rounded-lg font-semibold flex items-center justify-center gap-2 transition hover:scale-[0.97] active:scale-[0.95] disabled:opacity-60"
           >
             {loading ? (
               <>
-                <span>Waiting</span>
+                <span>Logging in...</span>
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               </>
             ) : (
@@ -154,14 +157,15 @@ function Login({ setIsLoggedIn, setorganiztionLayout }) {
             )}
           </button>
         </div>
-      </div>
 
-      <div className="hidden md:flex">
-        <img
-          src={Loginpic}
-          className="object-fill w-full h-screen max-h-[800px]"
-          alt="Login visual"
-        />
+        {/* RIGHT SIDE (IMAGE) */}
+        <div className="hidden md:block">
+          <img
+            src={Loginpic}
+            alt="login"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
       <ToastContainer />

@@ -214,52 +214,64 @@ const Feedsor = () => {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* TOP BAR */}
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+        {/* SEARCH */}
+        <div className="relative w-full lg:w-[30%]">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
+          <CiSearch className="w-4 h-4 md:w-6 text-three absolute left-2 top-3" />
         </div>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+
+        {/* RIGHT CONTROLS */}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-start lg:justify-end">
+          {/* FILTER */}
+          <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10 w-full sm:w-auto">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
               style={{
                 appearance: "none",
                 WebkitAppearance: "none",
                 MozAppearance: "none",
-                paddingRight: "20px",
                 backgroundImage: "none",
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[16px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-full sm:w-24 text-[16px] bg-one text-white outline-none rounded-[8px] px-2"
             >
               {cheose.map((option, index) => (
-                <option key={index} value={option}>
+                <option
+                  key={index}
+                  value={option}
+                  className="text-black bg-white"
+                >
                   {labelMap[option] || option}
                 </option>
               ))}
             </select>
-          </button>
+          </div>
+
+          {/* ADD BUTTON */}
           <button
             onClick={() => navigate("/organizeation/addFeedsor")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex items-center justify-center gap-1 h-10 bg-white border-one border px-3 rounded-[8px] w-full sm:w-auto"
           >
-            <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
+            <FaPlus className="text-one w-4 h-4" />
+            <span className="text-[16px] font-medium text-one">
               {isArabic ? "أضافة" : "Add"}
             </span>
           </button>
         </div>
       </div>
 
-      <div className="mt-6">
+      {/* TABLE */}
+      <div className="mt-6 w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -268,30 +280,34 @@ const Feedsor = () => {
           onPageChange={setCurrentPage}
         />
       </div>
-      <ToastContainer />
+
+      {/* MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-4 rounded max-w-screen-md max-h-screen-md overflow-auto relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+          <div className="bg-white p-4 rounded max-w-screen-md w-full relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 bg-three text-white px-3 py-1 rounded text-sm"
             >
               ×
             </button>
+
             {isVideo ? (
-              <video controls className="max-w-lg max-h-lg object-contain">
+              <video controls className="w-full max-h-[70vh] object-contain">
                 <source src={modalContent} type="video/mp4" />
               </video>
             ) : (
               <img
                 src={modalContent}
                 alt="Selected"
-                className="max-w-md max-h-md object-contain"
+                className="w-full max-h-[70vh] object-contain"
               />
             )}
           </div>
         </div>
       )}
+
+      <ToastContainer />
     </div>
   );
 };

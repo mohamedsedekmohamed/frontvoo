@@ -10,13 +10,13 @@ import api from "../../Api/axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import ReusableTable from "../../ui/ReusableTable";
 import useCrud from "../../Hooks/useCrud";
-import Loader from '../../ui/Loader'; 
-import ErrorPage from '../../ui/ErrorPage';
+import Loader from "../../ui/Loader";
+import ErrorPage from "../../ui/ErrorPage";
 
 const City = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
-  const { data, read,loading,error } = useCrud("/admin/city", "cities");
+  const { data, read, loading, error } = useCrud("/admin/city", "cities");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -133,59 +133,73 @@ const City = () => {
       ),
     },
   ];
-   // ==========================================
+  // ==========================================
   if (loading) {
     return <Loader />;
   }
 
-  if (error) { return <ErrorPage onRetry={read} />;}
+  if (error) {
+    return <ErrorPage onRetry={read} />;
+  }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* Top Controls */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        {/* Search */}
+        <div className="relative w-full md:w-auto">
           <input
             placeholder="Search"
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full md:min-w-[250px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+
+        {/* Right Actions */}
+        <div className="flex flex-wrap gap-2 items-center">
+          {/* Filter */}
+          <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
+              value={selectedFilter}
+              onChange={handleChange}
               style={{
                 appearance: "none",
                 WebkitAppearance: "none",
                 MozAppearance: "none",
-                paddingRight: "20px",
                 backgroundImage: "none",
               }}
-              value={selectedFilter}
-              onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-20 text-[16px] md:text-[18px] bg-one text-white outline-none cursor-pointer"
             >
               {cheose.map((option, index) => (
-                <option key={index} value={option}>
+                <option
+                  key={index}
+                  value={option}
+                  className="text-black bg-white"
+                >
                   {labelMap[option] || option}
                 </option>
               ))}
             </select>
-          </button>
+          </div>
+
+          {/* Add Button */}
           <button
             onClick={() => navigate("/admin/addcity")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex justify-center items-center bg-white border-one border py-1 px-3 rounded-[8px] gap-1 hover:bg-gray-50 transition"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
+            <span className="text-[16px] md:text-[18px] font-medium text-one">
               Add
             </span>
           </button>
         </div>
       </div>
 
-      <div className="mt-6">
+      {/* TABLE WRAPPER → FIX OVERFLOW */}
+      <div className="w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -195,6 +209,7 @@ const City = () => {
           forceEnglishTitle={true}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

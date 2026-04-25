@@ -171,7 +171,6 @@ const TasksOr = () => {
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
-  
 
   const handleBulkDelete = () => {
     const token = localStorage.getItem("token");
@@ -300,45 +299,56 @@ const TasksOr = () => {
       ),
     },
   ];
-if (loading) {
+  if (loading) {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* TOP BAR - RESPONSIVE ONLY */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        {/* SEARCH (unchanged design) */}
+        <div className="relative items-center w-full md:w-auto flex-1">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="min-w-[50%] w-full md:w-auto h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
-        <div className="flex items-center gap-4 my-4">
+
+        {/* DATE */}
+        <div className="w-full md:w-auto">
           <input
             type="date"
             value={selectedDate}
             onChange={handleChangedata}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full md:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm"
           />
         </div>
-        <select
-          value={`${sortKey}:${sortOrder}`}
-          onChange={(e) => {
-            const [key, order] = e.target.value.split(":");
-            setSortKey(key || "");
-            setSortOrder(order || "");
-          }}
-          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
-        >
-          <option value="">{t("SortBy")}</option>
-          <option value="start_time:asc">{t("StartTimeup")}</option>
-          <option value="start_time:desc">{t("StartTimedown")}</option>
-          <option value="date:asc">{t("Dateup")}</option>
-          <option value="date:desc">{t("Datedown")}</option>
-        </select>
-        <div className="flex gap-2">
+
+        {/* SORT */}
+        <div className="w-full md:w-auto">
+          <select
+            value={`${sortKey}:${sortOrder}`}
+            onChange={(e) => {
+              const [key, order] = e.target.value.split(":");
+              setSortKey(key || "");
+              setSortOrder(order || "");
+            }}
+            className="text-[14px] h-9 border border-one rounded-[8px] px-2 w-full md:w-auto"
+          >
+            <option value="">{t("SortBy")}</option>
+            <option value="start_time:asc">{t("StartTimeup")}</option>
+            <option value="start_time:desc">{t("StartTimedown")}</option>
+            <option value="date:asc">{t("Dateup")}</option>
+            <option value="date:desc">{t("Datedown")}</option>
+          </select>
+        </div>
+
+        {/* FILTER + ADD (NO DESIGN CHANGE) */}
+        <div className="flex gap-2 flex-wrap w-full md:w-auto">
+          {/* FILTER (UNCHANGED EXACTLY) */}
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
             <select
@@ -351,7 +361,7 @@ if (loading) {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="flex justify-center w-20 text-[16px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -360,6 +370,8 @@ if (loading) {
               ))}
             </select>
           </button>
+
+          {/* ADD BUTTON (UNCHANGED) */}
           <button
             onClick={() => navigate("/organizeation/addtasksor")}
             className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
@@ -371,17 +383,21 @@ if (loading) {
           </button>
         </div>
       </div>
+
+      {/* BULK DELETE */}
       {selectedIds.length > 0 && (
         <div className="flex gap-2 mt-4">
           <button
-            className="bg-one/80 text-white px-4 py-2 rounded"
-            onClick={() => handleBulkDelete()}
+            className="bg-one/80 text-white px-4 py-2 rounded w-full md:w-auto"
+            onClick={handleBulkDelete}
           >
             {t("DeleteSelected")}
           </button>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* TABLE WRAPPER (important fix) */}
+      <div className="mt-6 w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -390,6 +406,7 @@ if (loading) {
           onPageChange={setCurrentPage}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

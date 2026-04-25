@@ -379,7 +379,7 @@ const User = () => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       {/* جزء التحكم والأزرار العلوية */}
       <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
         <div className="relative items-center w-full md:w-auto">
@@ -418,11 +418,8 @@ const User = () => {
 
         <div className="flex gap-2">
           <div className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10">
-            <img
-              src={filter}
-              alt="filter"
-              className="text-white w-4 h-4 md:w-6 md:h-6"
-            />
+            <img src={filter} alt="filter" className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
               value={selectedFilter}
               onChange={handleChange}
@@ -451,15 +448,16 @@ const User = () => {
         </div>
       </div>
 
-      {/* أزرار الحذف الجماعي والتعديل تظهر فقط عند التحديد */}
+      {/* Bulk Actions */}
       {selectedIds.length > 0 && (
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 flex-wrap">
           <button
             className="bg-one text-white px-4 py-2 rounded hover:bg-opacity-80 transition"
             onClick={handleBulkStatusChange}
           >
             Change Status
           </button>
+
           <button
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
             onClick={handleBulkDelete}
@@ -469,15 +467,17 @@ const User = () => {
         </div>
       )}
 
-      {/* مناداة المكون ReusableTable وتمرير الخواص له */}
-      <ReusableTable
-        columns={columns}
-        data={paginatedData}
-        currentPage={currentPage}
-        pageCount={pageCount}
-        onPageChange={setCurrentPage}
-        forceEnglishTitle={true}
-      />
+      {/* TABLE WRAPPER → FIX OVERFLOW */}
+      <div className="w-full overflow-x-auto">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
+          forceEnglishTitle={true}
+        />
+      </div>
 
       <ToastContainer />
     </div>

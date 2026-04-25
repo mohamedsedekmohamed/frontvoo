@@ -397,43 +397,51 @@ const Requests = () => {
   }
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-3">
+        {/* Search */}
         <div className="relative items-center">
           <input
             placeholder="Search"
             className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
+
+        {/* Sort */}
         <select
           value={`${sortKey}:${sortOrder}`}
           onChange={(e) => {
             const [key, order] = e.target.value.split(":");
             setSortKey(key || "");
             setSortOrder(order || "");
+            setCurrentPage(1);
           }}
           className="text-[14px] h-9 border border-one rounded-[8px] px-2"
         >
           <option value="">Sort By</option>
-
-          <option value="start_time:asc"> Start Time ↑</option>
-          <option value="start_time:desc"> Start Time ↓</option>
-          <option value="date:asc"> Date ↑</option>
-          <option value="date:desc"> Date ↓</option>
+          <option value="start_time:asc">Start Time ↑</option>
+          <option value="start_time:desc">Start Time ↓</option>
+          <option value="date:asc">Date ↑</option>
+          <option value="date:desc">Date ↓</option>
         </select>
-        <div className="flex justify-center items-center gap-2 ">
+
+        {/* Toggle Task / Event */}
+        <div className="flex justify-center items-center gap-2">
           <button
             onClick={() => {
               setActive("task");
-              setCurrentPage(1); // reset to first page
+              setCurrentPage(1);
             }}
-            className={`w-40 h-10 ${
+            className={`w-32 h-10 rounded ${
               active === "task"
                 ? "bg-one text-white"
                 : "bg-white text-black border border-one"
-            } rounded`}
+            }`}
           >
             Task
           </button>
@@ -441,31 +449,26 @@ const Requests = () => {
           <button
             onClick={() => {
               setActive("event");
-              setCurrentPage(1); // reset to first page
+              setCurrentPage(1);
             }}
-            className={`w-40 h-10 ${
+            className={`w-32 h-10 rounded ${
               active === "event"
                 ? "bg-one text-white"
                 : "bg-white text-black border border-one"
-            } rounded`}
+            }`}
           >
             Event
           </button>
         </div>
+
+        {/* Filter */}
         <div className="flex gap-2">
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
             <select
-              style={{
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                paddingRight: "20px",
-                backgroundImage: "none",
-              }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="flex justify-center w-20 text-[16px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px]"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -476,6 +479,8 @@ const Requests = () => {
           </button>
         </div>
       </div>
+
+      {/* Bulk actions */}
       {selectedIds.length > 0 && (
         <div className="flex gap-2 mt-4">
           <button
@@ -484,20 +489,24 @@ const Requests = () => {
           >
             Accept Selected
           </button>
+
           <button
             className="bg-one/70 text-white px-4 py-2 rounded"
             onClick={() => handleBulkAction("reject")}
           >
             Reject Selected
           </button>
+
           <button
             className="bg-one/80 text-white px-4 py-2 rounded"
-            onClick={() => handleBulkDelete()}
+            onClick={handleBulkDelete}
           >
             Delete Selected
           </button>
         </div>
       )}
+
+      {/* Table */}
       <div className="mt-6">
         <ReusableTable
           columns={columns}
@@ -508,6 +517,7 @@ const Requests = () => {
           forceEnglishTitle={true}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

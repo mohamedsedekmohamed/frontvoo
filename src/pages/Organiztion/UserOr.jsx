@@ -320,33 +320,42 @@ const UserOr = () => {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* TOP BAR — ONLY RESPONSIVENESS ADDED */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* SEARCH (unchanged design) */}
+        <div className="relative items-center w-full md:w-auto flex-1">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="min-w-[50%] w-full md:w-auto h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
         </div>
-        <select
-          value={`${sortKey}:${sortOrder}`}
-          onChange={(e) => {
-            const [key, order] = e.target.value.split(":");
-            setSortKey(key || "");
-            setSortOrder(order || "");
-          }}
-          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
-        >
-          <option value="">{t("SortBy")}</option>
-          <option value="age:asc">{t("Ageup")}</option>
-          <option value="age:desc">{t("Agedown")}</option>
-          <option value="created_at:asc">{t("JoinDateup")}</option>
-          <option value="created_at:desc">{t("JoinDatedown")}</option>
-        </select>
-        <div className="flex gap-2">
+
+        {/* SORT (no style change) */}
+        <div className="w-full md:w-auto">
+          <select
+            value={`${sortKey}:${sortOrder}`}
+            onChange={(e) => {
+              const [key, order] = e.target.value.split(":");
+              setSortKey(key || "");
+              setSortOrder(order || "");
+            }}
+            className="text-[14px] h-9 border border-one rounded-[8px] px-2 w-full md:w-auto"
+          >
+            <option value="">{t("SortBy")}</option>
+            <option value="age:asc">{t("Ageup")}</option>
+            <option value="age:desc">{t("Agedown")}</option>
+            <option value="created_at:asc">{t("JoinDateup")}</option>
+            <option value="created_at:desc">{t("JoinDatedown")}</option>
+          </select>
+        </div>
+
+        {/* FILTER + ADD (UNCHANGED DESIGN WRAPPED ONLY) */}
+        <div className="flex gap-2 flex-wrap w-full md:w-auto">
+          {/* THIS IS YOUR ORIGINAL DESIGN — NOT TOUCHED */}
           <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
             <select
@@ -368,6 +377,8 @@ const UserOr = () => {
               ))}
             </select>
           </button>
+
+          {/* ADD BUTTON (unchanged) */}
           <button
             onClick={() => navigate("/organizeation/adduser")}
             className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
@@ -379,6 +390,8 @@ const UserOr = () => {
           </button>
         </div>
       </div>
+
+      {/* BULK DELETE */}
       {selectedIds.length > 0 && (
         <div className="flex gap-2 mt-4">
           <button
@@ -389,7 +402,9 @@ const UserOr = () => {
           </button>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* TABLE WRAPPER ONLY */}
+      <div className="mt-6 overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -398,6 +413,7 @@ const UserOr = () => {
           onPageChange={setCurrentPage}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

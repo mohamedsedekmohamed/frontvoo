@@ -251,7 +251,7 @@ const EventsOr = () => {
             })
           }
         >
-        {t("Operation")}
+          {t("Operation")}
         </button>
       ),
     },
@@ -304,88 +304,96 @@ const EventsOr = () => {
       ),
     },
   ];
-if (loading) {    return <Loader />;
+  if (loading) {
+    return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* TOP BAR */}
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+        {/* SEARCH */}
+        <div className="relative w-full lg:w-[30%]">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
+          <CiSearch className="w-4 h-4 md:w-6 text-three absolute left-2 top-3" />
         </div>
-        <div className="flex items-center gap-4 my-4">
+
+        {/* RIGHT CONTROLS */}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-start lg:justify-end">
+          {/* DATE */}
           <input
             type="date"
             value={selectedDate}
             onChange={handleChangedata}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-auto"
           />
-        </div>
 
-        <select
-          value={`${sortKey}:${sortOrder}`}
-          onChange={(e) => {
-            const [key, order] = e.target.value.split(":");
-            setSortKey(key || "");
-            setSortOrder(order || "");
-          }}
-          className="text-[14px] h-9 border border-one rounded-[8px] px-2"
-        >
-          <option value="">{t("SortBy")}</option>
-          <option value="start_time:asc">{t("StartTimeup")}</option>
-          <option value="start_time:desc">{t("StartTimedown")}</option>
-          <option value="date:asc">{t("Dateup")}</option>
-          <option value="date:desc">{t("Datedown")}</option>
-        </select>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
-            <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+          {/* SORT */}
+          <select
+            value={`${sortKey}:${sortOrder}`}
+            onChange={(e) => {
+              const [key, order] = e.target.value.split(":");
+              setSortKey(key || "");
+              setSortOrder(order || "");
+            }}
+            className="text-[14px] h-10 border border-one rounded-[8px] px-2 w-full sm:w-auto"
+          >
+            <option value="">{t("SortBy")}</option>
+            <option value="start_time:asc">{t("StartTimeup")}</option>
+            <option value="start_time:desc">{t("StartTimedown")}</option>
+            <option value="date:asc">{t("Dateup")}</option>
+            <option value="date:desc">{t("Datedown")}</option>
+          </select>
+
+          {/* FILTER */}
+          <div className="flex items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10 w-full sm:w-auto">
+            <img src={filter} className="w-4 h-4 md:w-6 md:h-6" />
+
             <select
-              style={{
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-                paddingRight: "20px",
-                backgroundImage: "none",
-              }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-full sm:w-24 text-[16px] bg-transparent text-white outline-none"
+              style={{ appearance: "none" }}
             >
               {cheose.map((option, index) => (
-                <option key={index} value={option}>
+                <option key={index} value={option} className="text-black">
                   {labelMap[option] || option}
                 </option>
               ))}
             </select>
-          </button>
+          </div>
+
+          {/* ADD BUTTON */}
           <button
             onClick={() => navigate("/organizeation/addeventsor")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex items-center justify-center gap-1 h-10 bg-white border-one border px-3 rounded-[8px] w-full sm:w-auto"
           >
-            <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
+            <FaPlus className="text-one w-4 h-4" />
+            <span className="text-[16px] font-medium text-one">
               {isArabic ? "أضافة" : "Add"}
             </span>
           </button>
         </div>
       </div>
+
+      {/* BULK DELETE */}
       {selectedIds.length > 0 && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           <button
             className="bg-one/80 text-white px-4 py-2 rounded"
-            onClick={() => handleBulkDelete()}
+            onClick={handleBulkDelete}
           >
             {t("DeleteSelected")}
           </button>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* TABLE */}
+      <div className="w-full overflow-x-auto">
         <ReusableTable
           columns={columns}
           data={paginatedData}
@@ -394,6 +402,7 @@ if (loading) {    return <Loader />;
           onPageChange={setCurrentPage}
         />
       </div>
+
       <ToastContainer />
     </div>
   );

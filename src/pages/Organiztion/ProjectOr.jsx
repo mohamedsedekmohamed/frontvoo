@@ -19,8 +19,7 @@ const ProjectOr = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
   const navigate = useNavigate();
-  const { t, } = useTranslation();
-  
+  const { t } = useTranslation();
 
   useEffect(() => {
     setCurrentPage(1);
@@ -39,7 +38,8 @@ const ProjectOr = () => {
       })
       .catch(() => {
         toast.error("Error fetching data");
-      }).finally(() => {
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [update]);
@@ -157,24 +157,30 @@ const ProjectOr = () => {
       ),
     },
   ];
-if (loading) {
+  if (loading) {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <div className="relative items-center">
+    <div className="w-full">
+      {/* Top Controls */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        {/* Search */}
+        <div className="relative w-full md:w-auto">
           <input
             placeholder={t("Search")}
-            className="min-w-[50%] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
+            className="w-full md:min-w-[250px] h-10 lg:h-[48px] border-2 border-two rounded-[8px] pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:h-6" />
+          <CiSearch className="w-4 h-4 md:w-6 text-three font-medium absolute left-2 top-3 md:top-3" />
         </div>
-        <div className="flex gap-2">
-          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1">
+
+        {/* Right Controls */}
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          {/* Filter */}
+          <button className="flex justify-center items-center bg-three py-1 px-2 rounded-[8px] gap-1 h-10">
             <img src={filter} className="text-white w-4 h-4 md:w-6 md:h-6" />
+
             <select
               style={{
                 appearance: "none",
@@ -185,7 +191,7 @@ if (loading) {
               }}
               value={selectedFilter}
               onChange={handleChange}
-              className="flex justify-center w-20 text-[20px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1"
+              className="w-24 md:w-20 text-[14px] md:text-[16px] items-center h-9 text-white bg-one py-1 px-1 rounded-[8px] gap-1 outline-none"
             >
               {cheose.map((option, index) => (
                 <option key={index} value={option}>
@@ -194,27 +200,31 @@ if (loading) {
               ))}
             </select>
           </button>
+
+          {/* Add Button */}
           <button
             onClick={() => navigate("/organizeation/addprojector")}
-            className="flex justify-center items-center bg-white border-one border-1 py-1 px-2 rounded-[8px] gap-1"
+            className="flex justify-center items-center bg-white border border-one py-1 px-3 rounded-[8px] gap-1 h-10 w-full sm:w-auto"
           >
             <FaPlus className="text-one w-4 h-4 md:w-6 md:h-6" />
-            <span className="text-[16px] md:text-[20px] font-medium text-one">
+            <span className="text-[14px] md:text-[20px] font-medium text-one">
               {t("add")}
             </span>
           </button>
         </div>
       </div>
 
-     <div className="mt-6">
-       <ReusableTable
-        columns={columns}
-        data={paginatedData}
-        currentPage={currentPage}
-        pageCount={pageCount}
-        onPageChange={setCurrentPage}
-      />
-     </div>
+      {/* Table */}
+      <div className="mt-6 w-full overflow-x-auto">
+        <ReusableTable
+          columns={columns}
+          data={paginatedData}
+          currentPage={currentPage}
+          pageCount={pageCount}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+
       <ToastContainer />
     </div>
   );
